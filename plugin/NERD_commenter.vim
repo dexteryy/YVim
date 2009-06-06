@@ -3060,33 +3060,30 @@ nmap <silent> <plug>NERDCommenterAppend :call NERDComment(0, "append")<cr>
 " insert comments
 inoremap <silent> <plug>NERDCommenterInInsert <SPACE><BS><ESC>:call NERDComment(0, "insert")<CR>
 
-if !exists("g:NERDCommenterLeader")
-	let g:NERDCommenterLeader = ",c"
-endif
 
 function! s:CreateMaps(target, combo)
     if !hasmapto(a:target, 'n')
-        exec 'nmap ' . g:NERDCommenterLeader . a:combo . ' ' . a:target
+        exec 'nmap ' . a:combo . ' ' . a:target
     endif
 
     if !hasmapto(a:target, 'v')
-        exec 'vmap ' . g:NERDCommenterLeader . a:combo . ' ' . a:target
+        exec 'vmap ' . a:combo . ' ' . a:target
     endif
 endfunction
 
 if g:NERDCreateDefaultMappings
-    call s:CreateMaps('<plug>NERDCommenterComment',    'c')
-    call s:CreateMaps('<plug>NERDCommenterToggle',     '<space>')
-    call s:CreateMaps('<plug>NERDCommenterMinimal',    'm')
-    call s:CreateMaps('<plug>NERDCommenterSexy',       's')
-    call s:CreateMaps('<plug>NERDCommenterInvert',     'i')
-    call s:CreateMaps('<plug>NERDCommenterYank',       'y')
-    call s:CreateMaps('<plug>NERDCommenterAlignLeft',  'l')
-    call s:CreateMaps('<plug>NERDCommenterAlignBoth',  'b')
-    call s:CreateMaps('<plug>NERDCommenterNest',       'n')
-    call s:CreateMaps('<plug>NERDCommenterUncomment',  'u')
-    call s:CreateMaps('<plug>NERDCommenterToEOL',      '$')
-    call s:CreateMaps('<plug>NERDCommenterAppend',     'A')
+    call s:CreateMaps('<plug>NERDCommenterComment',    ',cc')
+    call s:CreateMaps('<plug>NERDCommenterToggle',     ',c<space>')
+    call s:CreateMaps('<plug>NERDCommenterMinimal',    ',cm')
+    call s:CreateMaps('<plug>NERDCommenterSexy',       ',cs')
+    call s:CreateMaps('<plug>NERDCommenterInvert',     ',ci')
+    call s:CreateMaps('<plug>NERDCommenterYank',       ',cy')
+    call s:CreateMaps('<plug>NERDCommenterAlignLeft',  ',cl')
+    call s:CreateMaps('<plug>NERDCommenterAlignBoth',  ',cb')
+    call s:CreateMaps('<plug>NERDCommenterNest',       ',cn')
+    call s:CreateMaps('<plug>NERDCommenterUncomment',  ',cu')
+    call s:CreateMaps('<plug>NERDCommenterToEOL',      ',c$')
+    call s:CreateMaps('<plug>NERDCommenterAppend',     ',cA')
 
     if !hasmapto('<plug>NERDCommenterAltDelims', 'n')
         nmap ,ca <plug>NERDCommenterAltDelims
