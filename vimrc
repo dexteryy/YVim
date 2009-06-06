@@ -123,6 +123,7 @@ winpos 52 42
 set number
 set numberwidth=4
 set equalalways
+set guitablabel=%t
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " filetype and syntax
