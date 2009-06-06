@@ -1,0 +1,164 @@
+# Prototype
+snippet proto
+	/**
+	 * ${5:function intro}
+	 * @param {${6:type}} ${7:$2}
+	 * @return ${8}
+	 */
+	${1:class_name}.prototype.${2:method_name} = function(${3:first_argument}) {
+		${4:// body...}
+	};
+# Function
+snippet fun
+	/**
+	 * ${4:function intro}
+	 * @param {${5:type}} ${6:$2}
+	 * @return ${7}
+	 */
+	function ${1:function_name}(${2:argument}) {
+		${3:// body...}
+	}
+# Anonymous Function
+snippet f
+	function(${1}){
+		${2}
+	};
+# if
+snippet if
+	if (${1:true}) {
+		${2}
+	}
+# if ... else
+snippet ife
+	if (${1:true}) {
+		${2}
+	} else {
+		${3}
+	}
+# tertiary conditional
+snippet t
+	${1:/* condition */} ? ${2:a} : ${3:b}
+# switch
+snippet switch
+	switch(${1:expression}) {
+		case '${3:case}':
+			${4:// code}
+			break;
+		${5}
+		default:
+			${2:// code}
+	}
+# case
+snippet case
+	case '${1:case}':
+		${2:// code}
+		break;
+	${3}
+# for (...) {...}
+snippet for
+	for (var ${1:i} = 0, ${2:l} = ${3:Things}.length; $1 < $2; $1${4:++}) {
+		${5:$3[$1]}
+	}
+# for (...) {...} (Improved Native For-Loop)
+snippet forr
+	for (var ${2:i} = ${1:Things}.length - 1; $2 >= 0; $2${3:--}) {
+		${4:$1[$2]}
+	};
+# while (...) {...}
+snippet wh
+	while (${1:/* condition */}) {
+		${2:/* code */}
+	}
+# do...while
+snippet do
+	do {
+		${2:/* code */}
+	} while (${1:/* condition */})
+# try/catch
+snippet try
+	try{
+		${1://code}
+	}catch(ex){${2}}
+# Object Method
+snippet :f
+	/**
+	 * ${5:function intro}
+	 * @param {${6:type}} ${7:$2}
+	 * @return ${8}
+	 */
+	${1:method_name}: function(${2:attribute}) {
+		${4}
+	}${3:,}
+# setTimeout function
+snippet settimeout
+	${3:var timer = }setTimeout(function(){
+		${2}
+	}, ${1:10});
+# setInterval function
+snippet setinterval
+	${3:var timer = }setInterval(function(){
+		${2}
+	}, ${1:10});
+
+# Get Elements
+snippet get
+	getElementsBy${1:TagName}('${2}')${3}
+# Get Element
+snippet gett
+	getElementBy${1:Id}('${2}')${3}
+snippet $
+	$(${1:"selector"}).${2:method}(${3})${4}
+snippet $(
+	$(function(){
+		${1://code}
+	});
+snippet $.each
+	$.each(${1:array|object}, function(${2:o}){
+		${3:this}
+	});
+snippet /*
+	/**
+	 * ${1:Describe what this method does}
+	 * @param {${2:String|Object|Array|Boolean|Number}} ${3:paramName} ${4:Describe this parameter}
+	 * @returns ${5:Describe what it returns}
+	 */
+snippet bug
+	console.${1:log}(${2});
+snippet single
+	/**
+	 * ${7:Describe what this singleton object does}
+	 * @param {${8:String|Object|Array|Boolean|Number}} ${9:paramName} 
+	 * @returns 
+	 */
+	var ${1:Singleton} = (function(){
+		${2}
+		return {
+			${3:publicMethod}: function(${5:opt}) {
+				${4://code}
+			}${6:,}	
+		};
+	})();
+snippet module
+	/**
+	 * ${5:Describe what this module does}
+	 * @param {object} ${6:paramName}
+	 */
+	var ${1:classname} = (function(){
+		var $1Object = {
+			${2:privateMethod1}: function(){
+				
+			},
+			${3:privateMethod2}: function(){
+				
+			}
+		};
+		return function(opt){
+			var publicObj = {
+				options: {},
+				$2: $1Object.$2,
+				$3: $1Object.$3${4:,} 
+			};
+			$.extend(publicObj.options, opt);
+			return publicObj;
+		};
+	})();
