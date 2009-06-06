@@ -247,6 +247,8 @@ let Tlist_Use_Right_Window = 1
 let Tlist_WinWidth = 30
 let Tlist_Inc_Winwidth = 0
 
+let g:tlist_javascript_settings = 'javascript;f:function;c:class;o:object;m:method;s:string;a:array;n:constant'
+
 " winManager setting
 "let g:winManagerWindowLayout="BufExplorer,FileExplorer|taglist" 
 "let g:winManagerWidth = 30
