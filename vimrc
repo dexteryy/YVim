@@ -139,7 +139,7 @@ if has("gui_macvim")
   let macvim_skip_cmd_opt_movement = 1
   let macvim_hig_shift_movement = 1
   
-  set transparency=2
+  set transparency=5
   set guioptions-=T "egmrt
   
   macm File.Save                              key=<D-s>
@@ -157,6 +157,7 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 autocmd! bufwritepost .vimrc source ~/.vimrc
+let g:jslint_neverAutoRun=1
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " commands

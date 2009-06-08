@@ -20,9 +20,9 @@ endif
 
 "" Drop fold if it set but VIM doesn't support it.
 let b:javascript_fold='true'
-if version < 600    " Don't support the old version
+"if version < 600    " Don't support the old version
   unlet! b:javascript_fold
-endif
+"endif
 
 "" dollar sigh is permittd anywhere in an identifier
 setlocal iskeyword+=$
