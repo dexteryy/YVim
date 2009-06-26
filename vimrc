@@ -116,7 +116,7 @@ elseif MySys() == "linux"
 endif
 
 set anti
-set linespace=4 
+set linespace=3 
 set columns=171
 set lines=58
 winpos 52 42 
@@ -141,7 +141,8 @@ if has("gui_macvim")
   
   set transparency=5
   set guioptions-=T "egmrt
-  
+  "set guioptions+=b 
+
   macm File.Save                              key=<D-s>
   macm File.Save\ As\.\.\.                    key=<D-S>
   macm Edit.Undo                              key=<D-z> action=undo:
@@ -197,8 +198,8 @@ command! -nargs=+ SAVE call SetMySession(<f-args>)
 let mapleader=","
 let g:mapleader=","
 
-"map <silent> <leader>rr :source ~/.vimr<cr>
 map <silent> <leader>rc :tabe ~/.vimrc<cr>
+map <leader>q :q<cr>
 
 " map cmd to ctrl
 if MySys() == "mac"
