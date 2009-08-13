@@ -111,15 +111,15 @@ endif
 if MySys() == "mac"
 	set guifont=TextMate_Regular:h13
 	set guifontwide=Hei_Regular:h13
+	set columns=171
+	set lines=58
+	winpos 52 42 
 elseif MySys() == "linux"
-	set guifont=Monospace:h12
+	set guifont=Monospace
 endif
 
 set anti
 set linespace=3 
-set columns=171
-set lines=58
-winpos 52 42 
 set number
 set numberwidth=4
 set equalalways
