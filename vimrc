@@ -111,9 +111,6 @@ endif
 if MySys() == "mac"
 	set guifont=TextMate_Regular:h13
 	set guifontwide=Hei_Regular:h13
-	set columns=171
-	set lines=58
-	winpos 52 42 
 elseif MySys() == "linux"
 	set guifont=Monospace
 endif
@@ -136,21 +133,26 @@ let g:javascript_enable_domhtmlcss=1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("gui_macvim")
-  let macvim_skip_cmd_opt_movement = 1
-  let macvim_hig_shift_movement = 1
-  
-  set transparency=5
-  set guioptions-=T "egmrt
-  "set guioptions+=b 
 
-  macm File.Save                              key=<D-s>
-  macm File.Save\ As\.\.\.                    key=<D-S>
-  macm Edit.Undo                              key=<D-z> action=undo:
-  macm Edit.Redo                              key=<D-Z> action=redo:
-  macm Edit.Cut                               key=<D-x> action=cut:
-  macm Edit.Copy                              key=<D-c> action=copy:
-  macm Edit.Paste                             key=<D-v> action=paste:
-  macm Edit.Select\ All                       key=<D-A> action=selectAll:
+	set columns=171
+	set lines=58
+	winpos 52 42 
+
+	let macvim_skip_cmd_opt_movement = 1
+	let macvim_hig_shift_movement = 1
+
+	set transparency=5
+	set guioptions-=T "egmrt
+	"set guioptions+=b 
+
+	macm File.Save                              key=<D-s>
+	macm File.Save\ As\.\.\.                    key=<D-S>
+	macm Edit.Undo                              key=<D-z> action=undo:
+	macm Edit.Redo                              key=<D-Z> action=redo:
+	macm Edit.Cut                               key=<D-x> action=cut:
+	macm Edit.Copy                              key=<D-c> action=copy:
+	macm Edit.Paste                             key=<D-v> action=paste:
+	macm Edit.Select\ All                       key=<D-A> action=selectAll:
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
