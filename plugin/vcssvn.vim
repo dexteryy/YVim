@@ -277,10 +277,14 @@ endfunction
 function! s:svnFunctions.Unlock(argList)
 	return s:DoCommand(join(['unlock --non-interactive'] + a:argList, ' '), 'unlock', join(a:argList, ' '), {})
 endfunction
+
 " Function: s:svnFunctions.Update(argList) {{{2
 function! s:svnFunctions.Update(argList)
 	return s:DoCommand('update --non-interactive', 'update', '', {})
 endfunction
+
+" Annotate setting {{{2
+let s:svnFunctions.AnnotateSplitRegex = '\s\+\S\+\s\+\S\+ '
 
 " Section: Plugin Registration {{{1
 call VCSCommandRegisterModule('SVN', expand('<sfile>'), s:svnFunctions, [])

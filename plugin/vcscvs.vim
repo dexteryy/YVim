@@ -112,7 +112,17 @@ let s:cvsFunctions = {}
 function! s:DoCommand(cmd, cmdName, statusText, options)
 	if VCSCommandGetVCSType(expand('%')) == 'CVS'
 		let fullCmd = VCSCommandGetOption('VCSCommandCVSExec', 'cvs') . ' ' . a:cmd
-		return VCSCommandDoCommand(fullCmd, a:cmdName, a:statusText, a:options)
+		let ret = VCSCommandDoCommand(fullCmd, a:cmdName, a:statusText, a:options)
+
+		if ret > 0
+			if getline(line('$')) =~ '^cvs \w\+: closing down connection'
+				$d
+				1
+			endif
+
+		endif
+
+		return ret
 	else
 		throw 'CVS VCSCommand plugin called on non-CVS item.'
 	endif
@@ -391,6 +401,9 @@ function! s:CVSWatchers()
 	return s:DoCommand('watchers', 'cvswatchers', '', {})
 endfunction
 
+" Annotate setting {{{2
+let s:cvsFunctions.AnnotateSplitRegex = '): '
+
 " Section: Command definitions {{{1
 " Section: Primary commands {{{2
 com! CVSEdit call s:CVSEdit()
@@ -425,7 +438,6 @@ for [pluginName, commandText, shortCut] in mappingInfo
 endfor
 
 " Section: Menu items {{{1
-silent! aunmenu Plugin.VCS.CVS
 amenu <silent> &Plugin.VCS.CVS.&Edit       <Plug>CVSEdit
 amenu <silent> &Plugin.VCS.CVS.Ed&itors    <Plug>CVSEditors
 amenu <silent> &Plugin.VCS.CVS.Unedi&t     <Plug>CVSUnedit

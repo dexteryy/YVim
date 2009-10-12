@@ -131,7 +131,7 @@ This command adds the current file to source control.  Please note, this does
 not commit the newly-added file.  All parameters to the command are passed to
 the underlying VCS.
 
-:VCSAnnotate						*:VCSAnnotate*
+:VCSAnnotate[!]						*:VCSAnnotate*
 
 This command displays the current file with each line annotated with the
 version in which it was most recently changed.  If an argument is given, the
@@ -140,16 +140,20 @@ it uses the most recent version of the file (on the current branch, if under
 CVS control).  Additionally, if the current buffer is a VCSAnnotate buffer
 already, the version number on the current line is used.
 
+If '!' is used, the view of the annotated buffer is split so that the
+annotation is in a separate window from the content, and each is highlighted
+separately.
+
 For CVS buffers, the 'VCSCommandCVSAnnotateParent' option, if set to non-zero,
 will cause the above behavior to change.  Instead of annotating the version on
 the current line, the parent revision is used instead, crossing branches if
 necessary.
 
 The filetype of the vcscommand scratch buffer is set to one of 'CVSAnnotate',
-'SVNAnnotate', or 'SVKAnnotate' as appropriate, to take advantage of the
+'SVNAnnotate', 'SVKAnnotate' or 'gitAnnotate' as appropriate, to take advantage of the
 bundled syntax files.
 
-:VCSBlame						*:VCSBlame*
+:VCSBlame[!]						*:VCSBlame*
 
 Alias for |:VCSAnnotate|.
 
@@ -327,6 +331,7 @@ default (no-argument) form of each command.
 
 <Leader>ca VCSAdd
 <Leader>cn VCSAnnotate
+<Leader>cN VCSAnnotate!
 <Leader>cc VCSCommit
 <Leader>cD VCSDelete
 <Leader>cd VCSDiff
@@ -583,7 +588,7 @@ For instance, the following could be added to the vimrc to provide a 'q'
 mapping to quit a vcscommand scratch buffer:
 
 augroup VCSCommand
-  au User VCSBufferCreated silent! nmap <unique> <buffer> q: bwipeout<cr>
+  au User VCSBufferCreated silent! nmap <unique> <buffer> q :bwipeout<cr>
 augroup END
 
 The following hooks are available:
