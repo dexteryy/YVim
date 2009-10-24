@@ -89,13 +89,14 @@ endfunction
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 set nobackup 
-set writebackup 
+set nowritebackup 
 set shiftwidth=4
 set tabstop=4
 set nowrap
 set wildmenu
 set matchpairs=(:),{:},[:],<:>
 set whichwrap=b,s,<,>,[,]
+set foldmethod=indent
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " interface
@@ -116,7 +117,7 @@ elseif MySys() == "linux"
 endif
 
 set anti
-set linespace=3 
+set linespace=2 
 set number
 set numberwidth=4
 set equalalways
@@ -127,6 +128,7 @@ set guitablabel=%t
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:javascript_enable_domhtmlcss=1
+let g:xml_use_xhtml = 1 "for xml.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MacVim
@@ -141,18 +143,22 @@ if has("gui_macvim")
 	let macvim_skip_cmd_opt_movement = 1
 	let macvim_hig_shift_movement = 1
 
-	set transparency=5
+	set transparency=8
 	set guioptions-=T "egmrt
 	"set guioptions+=b 
-
-	macm File.Save                              key=<D-s>
-	macm File.Save\ As\.\.\.                    key=<D-S>
-	macm Edit.Undo                              key=<D-z> action=undo:
-	macm Edit.Redo                              key=<D-Z> action=redo:
-	macm Edit.Cut                               key=<D-x> action=cut:
-	macm Edit.Copy                              key=<D-c> action=copy:
-	macm Edit.Paste                             key=<D-v> action=paste:
-	macm Edit.Select\ All                       key=<D-A> action=selectAll:
+	
+	macm File.New\ Tab						key=<D-T>
+	macm File.Save<Tab>:w					key=<D-s>
+	macm File.Save\ As\.\.\.<Tab>:sav		key=<D-S>
+	macm Edit.Undo<Tab>u					key=<D-z> action=undo:
+	macm Edit.Redo<Tab>^R					key=<D-Z> action=redo:
+	macm Edit.Cut<Tab>"+x					key=<D-x> action=cut:
+	macm Edit.Copy<Tab>"+y					key=<D-c> action=copy:
+	macm Edit.Paste<Tab>"+gP				key=<D-v> action=paste:
+	macm Edit.Select\ All<Tab>ggVG			key=<D-A> action=selectAll:
+	macm Window.Toggle\ Full\ Screen\ Mode	key=<D-F>
+	macm Window.Select\ Next\ Tab			key=<D-}>
+	macm Window.Select\ Previous\ Tab		key=<D-{>
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -193,6 +199,21 @@ command! -nargs=+ LOAD call GetMySession(<f-args>)
 " save session
 command! -nargs=+ SAVE call SetMySession(<f-args>) 
 
+
+" toggle quickfix window
+function! QFSwitch()
+	redir => ls_output
+		execute ':silent! ls'
+	redir END
+
+	let exists = match(ls_output, "[Quickfix List")
+	if exists == -1
+		execute ':copen'
+	else
+		execute ':cclose'
+	endif
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " map
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -202,6 +223,15 @@ let g:mapleader=","
 
 map <silent> <leader>rc :tabe ~/.vimrc<cr>
 map <leader>q :q<cr>
+
+map <silent> <F5> <ESC>:call QFSwitch()<CR>
+"inoremap <silent> <F10> <C-O>:make<CR>
+map <silent> <F4> :make<CR>
+
+nmap <tab> 		v>
+nmap <s-tab> 	v<
+vmap <tab> 		>gv 
+vmap <s-tab> 	<gv
 
 " map cmd to ctrl
 if MySys() == "mac"
@@ -237,6 +267,8 @@ let g:bufExplorerMaxHeight=25
 let g:bufExplorerResize=1
 "autocmd BufWinEnter \[Buf\ List\] setl nonumber
 
+" 默认键映射 <leader>bv :VSBufExplorer
+
 " taglists setting
 nmap <silent> <leader>tl :TlistToggle<CR>
 "let Tlist_Use_SingleClick=1
@@ -266,15 +298,18 @@ let g:netrw_winsize = 30
 " NERDTree setting
 nmap <silent> <leader>nt :NERDTree<cr>
 
+" Most Recently Used (MRU)
+nmap <silent> <leader>r :MRU<cr>
+
 " FuzzyFinder setting
-nmap <leader>fb :FuzzyFinderBuffer<cr>
-nmap <leader>ff	:FuzzyFinderFile<cr>
-nmap <leader>fd	:FuzzyFinderDir<cr>
-nmap <leader>fe	:FuzzyFinderMruFile<cr>
-nmap <leader>fc	:FuzzyFinderMruCmd<cr>
-nmap <leader>fm	:FuzzyFinderBookmark<cr>
-"nmap <leader>ft	:FuzzyFinderTag<cr>
-nmap <leader>ft	:FuzzyFinderTaggedFile<cr>
+"nmap <leader>fb :FuzzyFinderBuffer<cr>
+"nmap <leader>ff	:FuzzyFinderFile<cr>
+"nmap <leader>fd	:FuzzyFinderDir<cr>
+"nmap <leader>fe	:FuzzyFinderMruFile<cr>
+"nmap <leader>fc	:FuzzyFinderMruCmd<cr>
+"nmap <leader>fm	:FuzzyFinderBookmark<cr>
+""nmap <leader>ft	:FuzzyFinderTag<cr>
+"nmap <leader>ft	:FuzzyFinderTaggedFile<cr>
 
 
 "let NERDCreateDefaultMappings=0
