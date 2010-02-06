@@ -310,9 +310,25 @@ nmap <silent> <leader>r :MRU<cr>
 "nmap <leader>fm	:FuzzyFinderBookmark<cr>
 ""nmap <leader>ft	:FuzzyFinderTag<cr>
 "nmap <leader>ft	:FuzzyFinderTaggedFile<cr>
+nmap <leader>fb :FufBuffer<cr>
+nmap <leader>ff :FufFile<cr>
+nmap <leader>fd :FufDir<cr>
+nmap <leader>fa :FufBookmark<cr>
+
 
 
 "let NERDCreateDefaultMappings=0
 let NERDShutUp=1
 let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
+
+let VCSCommandSVKExec='disabled no such executable'
+
+" Use neocomplcache.
+"let g:NeoComplCache_EnableAtStartup = 1
+"" Use smartcase.
+"let g:NeoComplCache_SmartCase = 1
+"" Use camel case completion.
+"let g:NeoComplCache_EnableCamelCaseCompletion = 1
+"" Use underbar completion.
+"let g:NeoComplCache_EnableUnderbarCompletion = 1 
 

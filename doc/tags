@@ -977,12 +977,6 @@ surround-mappings	surround.txt	/*surround-mappings*
 surround-replacements	surround.txt	/*surround-replacements*
 surround-targets	surround.txt	/*surround-targets*
 surround.txt	surround.txt	/*surround.txt*
-svn-contents	svn.txt	/*svn-contents*
-svn-install	svn.txt	/*svn-install*
-svn-intro	svn.txt	/*svn-intro*
-svn-keys	svn.txt	/*svn-keys*
-svn-manual	svn.txt	/*svn-manual*
-svn.txt	svn.txt	/*svn.txt*
 taglist-commands	taglist.txt	/*taglist-commands*
 taglist-debug	taglist.txt	/*taglist-debug*
 taglist-extend	taglist.txt	/*taglist-extend*
