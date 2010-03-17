@@ -2,7 +2,7 @@
 " Author: Cornelius
 " Mail:   cornelius.howl@gmail.com
 " Web:    http://oulixe.us
-" Version: 0.21
+" Version: 0.22
 "
 " Options:
 "     g:local_session_filename [String]
@@ -25,6 +25,19 @@
 " set sessionoptions+=sesdir
 set sessionoptions-=buffers
 
+
+if has('win32')
+  let s:sep = '\'
+else
+  let s:sep = '/'
+endif
+
+fun! s:defopt(n,v)
+  if ! exists( a:n )
+    let {a:n} = a:v
+  endif
+endf
+
 fun! s:warn(msg)
   redraw
   echohl WarningMsg | echo a:msg | echohl None
@@ -43,8 +56,10 @@ endf
 fun! s:session_dir()
   if exists('g:session_dir')
     let sesdir = expand( g:session_dir )
+  elseif has('win32')
+    let sesdir = expand('$VIMRUNTIME\session')
   else
-    let sesdir = expand('~/.vim/session')
+    let sesdir = expand('$HOME/.vim/session')
   endif
   if !isdirectory(sesdir) 
     cal mkdir(sesdir)
@@ -53,12 +68,17 @@ fun! s:session_dir()
 endf
 
 fun! s:session_filename()
-  let filename = substitute(getcwd(),'[/]','-','g')
-  return filename
+  let filename = getcwd()
+  if filereadable('.git'.s:sep.'HEAD')
+    let head = readfile('.git'.s:sep.'HEAD')
+    let len = strlen('ref: refs/heads/')
+    let filename = filename . '-git-' . strpart(head[0],len-1)
+  endif
+  return substitute( filename ,'[:\/]','-','g')
 endf
 
 fun! s:session_file()
-  return s:session_dir().  '/' . s:session_filename()
+  return s:session_dir() . s:sep . s:session_filename()
 endf
 
 fun! s:gsession_make()
@@ -86,14 +106,16 @@ fun! s:auto_load_session()
     let local_filename = 'Session.vim'
   endif
 
-  let local_ses = getcwd() . '/' . local_filename
+  let local_ses = getcwd() . s:sep . local_filename
+
   if filereadable(local_ses)
     let ses = local_ses
   else
     let ses = s:session_file()
   endif
+
   if filereadable(ses)
-    cal s:warn( "Session file exists. Load this? (y/n): " )
+    cal s:warn( "Session file exists. Load or Delete ? (y/n/d): " )
     while 1
       let c = getchar()
       if c == char2nr("y")
@@ -102,6 +124,10 @@ fun! s:auto_load_session()
       elseif c == char2nr("n")
         redraw
         echo ""
+        return
+      elseif c == char2nr("d")
+        redraw
+        cal delete(ses)
         return
       endif
     endwhile
@@ -115,6 +141,8 @@ fun! s:gsession_eliminate_all()
     redraw
     cal s:warn( "Found " . dir . ". cleaning up..." )
     exec '!rm -rvf '. dir
+    "XXX: delete command for windows.
+    "XXX: use glob() and delete()
     cal s:warn( dir . " cleaned." )
   else
     cal s:warn( "Session dir [" . dir . "] not found" )
@@ -134,12 +162,12 @@ endf
 
 " list available session of current path
 fun! s:get_cwd_sessionnames()
-  let out = glob( s:session_dir() . '/__'. s:session_filename() .'__*' )
+  let out = glob( s:session_dir() . s:sep .'__'. s:session_filename() .'__*' )
   return split(out)
 endf
 
 fun! s:get_global_sessionnames()
-  let out = glob( s:session_dir() . '/__GLOBAL__*' )
+  let out = glob( s:session_dir() . s:sep . '__GLOBAL__*' )
   return split(out)
 endf
 
@@ -178,12 +206,12 @@ endf
 
 " ~/.vim/session/__GLOBAL__[session name]
 fun! s:namedsession_global_filepath(name)
-  retu s:session_dir() . '/__GLOBAL__' . a:name
+  retu s:session_dir() . s:sep . '__GLOBAL__' . a:name
 endf
 
 " ~/.vim/session/__[cwd]__[session name]
 fun! s:namedsession_cwd_filepath(name)
-  retu s:session_dir() . '/__' . s:session_filename() . '__' . a:name
+  retu s:session_dir() . s:sep . '__' . s:session_filename() . '__' . a:name
 endf
 
 fun! s:make_namedsession_global()
@@ -236,11 +264,19 @@ fun! s:toggle_namedsession_menu()
 
 endf
 
-augroup AutoLoadSession
-  au!
-  au VimEnter * cal s:auto_load_session()
-  au VimLeave * cal s:auto_save_session()
-augroup END
+
+" default options
+" ===============
+cal s:defopt('g:fastgit_autoload',1)
+
+" =========== init 
+if g:fastgit_autoload
+  augroup AutoLoadSession
+    au!
+    au VimEnter * cal s:auto_load_session()
+    au VimLeave * cal s:auto_save_session()
+  augroup END
+endif
 
 com! NamedSessionMakeCwd :cal s:make_namedsession_cwd()
 com! NamedSessionMake    :cal s:make_namedsession_global()

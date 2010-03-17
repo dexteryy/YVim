@@ -86,10 +86,19 @@ function! MySys()
   	endif
 endfunction
 
+"if MySys() == 'mac' || MySys() == 'linux'
+	"set shell=/bin/bash\ -l
+"endif
+
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+
+" Move Backup Files to ~/.vim/backups/
+set backupdir=~/.vim/backups
+set dir=~/.vim/backups
 set nobackup 
-set nowritebackup 
+"set nowritebackup 
+
 set shiftwidth=4
 set tabstop=4
 set nowrap
@@ -168,6 +177,16 @@ endif
 autocmd! bufwritepost .vimrc source ~/.vimrc
 let g:jslint_neverAutoRun=1
 
+autocmd BufRead * :lcd! %:p:h
+
+" filetype
+autocmd BufNewFile,BufRead *.vm setlocal ft=html
+
+" language support
+autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
+autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -200,8 +219,11 @@ command! -nargs=+ LOAD call GetMySession(<f-args>)
 command! -nargs=+ SAVE call SetMySession(<f-args>) 
 
 
-" toggle quickfix window
-function! QFSwitch()
+
+
+" for make & debug
+
+function! QFSwitch() " toggle quickfix window
 	redir => ls_output
 		execute ':silent! ls'
 	redir END
@@ -214,6 +236,30 @@ function! QFSwitch()
 	endif
 endfunction
 
+function! MyMake()
+	exe 'call ' . b:myMake . '()'
+endfunction
+
+function! MyLint()
+	exe 'call ' . b:myLint . '()'
+endfunction
+
+function! MyDebug()
+	exe 'call ' . b:myDebug . '()'
+endfunction
+
+function! MySetBreakPoint()
+	exe 'call ' . b:mySetBreakPoint . '()'
+endfunction
+
+function! MySetLog()
+	exe 'call ' . b:mySetLog. '()'
+endfunction
+
+function! MyRemoveBreakPoint()
+	exe 'call ' . b:myRemoveBreakPoint . '()'
+endfunction
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " map
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -224,9 +270,15 @@ let g:mapleader=","
 map <silent> <leader>rc :tabe ~/.vimrc<cr>
 map <leader>q :q<cr>
 
-map <silent> <F5> <ESC>:call QFSwitch()<CR>
-"inoremap <silent> <F10> <C-O>:make<CR>
-map <silent> <F4> :make<CR>
+" for make & debug
+noremap <F2> <ESC>:call MyLint()<CR>
+noremap <F3> :call MyDebug()<CR>
+noremap <F4> :call MyMake()<CR>
+noremap <F5> <ESC>:call QFSwitch()<CR>
+noremap <F7> :call MySetBreakPoint()<CR>
+noremap <F8> :call MySetLog()<CR>
+noremap <F9> :call MyRemoveBreakPoint()<CR>
+
 
 nmap <tab> 		v>
 nmap <s-tab> 	v<
@@ -268,9 +320,14 @@ let g:bufExplorerResize=1
 "autocmd BufWinEnter \[Buf\ List\] setl nonumber
 
 " 默认键映射 <leader>bv :VSBufExplorer
+"
+
+" tasklist
+nmap <silent> <leader>tl :TaskList<CR>
+
 
 " taglists setting
-nmap <silent> <leader>tl :TlistToggle<CR>
+nmap <silent> <leader>tg :TlistToggle<CR>
 "let Tlist_Use_SingleClick=1
 "Tlist_Process_File_Always=1
 let Tlist_File_Fold_Auto_Close=1
@@ -331,4 +388,5 @@ let VCSCommandSVKExec='disabled no such executable'
 "let g:NeoComplCache_EnableCamelCaseCompletion = 1
 "" Use underbar completion.
 "let g:NeoComplCache_EnableUnderbarCompletion = 1 
+
 
