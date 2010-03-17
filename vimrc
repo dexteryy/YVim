@@ -239,7 +239,7 @@ endfunction
 let mapleader=","
 let g:mapleader=","
 
-map <silent> <leader>rc :tabe ~/.vimrc<cr>
+map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
 map <leader>q :q<cr>
 
 " for make & debug
