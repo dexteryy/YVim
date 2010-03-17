@@ -193,8 +193,6 @@ command! -nargs=+ LOAD call GetMySession(<f-args>)
 command! -nargs=+ SAVE call SetMySession(<f-args>) 
 
 
-
-
 " for make & debug
 
 function! QFSwitch() " toggle quickfix window
