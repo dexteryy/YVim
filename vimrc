@@ -175,6 +175,8 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 autocmd! bufwritepost .vimrc source ~/.vimrc
+autocmd! bufwritepost vimrc source ~/.vimrc
+
 let g:jslint_neverAutoRun=1
 
 autocmd BufRead * :lcd! %:p:h
@@ -275,9 +277,9 @@ noremap <F2> <ESC>:call MyLint()<CR>
 noremap <F3> :call MyDebug()<CR>
 noremap <F4> :call MyMake()<CR>
 noremap <F5> <ESC>:call QFSwitch()<CR>
-noremap <F7> :call MySetBreakPoint()<CR>
-noremap <F8> :call MySetLog()<CR>
-noremap <F9> :call MyRemoveBreakPoint()<CR>
+noremap <F6> :call MySetBreakPoint()<CR>
+noremap <F7> :call MySetLog()<CR>
+noremap <F8> :call MyRemoveBreakPoint()<CR>
 
 
 nmap <tab> 		v>
