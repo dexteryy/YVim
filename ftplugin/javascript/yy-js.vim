@@ -1,3 +1,11 @@
+" javascript compile & debug tools 
+" Maintainer: Dexter.Yy
+" Mail:   dexter.yy@gmail.com
+" Web:    http://www.limboy.com
+" Version: 0.1
+"
+" Usage:
+"
 
 python << EOF
 import os, vim
