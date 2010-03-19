@@ -10,7 +10,8 @@
 python << EOF
 import time
 import vim
-def pySetBreakpoint():
+
+def pyInsertCode(code, cmt, lib=None):
 	nLine = int(vim.eval('line(".")'))
 	strLine = vim.current.line
 	strWhite = ""
@@ -21,29 +22,41 @@ def pySetBreakpoint():
 			break
 
 	vim.current.buffer.append(
-		"%(space)spdb.set_trace() %(mark)s Breakpoint %(mark)s" 
-		% {'space': strWhite, 'mark': '#' * 10}, nLine - 1)
+		"%(space)s%(code)s %(cmt)s" 
+		% {'space': strWhite, 'code': code, 'cmt': r'########## ' + cmt}, nLine - 1)
 
-	added = 1
-	nLine = 0
-	for strLine in vim.current.buffer:
-		nLine += 1
-		if not 'import' in strLine: # or strLine[0] == "#":
-			if not added:
-				vim.current.buffer.append( 'import pdb', nLine - 1)
-				vim.command('normal j1')
+	if lib:
+		added = 1
+		nLine = 0
+		for strLine in vim.current.buffer:
+			nLine += 1
+			if not 'import' in strLine: # or strLine[0] == "#":
+				if not added:
+					vim.current.buffer.append( 'import ' + lib, nLine - 1)
+					vim.command('normal j1')
+					break
+			elif lib in strLine:
 				break
-		elif 'pdb' in strLine:
-			break
-		else:
-			added = 0
+			else:
+				added = 0
+
+def pySetBreakpoint():
+	pyInsertCode('pdb.set_trace()', 'Breakpoint', 'pdb')
+
+vim.command('let b:myLogCount = 0')
+def pySetLog():
+	vim.command('let b:myLogCount += 1')
+	pyInsertCode('print("log: " + %s)' 
+		% str(vim.eval('b:myLogCount')), 'log')
 
 def pyRemoveBreakpoints():
     nCurrentLine = int(vim.eval('line(".")'))
     nLines = []
     nLine = 1
     for strLine in vim.current.buffer:
-        if strLine == 'import pdb' or strLine.lstrip()[:15] == 'pdb.set_trace()':
+        if 'import pdb' == strLine.lstrip()[:10] \
+			or 'pdb.set_trace()' == strLine.lstrip()[:15] \
+			or "### log" == strLine.rstrip()[-7:]:
             nLines.append( nLine)
         nLine += 1
     nLines.reverse()
@@ -97,6 +110,9 @@ function! MyPySetBreakPoint()
 	py pySetBreakpoint()
 endfunction
 
+function! MyPySetLog()
+	py pySetLog()
+endfunction
 
 function! MyPyRemoveBreakPoint()
 	py pyRemoveBreakpoints()
@@ -106,5 +122,6 @@ let b:myMake='MyPyMake'
 let b:myLint='MyPyLint'
 let b:myDebug='MyPyDebug'
 let b:mySetBreakPoint='MyPySetBreakPoint'
+let b:mySetLog='MyPySetLog'
 let b:myRemoveBreakPoint='MyPyRemoveBreakPoint'
 

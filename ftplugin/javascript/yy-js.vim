@@ -42,9 +42,9 @@ def jsRemoveAllDebug():
     nLines = []
     nLine = 1
     for strLine in vim.current.buffer:
-        if ('console.' in strLine
-			or 'debugger' in strLine
-			) and r'//' in strLine:
+        if (r'console.' == strLine.lstrip()[:8]
+			or 'debugger;' == strLine.lstrip()[:9]) \
+		   	and r'//' in strLine:
 			nLines.append(nLine)
         nLine += 1
     nLines.reverse()
