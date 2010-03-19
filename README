@@ -1,0 +1,24 @@
+My vimrc for MacVim: 
+http://github.com/dexteryy/yy-vimscript/blob/master/vimrc
+
+"colors/yytextmate.vim" provides TextMate Blackboard theme: 
+http://github.com/dexteryy/yy-vimscript/blob/master/colors/yytextmate.vim
+
+Compiler & debug plugin for Python: 
+http://github.com/dexteryy/yy-vimscript/blob/master/ftplugin/python/yy-python.vim
+
+Compiler & debug plugin for JavaScript: 
+http://github.com/dexteryy/yy-vimscript/blob/master/ftplugin/javascript/yy-js.vim
+
+
+My other works:
+
+extending ctags for javascript: 
+http://github.com/dexteryy/yy-vimscript/blob/master/ctags
+
+snippets/javascript.snippets (for snipMate): 
+http://github.com/dexteryy/yy-vimscript/blob/master/snippets/javascript.snippets
+
+syntax/javascript.vim: 
+http://github.com/dexteryy/yy-vimscript/blob/master/syntax/javascript.vim
+
