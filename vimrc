@@ -65,7 +65,6 @@ endfunction
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 
-set directory=.
 " Move Backup Files to ~/.vim/backups/
 set backupdir=~/.vim/backups
 set dir=~/.vim/backups
