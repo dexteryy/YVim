@@ -351,15 +351,12 @@ nmap <leader>fc :FufChangeList<cr>
 " showmarks
 let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 let g:showmarks_enable = 1
-" For marks a-z
-highlight ShowMarksHLl gui=bold guibg=LightBlue guifg=Blue
-" For marks A-Z
-highlight ShowMarksHLu gui=bold guibg=LightRed guifg=DarkRed
-" For all other marks
-highlight ShowMarksHLo gui=bold guibg=LightYellow guifg=DarkYellow
-" For multiple marks on the same line.
-highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
-
+let showmarks_ignore_type = "hqm"
+"<Leader>mt   - 打开/关闭ShowMarks插件
+"<Leader>mo   - 强制打开ShowMarks插件
+"<Leader>mh   - 清除当前行的标记
+"<Leader>ma   - 清除当前缓冲区中所有的标记
+"<Leader>mm   - 在当前行打一个标记，使用下一个可用的标记名
 
 
 

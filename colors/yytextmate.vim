@@ -21,12 +21,13 @@ if has("gui_running")
 	
 	":hi LineNr guifg=grey20
 	:hi LineNr guifg=#666666 guibg=#E6E6E6
-	:hi VertSplit guibg=#c2bfa5 guifg=grey40 gui=none
+	:hi VertSplit guibg=#E6E6E6 guifg=#666666 gui=none
 	:hi Folded guifg=grey40 guibg=black
 	:hi FoldColumn guifg=grey20 guibg=black
+	:hi SignColumn guibg=#666666 guibg=#E6E6E6
 	:hi IncSearch guibg=black guifg=yellow 
 	:hi ModeMsg guifg=goldenrod
-	:hi MoreMsg guifg=SeaGreen
+	:hi MoreMsg guifg=Green guibg=black
 	:hi NonText guifg=RoyalBlue guibg=#151825
 	:hi Question guifg=springgreen
 	:hi Search guibg=#0099ff guifg=White
@@ -57,8 +58,8 @@ if has("gui_running")
 	:hi Builtin guifg=#99B5D9
 
 	:hi Ignore guifg=grey40
-	:hi StatusLineNC guibg=#c2bfa5 guifg=grey40 gui=none
-	:hi StatusLine guibg=#c2bfa5 guifg=black gui=none 
+	:hi StatusLineNC guibg=#E6E6E6 guifg=#000000 gui=none
+	:hi StatusLine guibg=#E6E6E6 guifg=#000000 gui=none 
 	:hi Todo guifg=orangered guibg=yellow2
 	:hi WarningMsg guifg=#CC1D20
 	:hi Debug guifg=#CC1D20
