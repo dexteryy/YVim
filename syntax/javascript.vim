@@ -68,20 +68,24 @@ syntax keyword javaScriptPrototype      prototype
 
 "" Programm Keywords
 syntax keyword javaScriptSource         import export
-syntax keyword javaScriptType           const this undefined var void yield 
+syntax keyword javaScriptType           const this var void yield 
 syntax keyword javaScriptOperator       delete new in instanceof let typeof
 syntax keyword javaScriptBoolean        true false
 syntax keyword javaScriptNull           null
 
 "" Statement Keywords
-syntax keyword javaScriptConditional    if else
+syntax keyword javaScriptConditional    if else switch case default
 syntax keyword javaScriptRepeat         do while for
-syntax keyword javaScriptBranch         break continue switch case default return
+syntax keyword javaScriptBranch         break continue return
 syntax keyword javaScriptStatement      try catch throw with finally
 
-syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity JavaArray JavaClass JavaObject JavaPackage Math Number NaN Object Packages RegExp String Undefined java netscape sun
+syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity Number NaN Object Packages RegExp String undefined JSON
+syntax keyword javaScriptBuiltinObjects  Math Global window
+syntax keyword javaScriptHostMethods	document location history screen userAgent navigator setTimeout clearTimeout setInterval clearInterval
 
 syntax keyword javaScriptExceptions     Error EvalError RangeError ReferenceError SyntaxError TypeError URIError
+
+syntax keyword javaScriptDebug			alert console debugger
 
 syntax keyword javaScriptFutureKeys     abstract enum int short boolean export interface static byte extends long super char final native synchronized class float package throws const goto private transient debugger implements protected volatile double import public
 
@@ -135,7 +139,7 @@ endif "DOM/HTML/CSS
 
 
 "" Code blocks
-syntax cluster javaScriptAll       contains=javaScriptComment,javaScriptLineComment,javaScriptDocComment,javaScriptStringD,javaScriptStringS,javaScriptRegexpString,javaScriptNumber,javaScriptFloat,javaScriptLabel,javaScriptSource,javaScriptType,javaScriptOperator,javaScriptBoolean,javaScriptNull,javaScriptFunction,javaScriptConditional,javaScriptRepeat,javaScriptBranch,javaScriptStatement,javaScriptGlobalObjects,javaScriptExceptions,javaScriptFutureKeys,javaScriptDomErrNo,javaScriptDomNodeConsts,javaScriptHtmlEvents,javaScriptDotNotation
+syntax cluster javaScriptAll       contains=javaScriptComment,javaScriptLineComment,javaScriptDocComment,javaScriptStringD,javaScriptStringS,javaScriptRegexpString,javaScriptNumber,javaScriptFloat,javaScriptLabel,javaScriptSource,javaScriptType,javaScriptOperator,javaScriptBoolean,javaScriptNull,javaScriptFunction,javaScriptConditional,javaScriptRepeat,javaScriptBranch,javaScriptStatement,javaScriptGlobalObjects,javaScriptHostMethods,javaScriptBuiltinObjects,javaScriptExceptions,javaScriptDebug,javaScriptFutureKeys,javaScriptDomErrNo,javaScriptDomNodeConsts,javaScriptHtmlEvents,javaScriptDotNotation
 syntax region  javaScriptBracket   matchgroup=javaScriptBracket transparent start="\[" end="\]" contains=@javaScriptAll,javaScriptParensErrB,javaScriptParensErrC,javaScriptBracket,javaScriptParen,javaScriptBlock,@htmlPreproc
 syntax region  javaScriptParen     matchgroup=javaScriptParen   transparent start="("  end=")"  contains=@javaScriptAll,javaScriptParensErrA,javaScriptParensErrC,javaScriptParen,javaScriptBracket,javaScriptBlock,@htmlPreproc
 syntax region  javaScriptBlock     matchgroup=javaScriptBlock   transparent start="{"  end="}"  contains=@javaScriptAll,javaScriptParensErrA,javaScriptParensErrB,javaScriptParen,javaScriptBracket,javaScriptBlock,@htmlPreproc 
@@ -197,15 +201,16 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptCharacter            Character
   HiLink javaScriptPrototype            Type
   HiLink javaScriptConditional          Conditional
-  HiLink javaScriptBranch               Conditional
+  HiLink javaScriptBranch               Structure
   HiLink javaScriptRepeat               Repeat
   HiLink javaScriptStatement            Statement
-  HiLink javaScriptFunction             Function
+  HiLink javaScriptFunction             Statement
   HiLink javaScriptError                Error
   HiLink javaScriptParensError          Error
   HiLink javaScriptParensErrA           Error
   HiLink javaScriptParensErrB           Error
   HiLink javaScriptParensErrC           Error
+  HiLink javaScriptDebug				Error
   HiLink javaScriptOperator             Operator
   HiLink javaScriptType                 Type
   HiLink javaScriptNull                 Type
@@ -213,6 +218,8 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptFloat                Number
   HiLink javaScriptBoolean              Boolean
   HiLink javaScriptLabel                Label
+  HiLink javaScriptHostMethods			Builtin
+  HiLink javaScriptBuiltinObjects		Builtin
   HiLink javaScriptSpecial              Special
   HiLink javaScriptSource               Special
   HiLink javaScriptGlobalObjects        Special
