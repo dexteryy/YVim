@@ -34,8 +34,9 @@ if has("gui_running")
 	:hi Statement guifg=#ff6600
 	:hi htmlStatement guifg=#60a3f6
 	:hi String guifg=#61ce38
-	:hi Comment guifg=grey35 
-	:hi CommentDoc guifg=grey50 
+	:hi Comment guifg=grey35 gui=italic
+	:hi CommentDoc guifg=grey20 guibg=black gui=italic
+	:hi CommentDocTags guifg=grey35 guibg=black
 	:hi Conditional guifg=#ffee14
 	:hi Constant guifg=#cbfe29
 	:hi Special guifg=#86A7D0
