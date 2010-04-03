@@ -247,13 +247,13 @@ endf
 " vim:noet:sw=4:ts=4:ft=vim
 
 " for auto
-"fun! GetSnipsInCurrentScope()
-	"let snips = {}
-	"for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
-		"call extend(snips, get(s:snippets, scope, {}), 'keep')
-		"call extend(snips, get(s:multi_snips, scope, {}), 'keep')
-	"endfor
-	"return snips
-"endf 
+fun! GetSnipsInCurrentScope()
+    let snips = {}
+    for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
+      call extend(snips, get(s:snippets, scope, {}), 'keep')
+      call extend(snips, get(s:multi_snips, scope, {}), 'keep')
+    endfor
+    return snips
+endf
 
-"let g:acp_behaviorSnipmateLength=1
+let g:acp_behaviorSnipmateLength=1

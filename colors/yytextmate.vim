@@ -19,11 +19,11 @@ if has("gui_running")
 	:hi Pmenu guifg=#333333 guibg=#E3E3E3
 	:hi PmenuSel guifg=#ffffff guibg=#0264A2
 	
-	:hi LineNr guifg=grey20
-  	":hi LineNr guibg=#323232 guifg=#888888
+	":hi LineNr guifg=grey20
+	:hi LineNr guifg=#666666 guibg=#E6E6E6
 	:hi VertSplit guibg=#c2bfa5 guifg=grey40 gui=none
-	:hi Folded guibg=black guifg=grey40
-	:hi FoldColumn guibg=black guifg=grey20 
+	:hi Folded guifg=grey40 guibg=black
+	:hi FoldColumn guifg=grey20 guibg=black
 	:hi IncSearch guibg=black guifg=yellow 
 	:hi ModeMsg guifg=goldenrod
 	:hi MoreMsg guifg=SeaGreen
@@ -43,7 +43,7 @@ if has("gui_running")
 	:hi Constant guifg=#D4FF36
 	:hi Boolean guifg=#D4FF36
 	:hi Number guifg=#D4FF36
-	:hi Special guifg=#D4FF36
+	:hi Special guifg=#99B5D9
 	:hi Identifier guifg=#ff9900 gui=bold
 	:hi Include guifg=red
 	:hi PreProc guifg=grey
@@ -53,6 +53,7 @@ if has("gui_running")
 	:hi Function guifg=#FF6900 gui=NONE
 	:hi Structure guifg=#FF6900 gui=bold
 	:hi Label guifg=#FF6900
+	:hi Exception guifg=#FF6900
 	:hi Builtin guifg=#99B5D9
 
 	:hi Ignore guifg=grey40
@@ -60,6 +61,7 @@ if has("gui_running")
 	:hi StatusLine guibg=#c2bfa5 guifg=black gui=none 
 	:hi Todo guifg=orangered guibg=yellow2
 	:hi WarningMsg guifg=#CC1D20
+	:hi Debug guifg=#CC1D20
 	:hi ErrorMsg guifg=#F9F9F9 guibg=#BF0013
 	:hi Error guifg=#F9F9F9 guibg=#BF0013 
 	:hi SpellErrors guifg=#F9F9F9 guibg=#BF0013
