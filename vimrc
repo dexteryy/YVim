@@ -151,7 +151,7 @@ autocmd! bufwritepost vimrc source ~/.vimrc
 
 let g:jslint_neverAutoRun=1
 
-autocmd BufRead * :lcd! %:p:h
+autocmd BufEnter * lcd %:p:h
 
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=html
@@ -249,13 +249,13 @@ map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
 map <leader>q :q<cr>
 
 " for make & debug
-noremap <F2> <ESC>:call MyLint()<CR>
-noremap <F3> :call MyDebug()<CR>
-noremap <F4> :call MyMake()<CR>
-noremap <F5> <ESC>:call QFSwitch()<CR>
-noremap <F6> :call MySetBreakPoint()<CR>
-noremap <F7> :call MySetLog()<CR>
-noremap <F8> :call MyRemoveBreakPoint()<CR>
+noremap <silent> <F2> <ESC>:call MyLint()<CR>
+noremap <silent> <F3> :call MyDebug()<CR>
+noremap <silent> <F4> :call MyMake()<CR>
+noremap <silent> <F5> <ESC>:call QFSwitch()<CR>
+noremap <silent> <F6> :call MySetBreakPoint()<CR>
+noremap <silent> <F7> :call MySetLog()<CR>
+noremap <silent> <F8> :call MyRemoveBreakPoint()<CR>
 
 
 nmap <tab> 		v>
@@ -265,6 +265,7 @@ vmap <s-tab> 	<gv
 
 " map cmd to ctrl
 if MySys() == "mac"
+	imap <D-c> <C-c>	"快速结束插入模式
 	map <D-y> <C-y>
 	map <D-e> <C-e>
 	map <D-f> <C-f>
@@ -286,6 +287,8 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " plugin setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+nmap <silent> <leader>a	:Ack 
 
 " bufExplorer setting
 let g:bufExplorerSortBy='mru'
@@ -337,18 +340,26 @@ nmap <silent> <leader>nt :NERDTree<cr>
 nmap <silent> <leader>r :MRU<cr>
 
 " FuzzyFinder setting
-"nmap <leader>fb :FuzzyFinderBuffer<cr>
-"nmap <leader>ff	:FuzzyFinderFile<cr>
-"nmap <leader>fd	:FuzzyFinderDir<cr>
-"nmap <leader>fe	:FuzzyFinderMruFile<cr>
-"nmap <leader>fc	:FuzzyFinderMruCmd<cr>
-"nmap <leader>fm	:FuzzyFinderBookmark<cr>
-""nmap <leader>ft	:FuzzyFinderTag<cr>
-"nmap <leader>ft	:FuzzyFinderTaggedFile<cr>
 nmap <leader>fb :FufBuffer<cr>
 nmap <leader>ff :FufFile<cr>
 nmap <leader>fd :FufDir<cr>
 nmap <leader>fa :FufBookmark<cr>
+nmap <leader>fm :FufAddBookmark<cr>
+nmap <leader>fc :FufChangeList<cr>
+"noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
+
+" showmarks
+let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+let g:showmarks_enable = 1
+" For marks a-z
+highlight ShowMarksHLl gui=bold guibg=LightBlue guifg=Blue
+" For marks A-Z
+highlight ShowMarksHLu gui=bold guibg=LightRed guifg=DarkRed
+" For all other marks
+highlight ShowMarksHLo gui=bold guibg=LightYellow guifg=DarkYellow
+" For multiple marks on the same line.
+highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
+
 
 
 
