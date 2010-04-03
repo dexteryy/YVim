@@ -1,10 +1,9 @@
 " Vim syntax file
 " Language:     JavaScript
 " Maintainer:   Yi Zhao (ZHAOYI) <zzlinux AT hotmail DOT com>
-" Last Change:  Nov 17, 2007
-" Version:      0.7.6
-" Changes:      Update the 'syntax sync' method to improve the performance
-"               with larget Javascript files. 
+" Last Change:  June 4, 2009
+" Version:      0.7.7
+" Changes:      Add "undefined" as a type keyword
 "
 " TODO:
 "  - Add the HTML syntax inside the JSDoc
@@ -20,9 +19,9 @@ endif
 
 "" Drop fold if it set but VIM doesn't support it.
 let b:javascript_fold='true'
-"if version < 600    " Don't support the old version
+if version < 600    " Don't support the old version
   unlet! b:javascript_fold
-"endif
+endif
 
 "" dollar sigh is permittd anywhere in an identifier
 setlocal iskeyword+=$
@@ -44,7 +43,7 @@ if !exists("javascript_ignore_javaScriptdoc")
   "syntax include @javaHtml <sfile>:p:h/html.vim
   "unlet b:current_syntax
 
-  syntax region javaScriptDocComment    matchgroup=javaScriptComment start="/\*\*\s*$"  end="\*/" contains=javaScriptDocTags,javaScriptCommentTodo,javaScriptCvsTag,@javaScriptHtml,@Spell fold
+  syntax region javaScriptDocComment    matchgroup=javaScriptComment start="/\*\S\s*$"  end="\*/" contains=javaScriptDocTags,javaScriptCommentTodo,javaScriptCvsTag,@javaScriptHtml,@Spell fold
   syntax match  javaScriptDocTags       contained "@\(param\|argument\|requires\|exception\|throws\|type\|class\|extends\|see\|link\|member\|module\|method\|title\|namespace\|optional\|default\|base\|file\)\>" nextgroup=javaScriptDocParam,javaScriptDocSeeTag skipwhite
   syntax match  javaScriptDocTags       contained "@\(beta\|deprecated\|description\|fileoverview\|author\|license\|version\|returns\=\|constructor\|private\|protected\|final\|ignore\|addon\|exec\)\>"
   syntax match  javaScriptDocParam      contained "\%(#\|\w\|\.\|:\|\/\)\+"
@@ -59,7 +58,7 @@ syntax case match
 syntax match   javaScriptSpecial        "\\\d\d\d\|\\x\x\{2\}\|\\u\x\{4\}\|\\."
 syntax region  javaScriptStringD        start=+"+  skip=+\\\\\|\\$"+  end=+"+  contains=javaScriptSpecial,@htmlPreproc
 syntax region  javaScriptStringS        start=+'+  skip=+\\\\\|\\$'+  end=+'+  contains=javaScriptSpecial,@htmlPreproc
-syntax region  javaScriptRegexpString   start=+/\(\*\|/\)\@!+ skip=+\\\\\|\\/+ end=+/[gim]\{,3}+ contains=javaScriptSpecial,@htmlPreproc oneline
+syntax region  javaScriptRegexpString   start=+/\(\*\|/\|\s\)\@!+ skip=+\\\\\|\\/+ end=+/[gim]\{,3}+ contains=javaScriptSpecial,@htmlPreproc oneline
 syntax match   javaScriptNumber         /\<-\=\d\+L\=\>\|\<0[xX]\x\+\>/
 syntax match   javaScriptFloat          /\<-\=\%(\d\+\.\d\+\|\d\+\.\|\.\d\+\)\%([eE][+-]\=\d\+\)\=\>/
 syntax match   javaScriptLabel          /\(?\s*\)\@<!\<\w\+\(\s*:\)\@=/
@@ -69,7 +68,7 @@ syntax keyword javaScriptPrototype      prototype
 
 "" Programm Keywords
 syntax keyword javaScriptSource         import export
-syntax keyword javaScriptType           const this var void yield
+syntax keyword javaScriptType           const this var void yield 
 syntax keyword javaScriptOperator       delete new in instanceof let typeof
 syntax keyword javaScriptBoolean        true false
 syntax keyword javaScriptNull           null
@@ -78,11 +77,15 @@ syntax keyword javaScriptNull           null
 syntax keyword javaScriptConditional    if else switch case default
 syntax keyword javaScriptRepeat         do while for
 syntax keyword javaScriptBranch         break continue return
-syntax keyword javaScriptStatement      try catch throw with finally
+syntax keyword javaScriptException      try catch throw with finally
 
-syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity JavaArray JavaClass JavaObject JavaPackage window document Math Number NaN Object Packages RegExp String Undefined java netscape sun
+syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity Number NaN Object Packages RegExp String undefined JSON
+syntax keyword javaScriptBuiltinObjects  Math Global window
+syntax keyword javaScriptHostMethods	document location history screen userAgent navigator setTimeout clearTimeout setInterval clearInterval
 
 syntax keyword javaScriptExceptions     Error EvalError RangeError ReferenceError SyntaxError TypeError URIError
+
+syntax keyword javaScriptDebug			alert console debugger
 
 syntax keyword javaScriptFutureKeys     abstract enum int short boolean export interface static byte extends long super char final native synchronized class float package throws const goto private transient debugger implements protected volatile double import public
 
@@ -100,9 +103,6 @@ syntax keyword javaScriptFutureKeys     abstract enum int short boolean export i
   syntax case ignore
   syntax keyword javaScriptHtmlEvents     onblur onclick oncontextmenu ondblclick onfocus onkeydown onkeypress onkeyup onmousedown onmousemove onmouseout onmouseover onmouseup onresize
   syntax case match
-
-  " syntax keyword javaScriptjQueryName     jQuery
-
 
 " Follow stuff should be highligh within a special context
 " While it can't be handled with context depended with Regex based highlight
@@ -139,7 +139,7 @@ endif "DOM/HTML/CSS
 
 
 "" Code blocks
-syntax cluster javaScriptAll       contains=javaScriptComment,javaScriptLineComment,javaScriptDocComment,javaScriptStringD,javaScriptStringS,javaScriptRegexpString,javaScriptNumber,javaScriptFloat,javaScriptLabel,javaScriptSource,javaScriptType,javaScriptOperator,javaScriptBoolean,javaScriptNull,javaScriptFunction,javaScriptConditional,javaScriptRepeat,javaScriptBranch,javaScriptStatement,javaScriptGlobalObjects,javaScriptExceptions,javaScriptFutureKeys,javaScriptDomErrNo,javaScriptDomNodeConsts,javaScriptHtmlEvents,javaScriptDotNotation
+syntax cluster javaScriptAll       contains=javaScriptComment,javaScriptLineComment,javaScriptDocComment,javaScriptStringD,javaScriptStringS,javaScriptRegexpString,javaScriptNumber,javaScriptFloat,javaScriptLabel,javaScriptSource,javaScriptType,javaScriptOperator,javaScriptBoolean,javaScriptNull,javaScriptFunction,javaScriptConditional,javaScriptRepeat,javaScriptBranch,javaScriptException,javaScriptGlobalObjects,javaScriptHostMethods,javaScriptBuiltinObjects,javaScriptExceptions,javaScriptDebug,javaScriptFutureKeys,javaScriptDomErrNo,javaScriptDomNodeConsts,javaScriptHtmlEvents,javaScriptDotNotation
 syntax region  javaScriptBracket   matchgroup=javaScriptBracket transparent start="\[" end="\]" contains=@javaScriptAll,javaScriptParensErrB,javaScriptParensErrC,javaScriptBracket,javaScriptParen,javaScriptBlock,@htmlPreproc
 syntax region  javaScriptParen     matchgroup=javaScriptParen   transparent start="("  end=")"  contains=@javaScriptAll,javaScriptParensErrA,javaScriptParensErrC,javaScriptParen,javaScriptBracket,javaScriptBlock,@htmlPreproc
 syntax region  javaScriptBlock     matchgroup=javaScriptBlock   transparent start="{"  end="}"  contains=@javaScriptAll,javaScriptParensErrA,javaScriptParensErrB,javaScriptParen,javaScriptBracket,javaScriptBlock,@htmlPreproc 
@@ -156,7 +156,7 @@ if main_syntax == "javascript"
   syntax sync match javaScriptHighlight grouphere javaScriptBlock /{/
 endif
 
-""" Fold control
+"" Fold control
 if exists("b:javascript_fold")
     syntax match   javaScriptFunction       /\<function\>/ nextgroup=javaScriptFuncName skipwhite
     syntax match   javaScriptOpAssign       /=\@<!=/ nextgroup=javaScriptFuncBlock skipwhite skipempty
@@ -189,27 +189,28 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   endif
   HiLink javaScriptComment              Comment
   HiLink javaScriptLineComment          Comment
-  HiLink javaScriptDocComment           Comment
+  HiLink javaScriptDocComment           CommentDoc
   HiLink javaScriptCommentTodo          Todo
   HiLink javaScriptCvsTag               Function
-  HiLink javaScriptDocTags              CommentDoc
-  HiLink javaScriptDocSeeTag            CommentDoc
-  HiLink javaScriptDocParam             CommentDoc
+  HiLink javaScriptDocTags              CommentDocTags
+  HiLink javaScriptDocSeeTag            CommentDocTags
+  HiLink javaScriptDocParam             CommentDocTags
   HiLink javaScriptStringS              String
   HiLink javaScriptStringD              String
   HiLink javaScriptRegexpString         String
   HiLink javaScriptCharacter            Character
-  HiLink javaScriptPrototype            Function
+  HiLink javaScriptPrototype            Type
   HiLink javaScriptConditional          Conditional
-  HiLink javaScriptBranch               Statement
-  HiLink javaScriptRepeat               Conditional
-  HiLink javaScriptStatement            Statement
-  HiLink javaScriptFunction             Function
+  HiLink javaScriptBranch               Function
+  HiLink javaScriptRepeat               Repeat
+  HiLink javaScriptException            Exception
+  HiLink javaScriptFunction             Statement
   HiLink javaScriptError                Error
   HiLink javaScriptParensError          Error
   HiLink javaScriptParensErrA           Error
   HiLink javaScriptParensErrB           Error
   HiLink javaScriptParensErrC           Error
+  HiLink javaScriptDebug				Debug
   HiLink javaScriptOperator             Operator
   HiLink javaScriptType                 Type
   HiLink javaScriptNull                 Type
@@ -217,25 +218,24 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptFloat                Number
   HiLink javaScriptBoolean              Boolean
   HiLink javaScriptLabel                Label
-  HiLink javaScriptSpecial              SpecialKey
-  HiLink javaScriptSource               SpecialKey
-  HiLink javaScriptGlobalObjects        SpecialKey
-  HiLink javaScriptExceptions           SpecialKey
+  HiLink javaScriptSpecial              Special
+  HiLink javaScriptSource               Special
+  HiLink javaScriptGlobalObjects        Label
+  HiLink javaScriptExceptions           Special
+
+  HiLink javaScriptHostMethods			Builtin
+  HiLink javaScriptBuiltinObjects		Label
 
   HiLink javaScriptDomErrNo             Constant
   HiLink javaScriptDomNodeConsts        Constant
   HiLink javaScriptDomElemAttrs         Special
-  HiLink javaScriptDomElemFuncs         Special 
+  HiLink javaScriptDomElemFuncs         Special
 
-  HiLink javaScriptHtmlEvents           Special 
-  HiLink javaScriptHtmlElemAttrs        Special 
-  HiLink javaScriptHtmlElemFuncs        Special 
+  HiLink javaScriptHtmlEvents           Special
+  HiLink javaScriptHtmlElemAttrs        Special
+  HiLink javaScriptHtmlElemFuncs        Special
 
-  HiLink javaScriptCssStyles            Special 
-
-  HiLink javaScriptjQueryName           SpecialKey
-  " HiLink javaScriptjQueryAPI			SpecialKey	  
-
+  HiLink javaScriptCssStyles            Special
 
   delcommand HiLink
 endif
