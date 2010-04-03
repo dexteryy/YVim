@@ -160,6 +160,12 @@ autocmd BufNewFile,BufRead *.vm setlocal ft=html
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
+" for AutoComplPop
+autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " commands

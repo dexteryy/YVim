@@ -1,10 +1,9 @@
 " Vim syntax file
 " Language:     JavaScript
 " Maintainer:   Yi Zhao (ZHAOYI) <zzlinux AT hotmail DOT com>
-" Last Change:  Nov 17, 2007
-" Version:      0.7.6
-" Changes:      Update the 'syntax sync' method to improve the performance
-"               with larget Javascript files. 
+" Last Change:  June 4, 2009
+" Version:      0.7.7
+" Changes:      Add "undefined" as a type keyword
 "
 " TODO:
 "  - Add the HTML syntax inside the JSDoc
@@ -20,9 +19,9 @@ endif
 
 "" Drop fold if it set but VIM doesn't support it.
 let b:javascript_fold='true'
-"if version < 600    " Don't support the old version
+if version < 600    " Don't support the old version
   unlet! b:javascript_fold
-"endif
+endif
 
 "" dollar sigh is permittd anywhere in an identifier
 setlocal iskeyword+=$
@@ -69,18 +68,18 @@ syntax keyword javaScriptPrototype      prototype
 
 "" Programm Keywords
 syntax keyword javaScriptSource         import export
-syntax keyword javaScriptType           const this var void yield
+syntax keyword javaScriptType           const this undefined var void yield 
 syntax keyword javaScriptOperator       delete new in instanceof let typeof
 syntax keyword javaScriptBoolean        true false
 syntax keyword javaScriptNull           null
 
 "" Statement Keywords
-syntax keyword javaScriptConditional    if else switch case default
+syntax keyword javaScriptConditional    if else
 syntax keyword javaScriptRepeat         do while for
-syntax keyword javaScriptBranch         break continue return
+syntax keyword javaScriptBranch         break continue switch case default return
 syntax keyword javaScriptStatement      try catch throw with finally
 
-syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity JavaArray JavaClass JavaObject JavaPackage window document Math Number NaN Object Packages RegExp String Undefined java netscape sun
+syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity JavaArray JavaClass JavaObject JavaPackage Math Number NaN Object Packages RegExp String Undefined java netscape sun
 
 syntax keyword javaScriptExceptions     Error EvalError RangeError ReferenceError SyntaxError TypeError URIError
 
@@ -100,9 +99,6 @@ syntax keyword javaScriptFutureKeys     abstract enum int short boolean export i
   syntax case ignore
   syntax keyword javaScriptHtmlEvents     onblur onclick oncontextmenu ondblclick onfocus onkeydown onkeypress onkeyup onmousedown onmousemove onmouseout onmouseover onmouseup onresize
   syntax case match
-
-  " syntax keyword javaScriptjQueryName     jQuery
-
 
 " Follow stuff should be highligh within a special context
 " While it can't be handled with context depended with Regex based highlight
@@ -156,7 +152,7 @@ if main_syntax == "javascript"
   syntax sync match javaScriptHighlight grouphere javaScriptBlock /{/
 endif
 
-""" Fold control
+"" Fold control
 if exists("b:javascript_fold")
     syntax match   javaScriptFunction       /\<function\>/ nextgroup=javaScriptFuncName skipwhite
     syntax match   javaScriptOpAssign       /=\@<!=/ nextgroup=javaScriptFuncBlock skipwhite skipempty
@@ -192,17 +188,17 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptDocComment           Comment
   HiLink javaScriptCommentTodo          Todo
   HiLink javaScriptCvsTag               Function
-  HiLink javaScriptDocTags              CommentDoc
-  HiLink javaScriptDocSeeTag            CommentDoc
-  HiLink javaScriptDocParam             CommentDoc
+  HiLink javaScriptDocTags              Special
+  HiLink javaScriptDocSeeTag            Function
+  HiLink javaScriptDocParam             Function
   HiLink javaScriptStringS              String
   HiLink javaScriptStringD              String
   HiLink javaScriptRegexpString         String
   HiLink javaScriptCharacter            Character
-  HiLink javaScriptPrototype            Function
+  HiLink javaScriptPrototype            Type
   HiLink javaScriptConditional          Conditional
-  HiLink javaScriptBranch               Statement
-  HiLink javaScriptRepeat               Conditional
+  HiLink javaScriptBranch               Conditional
+  HiLink javaScriptRepeat               Repeat
   HiLink javaScriptStatement            Statement
   HiLink javaScriptFunction             Function
   HiLink javaScriptError                Error
@@ -217,25 +213,21 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptFloat                Number
   HiLink javaScriptBoolean              Boolean
   HiLink javaScriptLabel                Label
-  HiLink javaScriptSpecial              SpecialKey
-  HiLink javaScriptSource               SpecialKey
-  HiLink javaScriptGlobalObjects        SpecialKey
-  HiLink javaScriptExceptions           SpecialKey
+  HiLink javaScriptSpecial              Special
+  HiLink javaScriptSource               Special
+  HiLink javaScriptGlobalObjects        Special
+  HiLink javaScriptExceptions           Special
 
   HiLink javaScriptDomErrNo             Constant
   HiLink javaScriptDomNodeConsts        Constant
-  HiLink javaScriptDomElemAttrs         Special
-  HiLink javaScriptDomElemFuncs         Special 
+  HiLink javaScriptDomElemAttrs         Label
+  HiLink javaScriptDomElemFuncs         PreProc
 
-  HiLink javaScriptHtmlEvents           Special 
-  HiLink javaScriptHtmlElemAttrs        Special 
-  HiLink javaScriptHtmlElemFuncs        Special 
+  HiLink javaScriptHtmlEvents           Special
+  HiLink javaScriptHtmlElemAttrs        Label
+  HiLink javaScriptHtmlElemFuncs        PreProc
 
-  HiLink javaScriptCssStyles            Special 
-
-  HiLink javaScriptjQueryName           SpecialKey
-  " HiLink javaScriptjQueryAPI			SpecialKey	  
-
+  HiLink javaScriptCssStyles            Label
 
   delcommand HiLink
 endif
