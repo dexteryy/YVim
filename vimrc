@@ -171,6 +171,10 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 " commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" sudo save
+command W :w! /tmp/sudoSave \| let $fileToSave=expand('%') \| let $fileToSaveBackup=expand('%').'~' \| !sudo cp $fileToSave $fileToSaveBackup && sudo cp /tmp/sudoSave $fileToSave<CR><ESC>:e!<CR>
+
+
 function! GetMySession(spath, ssname)
 	if a:ssname == 0
 		let a:sname = ""
@@ -247,6 +251,7 @@ let g:mapleader=","
 
 map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
 map <leader>q :q<cr>
+
 
 " for make & debug
 noremap <silent> <F2> <ESC>:call MyLint()<CR>
