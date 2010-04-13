@@ -287,6 +287,7 @@ if MySys() == "mac"
 	cmap <D-d> <C-d>
 	imap <D-e> <C-e>
 	imap <D-y> <C-y>
+	imap <D-x> <C-x>
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -294,6 +295,8 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 nmap <silent> <leader>a	:Ack 
+
+let g:ragtag_global_maps = 1
 
 " bufExplorer setting
 let g:bufExplorerSortBy='mru'
