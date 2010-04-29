@@ -155,6 +155,8 @@ autocmd BufEnter * lcd %:p:h
 
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=html
+autocmd BufNewFile,BufRead *.as	setlocal ft=actionscript
+
 
 " language support
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
@@ -375,12 +377,33 @@ let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
 let VCSCommandSVKExec='disabled no such executable'
 
 " Use neocomplcache.
-"let g:NeoComplCache_EnableAtStartup = 1
-"" Use smartcase.
-"let g:NeoComplCache_SmartCase = 1
-"" Use camel case completion.
-"let g:NeoComplCache_EnableCamelCaseCompletion = 1
-"" Use underbar completion.
-"let g:NeoComplCache_EnableUnderbarCompletion = 1 
+let g:NeoComplCache_EnableAtStartup = 1
+"let g:NeoComplCache_SnippetsDir = $HOME.'/.vim/snippets'
+"let g:NeoComplCache_DisableAutoComplete = 1
+"imap <silent><F1> <Plug>(neocomplcache_snippets_expand)
+"smap <silent><F1> <Plug>(neocomplcache_snippets_expand)
 
+" Use smartcase.
+let g:NeoComplCache_SmartCase = 1
+" Use camel case completion.
+let g:NeoComplCache_EnableCamelCaseCompletion = 1
+" Use underbar completion.
+let g:NeoComplCache_EnableUnderbarCompletion = 1
+" Set minimum syntax keyword length.
+let g:NeoComplCache_MinSyntaxLength = 2
+" Set manual completion length.
+let g:NeoComplCache_ManualCompletionStartLength = 0
+" Set minimum keyword length.
+let g:NeoComplCache_MinKeywordLength = 2 
+"let g:NeoComplCache_MaxList = 9
+
+imap <silent><Down> 	<c-n>
+imap <silent><Up> 		<c-p>
+imap <silent><s-Enter> 	<c-n>
+smap <silent><Down> 	<c-n>
+smap <silent><Up> 		<c-p>
+smap <silent><s-Enter> 	<c-n>
+
+" supertab
+"let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
 

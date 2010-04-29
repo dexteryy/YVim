@@ -244,16 +244,29 @@ fun! ShowAvailableSnips()
 	call complete(col, matches)
 	return ''
 endf
-" vim:noet:sw=4:ts=4:ft=vim
 
-" for auto
+" for AutoComplPop
 fun! GetSnipsInCurrentScope()
-    let snips = {}
-    for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
-      call extend(snips, get(s:snippets, scope, {}), 'keep')
-      call extend(snips, get(s:multi_snips, scope, {}), 'keep')
-    endfor
-    return snips
+	let snips = {}
+	for scope in [bufnr('%')] + split(&ft, '\.') + ['_']
+	  call extend(snips, get(s:snippets, scope, {}), 'keep')
+	  call extend(snips, get(s:multi_snips, scope, {}), 'keep')
+	endfor
+	return snips
 endf
 
 let g:acp_behaviorSnipmateLength=1
+
+" for neocomplcache
+fun GetSnippetsList(ft)
+	let s = {}
+	for i in ['s:snippets["_"]', 's:multi_snips["_"]',
+		\ 's:snippets[a:ft]', 's:multi_snips[a:ft]']
+		if exists(i)
+			let s = extend(s, deepcopy(eval(i)))
+		endif
+	endfor
+	return s
+endf
+
+" vim:noet:sw=4:ts=4:ft=vim

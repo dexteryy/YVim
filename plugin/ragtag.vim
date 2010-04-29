@@ -11,7 +11,7 @@ let g:loaded_ragtag = 1
 if has("autocmd")
   augroup ragtag
     autocmd!
-    autocmd FileType *html*,wml,xml,xslt,xsd,jsp,js    call s:Init()
+    autocmd FileType *html*,wml,xml,xslt,xsd,jsp,javascript    call s:Init()
     autocmd FileType php,asp*,cf,mason,eruby        call s:Init()
     if version >= 700
       autocmd InsertLeave * call s:Leave()
