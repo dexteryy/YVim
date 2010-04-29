@@ -18,7 +18,7 @@
 "
 "   Javascript Indentation
 "
-" Version: 1.1
+" Version: 1.1.2
 "
 " Description:
 "
@@ -35,6 +35,9 @@
 "
 " History:
 "
+"   1.1.1  -  Added license
+"   1.1.2  -  Added indentation for [...] pairs
+"   1.1.3  -  Fixed silly syntax error
 "
 "
 
@@ -80,12 +83,13 @@ let b:blockCommentEndRE    = '\*/'
 let b:blockCommentMiddleExtra = 1
 
 "
-" Indent another level for each non-closed paren/'(' and brace/'{' on the
-" previous line.
-"
+" Indent another level for each non-closed paren/'(' , bracket/'[', and
+" brace/'{' on the previous line.
+
 let b:indentTrios = [
-            \ [ '(', '', ')' ],
-            \ [ '{', '\(default:\|case.*:\)', '}' ]
+            \ [ '(',  '',                      ')'  ],
+            \ [ '{',  '\(default:\|case.*:\)', '}'  ],
+            \ [ '\[', '',                      '\]' ]
 \]
 
 

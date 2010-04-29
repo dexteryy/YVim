@@ -296,8 +296,6 @@ endif
 " plugin setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-nmap <silent> <leader>a	:Ack 
-
 let g:ragtag_global_maps = 1
 
 " bufExplorer setting
