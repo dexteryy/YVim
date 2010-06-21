@@ -70,15 +70,11 @@ endfunction
 
 function! MyJsMake()
 	call MyJsLint()
-	!python $TUICOMPILER/tuicompiler.py % -n
+	!python $TUICOMPILER/tuicompiler.py % -s
 endfunction
 
 function! MyJsLint()
-	if !exists("g:current_compiler")
-		call s:SetMyMake()
-	elseif  g:current_compiler != 'jsl'
-		call s:SetMyMake()
-	en
+	call s:SetMyMake()
 	make
 endfunction
 

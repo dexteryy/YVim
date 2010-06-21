@@ -92,9 +92,9 @@ let loaded_showmarks = 1
 
 " Bail if Vim isn't compiled with signs support.
 if has( "signs" ) == 0
-	echohl ErrorMsg
-	echo "ShowMarks requires Vim to have +signs support."
-	echohl None
+	"echohl ErrorMsg
+	"echo "ShowMarks requires Vim to have +signs support."
+	"echohl None
 	finish
 endif
 

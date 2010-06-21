@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: buffer_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 05 Mar 2010
+" Last Modified: 27 May 2010
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -22,7 +22,6 @@
 "     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 "     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
-" Version: 4.11, for Vim 7.0
 "=============================================================================
 
 " Important variables.
@@ -36,7 +35,7 @@ function! neocomplcache#plugin#buffer_complete#initialize()"{{{
     autocmd FileType,BufWritePost * call s:check_source()
     autocmd BufWritePost,CursorHold * call s:update_source()
     " Caching current buffer events
-    autocmd InsertLeave * call s:caching_insert_leave()
+    autocmd CursorHoldI * call s:caching_cursor_holdi()
     autocmd VimLeavePre * call s:save_all_cache()
   augroup END"}}}
 
@@ -100,7 +99,7 @@ function! neocomplcache#plugin#buffer_complete#get_keyword_list(cur_keyword_str)
     for src in s:get_sources_list()
       if has_key(s:sources[src].keyword_cache, l:key)
         let l:keyword_cache = values(s:sources[src].keyword_cache[l:key])
-        if len(a:cur_keyword_str) != s:completion_length
+        if len(a:cur_keyword_str) != s:completion_length || !&ignorecase
           let l:keyword_cache = neocomplcache#keyword_filter(l:keyword_cache, a:cur_keyword_str)
         endif
 
@@ -295,7 +294,6 @@ function! s:caching(srcname, start_line, end_cache_cnt)"{{{
 
   let l:buflines = getbufline(a:srcname, l:start_line, l:end_line)
   let l:menu = printf('[B] %.' . g:NeoComplCache_MaxFilenameWidth . 's', l:filename)
-  let l:abbr_pattern = printf('%%.%ds..%%s', g:NeoComplCache_MaxKeywordWidth-10)
   let l:keyword_pattern = l:source.keyword_pattern
 
   let [l:line_cnt, l:max_lines, l:line_num] = [0, len(l:buflines), 0]
@@ -326,16 +324,10 @@ function! s:caching(srcname, start_line, end_cache_cnt)"{{{
 
           if !has_key(l:source.keyword_cache[l:key], l:match_str)
             " Append list.
-            let l:keyword = {
-                  \'word' : l:match_str, 'menu' : l:menu,
+            let l:source.keyword_cache[l:key][l:match_str] = {
+                  \'word' : l:match_str, 'abbr' : l:match_str, 'menu' : l:menu,
                   \'icase' : 1, 'rank' : 1
                   \}
-
-            let l:keyword.abbr = 
-                  \ (len(l:match_str) > g:NeoComplCache_MaxKeywordWidth)? 
-                  \ printf(l:abbr_pattern, l:match_str, l:match_str[-8:]) : l:match_str
-
-            let l:source.keyword_cache[l:key][l:match_str] = l:keyword
           endif
         else
           let l:line_keyword = l:keywords[l:match_str]
@@ -415,13 +407,18 @@ function! s:initialize_source(srcname)"{{{
         \'keyword_cache' : {}, 'cache_lines' : {}, 'next_word_list' : {}, 
         \'name' : l:filename, 'filetype' : l:ft, 'keyword_pattern' : l:keyword_pattern, 
         \'end_line' : l:end_line , 'cached_last_line' : 1, 'cache_line_cnt' : l:cache_line_cnt, 
-        \'frequencies' : {}
+        \'frequencies' : {}, 'check_sum' : len(join(l:buflines[:4], '\n'))
         \}
 endfunction"}}}
 
 function! s:word_caching(srcname)"{{{
   " Initialize source.
   call s:initialize_source(a:srcname)
+
+  if fnamemodify(bufname(str2nr(a:srcname)), ':t') ==# '[Command Line]'
+    " Ignore caching.
+    return
+  endif
 
   if s:caching_from_cache(a:srcname) == 0
     " Caching from cache.
@@ -430,9 +427,7 @@ function! s:word_caching(srcname)"{{{
 
   let l:source = s:sources[a:srcname]
 
-  let l:filename = fnamemodify(bufname(str2nr(a:srcname)), ':p')
-
-  for l:keyword in neocomplcache#cache#load_from_file(l:filename, l:source.keyword_pattern, 'B')
+  for l:keyword in neocomplcache#cache#load_from_file(bufname(str2nr(a:srcname)), l:source.keyword_pattern, 'B')
     let l:key = tolower(l:keyword.word[: s:completion_length-1])
     if !has_key(l:source.keyword_cache, l:key)
       let l:source.keyword_cache[l:key] = {}
@@ -477,23 +472,30 @@ endfunction"}}}
 
 function! s:caching_source(srcname, start_line, end_cache_cnt)"{{{
   if !has_key(s:sources, a:srcname)
-    return
+    return 1
+  endif
+
+  let l:source = s:sources[a:srcname]
+
+  if getbufvar(a:srcname, '&buftype') =~ 'nofile'
+    " Check buffer changed.
+    let l:check_sum = len(join(getbufline(a:srcname, 1, 5), '\n'))
+    if l:check_sum != l:source.check_sum
+      " Recaching.
+      call s:word_caching(a:srcname)
+      return 1
+    endif
   endif
 
   if a:start_line == '^'
-    let l:source = s:sources[a:srcname]
-
     let l:start_line = l:source.cached_last_line
-    if a:srcname == bufnr('%')
-      " Update endline.
-    endif
 
     " Check overflow.
     if a:srcname == bufnr('%')
       " Update endline.
       let l:source.end_line = line('$')
     endif
-    
+
     if l:start_line > l:source.end_line && !s:check_changed_buffer(a:srcname)
       " Caching end.
       return -1
@@ -516,13 +518,11 @@ function! s:check_source()"{{{
 
   " Check new buffer.
   while l:bufnumber <= bufnr('$')
-    if buflisted(l:bufnumber)
+    if bufloaded(l:bufnumber)
       let l:bufname = fnamemodify(bufname(l:bufnumber), ':p')
       if (!has_key(s:sources, l:bufnumber) || s:check_changed_buffer(l:bufnumber))
             \&& !has_key(s:caching_disable_list, l:bufnumber)
             \&& (g:NeoComplCache_CachingDisablePattern == '' || l:bufname !~ g:NeoComplCache_CachingDisablePattern)
-            \&& l:bufname !=# '[Command line]'
-            \&& getbufvar(l:bufnumber, '&readonly') == 0
             \&& getfsize(l:bufname) < g:NeoComplCache_CachingLimitFileSize
         " Caching.
         call s:word_caching(l:bufnumber)
@@ -535,7 +535,7 @@ endfunction"}}}
 function! s:check_deleted_buffer()"{{{
   " Check deleted buffer.
   for key in keys(s:sources)
-    if !buflisted(str2nr(key))
+    if !bufloaded(str2nr(key))
       " Save cache.
       call s:save_cache(key)
 
@@ -545,7 +545,7 @@ function! s:check_deleted_buffer()"{{{
   endfor
 endfunction"}}}
 
-function! s:caching_insert_leave()"{{{
+function! s:caching_cursor_holdi()"{{{
   if !has_key(s:sources, bufnr('%')) || has_key(s:caching_disable_list, bufnr('%')) || @. == ''
     return
   endif
@@ -596,7 +596,7 @@ function! s:caching_buffer(name)"{{{
   endif
 
   if !has_key(s:sources, l:number)
-    if buflisted(l:number)
+    if bufloaded(l:number)
       " Word caching.
       call s:word_caching(l:number)
     endif

@@ -156,6 +156,7 @@ autocmd BufEnter * lcd %:p:h
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=html
 autocmd BufNewFile,BufRead *.as	setlocal ft=actionscript
+autocmd BufNewFile,BufRead *.json setlocal ft=javascript
 
 
 " language support
@@ -163,9 +164,9 @@ autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
 " for AutoComplPop
-autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+"autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+"autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+"autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 
 
@@ -243,6 +244,12 @@ endfunction
 function! MyRemoveBreakPoint()
 	exe 'call ' . b:myRemoveBreakPoint . '()'
 endfunction
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" macro
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" $static.getURL to uidev.tudou.com
+let @u = "0y$opk,n j0f$df'ihttp://uidev.tudou.comf'xx"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " map
@@ -357,9 +364,11 @@ nmap <leader>fc :FufChangeList<cr>
 "noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
 " showmarks
-let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-let g:showmarks_enable = 1
-let showmarks_ignore_type = "hqm"
+if has("gui_running") || has("gui_macvim")
+	let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	let g:showmarks_enable = 1
+	let showmarks_ignore_type = "hqm"
+endif
 "<Leader>mt   - 打开/关闭ShowMarks插件
 "<Leader>mo   - 强制打开ShowMarks插件
 "<Leader>mh   - 清除当前行的标记
@@ -374,34 +383,34 @@ let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
 
 let VCSCommandSVKExec='disabled no such executable'
 
+" Disable AutoComplPop.
+let g:acp_enableAtStartup = 0
 " Use neocomplcache.
 let g:NeoComplCache_EnableAtStartup = 1
-"let g:NeoComplCache_SnippetsDir = $HOME.'/.vim/snippets'
-"let g:NeoComplCache_DisableAutoComplete = 1
-"imap <silent><F1> <Plug>(neocomplcache_snippets_expand)
-"smap <silent><F1> <Plug>(neocomplcache_snippets_expand)
-
 " Use smartcase.
 let g:NeoComplCache_SmartCase = 1
+
 " Use camel case completion.
 let g:NeoComplCache_EnableCamelCaseCompletion = 1
 " Use underbar completion.
 let g:NeoComplCache_EnableUnderbarCompletion = 1
 " Set minimum syntax keyword length.
-let g:NeoComplCache_MinSyntaxLength = 2
+let g:NeoComplCache_MinSyntaxLength = 3
 " Set manual completion length.
 let g:NeoComplCache_ManualCompletionStartLength = 0
 " Set minimum keyword length.
 let g:NeoComplCache_MinKeywordLength = 2 
 "let g:NeoComplCache_MaxList = 9
 
-imap <silent><Down> 	<c-n>
-imap <silent><Up> 		<c-p>
-imap <silent><s-Enter> 	<c-n>
-smap <silent><Down> 	<c-n>
-smap <silent><Up> 		<c-p>
-smap <silent><s-Enter> 	<c-n>
+imap <expr><Space> pumvisible() ? "<c-y>" : "<Space>"
+
+imap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
+imap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
+smap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
+smap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
+
 
 " supertab
 "let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
 
+let g:calendar_diary = '~/.vim/diary'

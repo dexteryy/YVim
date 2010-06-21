@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: omni_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 05 Mar 2010
+" Last Modified: 29 May 2010
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -53,34 +53,24 @@ function! neocomplcache#complfunc#omni_complete#initialize()"{{{
         \'[^. \t]\.\%(\h\w*\)\?')
   call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'actionscript',
         \'[^. \t][.:]\h\w*')
-  call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'php',
-        \'[^. \t]->\h\w*\|\$\h\w*\|\%(=\s*new\|extends\)\s\+\|\h\w*::')
+  "call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'php',
+        "\'[^. \t]->\h\w*\|\$\h\w*\|\%(=\s*new\|extends\)\s\+\|\h\w*::')
   call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'java',
         \'\%(\h\w*\|)\)\.')
   "call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'perl',
   "\'\%(\h\w*\|)\)->\h\w*\|\h\w*::')
-  call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'c',
-        \'\h\w\+\|\%(\h\w*\|)\)\%(\.\|->\)\h\w*')
-  call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'cpp',
-        \'\%(\h\w*\|)\)\%(\.\|->\)\h\w*\|\h\w*::')
+  "call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'c',
+        "\'\h\w\+\|\%(\h\w*\|)\)\%(\.\|->\)\h\w*')
+  "call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'cpp',
+        "\'\%(\h\w*\|)\)\%(\.\|->\)\h\w*\|\h\w*::')
   call neocomplcache#set_variable_pattern('g:NeoComplCache_OmniPatterns', 'vimshell',
         \'\%(\\[^[:alnum:].-]\|[[:alnum:]@/.-_+,#$%~=*]\)\{2,}')
   "}}}
 
   let s:keyword_cache = {}
-  let s:iskeyword = 0
   let s:completion_length = neocomplcache#get_completion_length('omni_complete')
-
-  augroup neocomplcache
-    " Caching events
-    autocmd FileType * call s:caching('', 0)
-  augroup END
-
-  " Add command.
-  command! -nargs=? -complete=buffer NeoComplCacheCachingOmni call s:caching(<q-args>, 1)
 endfunction"}}}
 function! neocomplcache#complfunc#omni_complete#finalize()"{{{
-  delcommand NeoComplCacheCachingOmni
 endfunction"}}}
 
 function! neocomplcache#complfunc#omni_complete#get_keyword_pos(cur_text)"{{{
@@ -111,17 +101,9 @@ function! neocomplcache#complfunc#omni_complete#get_keyword_pos(cur_text)"{{{
     let l:cur_text = a:cur_text
   endif
 
-  let s:iskeyword = 0
-
   if neocomplcache#is_auto_complete() &&
         \l:cur_text !~ '\%(' . l:pattern . '\m\)$'
-    " Check pattern.
-    if &filetype != '' && has_key(s:keyword_cache, &filetype)
-      let s:iskeyword = 1
-      return match(l:cur_text, '\h\w\+$')
-    else
-      return -1
-    endif
+    return -1
   endif
 
   " Save pos.
@@ -144,7 +126,7 @@ function! neocomplcache#complfunc#omni_complete#get_keyword_pos(cur_text)"{{{
   endif
   call setpos('.', l:pos)
 
-  if col('.') - l:cur_keyword_pos < s:completion_length 
+  if neocomplcache#is_auto_complete() && col('.') - l:cur_keyword_pos < s:completion_length 
     " Too short completion length.
     return -1
   endif
@@ -155,10 +137,6 @@ endfunction"}}}
 function! neocomplcache#complfunc#omni_complete#get_complete_words(cur_keyword_pos, cur_keyword_str)"{{{
   let l:is_wildcard = g:NeoComplCache_EnableWildCard && a:cur_keyword_str =~ '\*\w\+$'
         \&& neocomplcache#is_auto_complete()
-
-  if s:iskeyword
-    return neocomplcache#keyword_filter(copy(s:keyword_cache[&filetype]), a:cur_keyword_str)
-  endif
 
   let l:pos = getpos('.')
   if l:is_wildcard
@@ -189,11 +167,6 @@ function! neocomplcache#complfunc#omni_complete#get_complete_words(cur_keyword_p
     return []
   endif
 
-  " Skip completion if takes too much time."{{{
-  if neocomplcache#check_skip_time()
-    return []
-  endif"}}}
-
   if l:is_wildcard
     return neocomplcache#keyword_filter(s:get_omni_list(l:list), a:cur_keyword_str)
   else
@@ -205,50 +178,24 @@ function! neocomplcache#complfunc#omni_complete#get_rank()"{{{
   return 100
 endfunction"}}}
 
-function! s:caching(bufname, force)"{{{
-  let l:filetype = (a:bufname == '')? &filetype : getbufvar(a:bufname, '&filetype')
-  if l:filetype == '' || (!a:force && has_key(s:keyword_cache, l:filetype))
-        \|| !exists('&l:omnifunc') || &l:omnifunc == ''
-    return
-  endif
-
-  try
-    let l:cur_keyword_pos = call(&l:omnifunc, [1, ''])
-    let l:list = call(&l:omnifunc, [0, ''])
-  catch
-    let l:list = []
-  endtry
-
-  let s:keyword_cache[l:filetype] = s:get_omni_list(l:list)
-endfunction"}}}
-
 function! s:get_omni_list(list)"{{{
-  let l:abbr_pattern = printf('%%.%ds..%%s', g:NeoComplCache_MaxKeywordWidth-10)
   let l:omni_list = []
 
   " Convert string list.
   for str in filter(copy(a:list), 'type(v:val) == '.type(''))
     let l:dict = {
-          \'word' : str, 'menu' : '[O]', 'icase' : 1
+          \'word' : str, 'abbr' : str, 'menu' : '[O]', 'icase' : 1
           \}
-    if len(str) > g:NeoComplCache_MaxKeywordWidth
-      let str = printf(l:abbr_pattern, str, str[-8:])
-    endif
-    let dict.abbr = str
 
     call add(l:omni_list, l:dict)
   endfor
 
   for l:omni in filter(a:list, 'type(v:val) != '.type(''))
     let l:dict = {
-          \'word' : l:omni.word, 'menu' : '[O]', 'icase' : 1
+          \'word' : l:omni.word,
+          \'abbr' : has_key(l:omni, 'abbr')? l:omni.abbr : l:omni.word,
+          \'menu' : '[O]', 'icase' : 1
           \}
-
-    let l:abbr = has_key(l:omni, 'abbr')? l:omni.abbr : l:omni.word
-    if len(l:abbr) > g:NeoComplCache_MaxKeywordWidth
-      let l:abbr = printf(l:abbr_pattern, l:abbr, l:abbr[-8:])
-    endif
-    let dict.abbr = l:abbr
 
     if has_key(l:omni, 'kind')
       let l:dict.kind = l:omni.kind
