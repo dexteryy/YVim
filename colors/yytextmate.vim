@@ -13,14 +13,15 @@ if version > 580
  endif
 endif
 if has("gui_running")
-	:hi Normal guifg=#f9f9f9 guibg=#070914
+	:hi Normal guifg=#f9f9f9 guibg=#080A20
 	:hi Cursor guibg=Yellow
 	:hi Visual guibg=#2D498B gui=none
 	:hi Pmenu guifg=#333333 guibg=#E3E3E3
 	:hi PmenuSel guifg=#ffffff guibg=#0264A2
 	
+	:hi CursorLine guibg=#16182D
 	":hi LineNr guifg=grey20
-	:hi LineNr guifg=#666666 guibg=#E6E6E6
+	:hi LineNr guifg=#666666 guibg=#eeeeee
 	:hi VertSplit guibg=#E6E6E6 guifg=#666666 gui=none
 	:hi Folded guifg=grey40 guibg=black
 	:hi FoldColumn guifg=grey20 guibg=black
@@ -35,7 +36,7 @@ if has("gui_running")
 	:hi Title guifg=#ff9900 gui=bold
 	:hi Statement guifg=#FFE619
 	:hi htmlStatement guifg=#99B5D9
-	:hi String guifg=#61ce38
+	:hi String guifg=#2CDF41
 	:hi Comment guifg=grey35 gui=italic
 	:hi CommentDoc guifg=grey20 guibg=black gui=italic
 	:hi CommentDocTags guifg=grey35 guibg=black
@@ -49,12 +50,13 @@ if has("gui_running")
 	:hi Include guifg=red
 	:hi PreProc guifg=grey
 	:hi Operator gui=bold guifg=#FFE619
+	:hi Keyword gui=bold guifg=#FFE619
 	:hi Define guifg=#FFE619 gui=bold
-	:hi Type guifg=#99B5D9
+	:hi Type gui=bold guifg=#FFE619
 	:hi Function guifg=#FF6900 gui=NONE
 	:hi Structure guifg=#FF6900 gui=bold
 	:hi Label guifg=#FF6900
-	:hi Exception guifg=#FF6900
+	:hi Exception guifg=#CC1D20
 	:hi Builtin guifg=#99B5D9
 
 	:hi Ignore guifg=grey40

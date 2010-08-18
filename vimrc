@@ -71,6 +71,9 @@ set dir=~/.vim/backups
 set nobackup 
 "set nowritebackup 
 
+set undodir=~/.vim/undos
+set undofile
+
 set shiftwidth=4
 set tabstop=4
 set nowrap
@@ -78,6 +81,8 @@ set wildmenu
 set matchpairs=(:),{:},[:],<:>
 set whichwrap=b,s,<,>,[,]
 set foldmethod=indent
+set diffopt+=iwhite,vertical " 忽略缩进的差异
+set cursorbind
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " interface
@@ -99,7 +104,9 @@ endif
 
 set anti
 set linespace=2 
-set number
+set cursorline
+"set number
+set rnu
 set numberwidth=4
 set equalalways
 set guitablabel=%t
@@ -124,7 +131,7 @@ if has("gui_macvim")
 	let macvim_skip_cmd_opt_movement = 1
 	let macvim_hig_shift_movement = 1
 
-	set transparency=8
+	set transparency=9
 	set guioptions-=T "egmrt
 	"set guioptions+=b 
 	
@@ -155,6 +162,7 @@ autocmd BufEnter * lcd %:p:h
 
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=html
+autocmd BufNewFile,BufRead *.xul setlocal ft=xml
 autocmd BufNewFile,BufRead *.as	setlocal ft=actionscript
 autocmd BufNewFile,BufRead *.json setlocal ft=javascript
 
@@ -250,6 +258,8 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " $static.getURL to uidev.tudou.com
 let @u = "0y$opk,n j0f$df'ihttp://uidev.tudou.comf'xx"
+" copy current file to uidev.tudou.com
+let @p = ":!cp % /Volumes/ui.tudou.com/%:p:h:h:t/%:p:h:t/"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " map
@@ -257,6 +267,8 @@ let @u = "0y$opk,n j0f$df'ihttp://uidev.tudou.comf'xx"
 
 let mapleader=","
 let g:mapleader=","
+
+"map <leader>, ,
 
 map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
 map <leader>q :q<cr>
@@ -276,6 +288,18 @@ nmap <tab> 		v>
 nmap <s-tab> 	v<
 vmap <tab> 		>gv 
 vmap <s-tab> 	<gv
+
+inoremap ( ()<ESC>i
+"inoremap ) <c-r>=ClosePair(')')<cr>
+inoremap { {}<ESC>i
+"inoremap } <c-r>=ClosePair('}')<cr>
+inoremap [ []<ESC>i
+"inoremap ] <c-r>=ClosePair(']')<cr>
+inoremap " ""<ESC>i
+"inoremap < <><esc>i
+"inoremap > <c-r>=ClosePair('>')<cr>
+
+"inoremap <expr><CR> StructStart() ? '<CR><ESC>kA<CR>' : '<CR>'
 
 " map cmd to ctrl
 if MySys() == "mac"
@@ -363,6 +387,13 @@ nmap <leader>fm :FufAddBookmark<cr>
 nmap <leader>fc :FufChangeList<cr>
 "noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
+" command-T
+nmap <leader>tt :CommandT<cr>
+"if has("gui_macvim")
+	"macmenu &File.New\ Tab key=<nop>
+	"map <D-t> :CommandT<CR>
+"endif
+
 " showmarks
 if has("gui_running") || has("gui_macvim")
 	let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -382,6 +413,7 @@ let NERDShutUp=1
 let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
 
 let VCSCommandSVKExec='disabled no such executable'
+nmap <leader>cd :VCSVimDiff
 
 " Disable AutoComplPop.
 let g:acp_enableAtStartup = 0
@@ -402,7 +434,7 @@ let g:NeoComplCache_ManualCompletionStartLength = 0
 let g:NeoComplCache_MinKeywordLength = 2 
 "let g:NeoComplCache_MaxList = 9
 
-imap <expr><Space> pumvisible() ? "<c-y>" : "<Space>"
+imap <expr><Esc> pumvisible() ? "<c-y>" : "<Esc>"
 
 imap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
 imap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"

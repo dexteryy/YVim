@@ -128,6 +128,7 @@ syn match   pythonComment	"#.*$" display contains=pythonTodo,@Spell
 syn match   pythonRun		"\%^#!.*$"
 syn match   pythonCoding	"\%^.*\(\n.*\)\?#.*coding[:=]\s*[0-9A-Za-z-_.]\+.*$"
 syn keyword pythonTodo		TODO FIXME XXX contained
+syn region	pythonComment	start='^\s*"""' end=+"""+ keepend contains=pythonTodo,@Spell
 
 " Errors
 syn match pythonError		"\<\d\+\D\+\>" display

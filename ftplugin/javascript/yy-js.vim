@@ -70,7 +70,7 @@ endfunction
 
 function! MyJsMake()
 	call MyJsLint()
-	!python $TUICOMPILER/tuicompiler.py % -s
+	!tuicompiler % -s
 endfunction
 
 function! MyJsLint()

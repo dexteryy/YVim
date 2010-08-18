@@ -44,8 +44,9 @@ if !exists("javascript_ignore_javaScriptdoc")
   "unlet b:current_syntax
 
   syntax region javaScriptDocComment    matchgroup=javaScriptComment start="/\*\S\s*$"  end="\*/" contains=javaScriptDocTags,javaScriptCommentTodo,javaScriptCvsTag,@javaScriptHtml,@Spell fold
+
   syntax match  javaScriptDocTags       contained "@\(param\|argument\|requires\|exception\|throws\|type\|class\|extends\|see\|link\|member\|module\|method\|title\|namespace\|optional\|default\|base\|file\)\>" nextgroup=javaScriptDocParam,javaScriptDocSeeTag skipwhite
-  syntax match  javaScriptDocTags       contained "@\(beta\|deprecated\|description\|fileoverview\|author\|license\|version\|returns\=\|constructor\|private\|protected\|final\|ignore\|addon\|exec\)\>"
+  syntax match  javaScriptDocTags       contained "@\(noalias\|define\|export\|const\|nosideeffects\|externs\|fileoverview\|author\|license\|preserve\|supported\|description\|example\|version\|since\|name\|returns\|this\|constructor\|constructs\|lends\|borrows\|event\|static\|property\|private\|inner\|public\|memberOf\|enum\|function\|field\|ignore\|interface\|implements\|override\|deprecated\|inheritDoc\|code\|typedef\)\>"
   syntax match  javaScriptDocParam      contained "\%(#\|\w\|\.\|:\|\/\)\+"
   syntax region javaScriptDocSeeTag     contained matchgroup=javaScriptDocSeeTag start="{" end="}" contains=javaScriptDocTags
 
@@ -81,11 +82,13 @@ syntax keyword javaScriptException      try catch throw with finally
 
 syntax keyword javaScriptGlobalObjects  Array Boolean Date Function Infinity Number NaN Object Packages RegExp String undefined JSON
 syntax keyword javaScriptBuiltinObjects  Math Global window
-syntax keyword javaScriptHostMethods	document location history screen userAgent navigator setTimeout clearTimeout setInterval clearInterval
+
+syntax keyword javaScriptHostMethods	document location history screen userAgent navigator setTimeout clearTimeout setInterval clearInterval encodeURI decodeURI encodeURIComponent decodeURIComponent escape unescape eval arguments parseInt parseFloat
+syntax keyword javaScriptBuiltinMethods forEach map filter reduce join split splice slice push pop concat length sort reverse shift toString valueOf indexOf apply call caller abs random round floor pow sqrt sin cos tan tan2 asin acos atan atan2 min max ceil exp PI hasOwnProperty isPrototypeOf propertyIsEnumerable toLocaleString __proto__ exec search match replace test charAt charCodeAt fromCharCode lastIndexOf substr substring toLowerCase toUpperCase
 
 syntax keyword javaScriptExceptions     Error EvalError RangeError ReferenceError SyntaxError TypeError URIError
 
-syntax keyword javaScriptDebug			alert console debugger
+syntax keyword javaScriptDebug			alert console debugger with
 
 syntax keyword javaScriptFutureKeys     abstract enum int short boolean export interface static byte extends long super char final native synchronized class float package throws const goto private transient debugger implements protected volatile double import public
 
@@ -224,6 +227,7 @@ if version >= 508 || !exists("did_javascript_syn_inits")
   HiLink javaScriptExceptions           Special
 
   HiLink javaScriptHostMethods			Builtin
+  HiLink javaScriptBuiltinMethods		Builtin
   HiLink javaScriptBuiltinObjects		Label
 
   HiLink javaScriptDomErrNo             Constant
