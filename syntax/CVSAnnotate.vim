@@ -4,7 +4,7 @@
 " Remark:	Used by the cvscommand plugin.  Originally written by Mathieu
 " Clabaut
 " License:
-" Copyright (c) 2007 Bob Hiestand
+" Copyright (c) Bob Hiestand
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy
 " of this software and associated documentation files (the "Software"), to

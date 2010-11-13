@@ -159,7 +159,7 @@ autocmd! bufwritepost vimrc source ~/.vimrc
 
 let g:jslint_neverAutoRun=1
 
-autocmd BufEnter * lcd %:p:h
+"autocmd BufEnter * lcd %:p:h
 
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=html
@@ -422,9 +422,9 @@ inoremap <silent> <leader>yr <ESC>:YRShow<cr>
 
 
 " command-T
-"nmap <leader>tt :CommandT<cr>
+nmap <leader>tt :CommandT<cr>
 if has("gui_macvim")
-	map <D-t> :CommandT<CR>
+	map <D-T> :CommandT<CR>
 endif
 
 " showmarks
@@ -493,7 +493,7 @@ inoremap <expr><C-y>  neocomplcache#close_popup()
 inoremap <expr><C-e>  neocomplcache#cancel_popup() 
 
 " AutoComplPop like behavior. 
-let g:neocomplcache_enable_auto_select = 1 
+"let g:neocomplcache_enable_auto_select = 1 
 
 " Enable omni completion. 
 autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS 

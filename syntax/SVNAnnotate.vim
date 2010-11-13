@@ -3,7 +3,7 @@
 " Maintainer:	Bob Hiestand <bob.hiestand@gmail.com>
 " Remark:	Used by the vcscommand plugin.
 " License:
-" Copyright (c) 2007 Bob Hiestand
+" Copyright (c) Bob Hiestand
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy
 " of this software and associated documentation files (the "Software"), to
@@ -28,8 +28,8 @@ if exists("b:current_syntax")
 endif
 
 syn match svnName /\S\+/ contained
-syn match svnVer /^\s\+\zs\d\+/ contained nextgroup=svnName skipwhite
-syn match svnHead /^\s\+\d\+\s\+\S\+/ contains=svnVer,svnName
+syn match svnVer /^\s*\zs\d\+/ contained nextgroup=svnName skipwhite
+syn match svnHead /^\s*\d\+\s\+\S\+/ contains=svnVer,svnName
 
 if !exists("did_svnannotate_syntax_inits")
 	let did_svnannotate_syntax_inits = 1

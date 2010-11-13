@@ -2,7 +2,7 @@
 " Language:	VCS commit file
 " Maintainer:	Bob Hiestand (bob.hiestand@gmail.com)
 " License:
-" Copyright (c) 2007 Bob Hiestand
+" Copyright (c) Bob Hiestand
 "
 " Permission is hereby granted, free of charge, to any person obtaining a copy
 " of this software and associated documentation files (the "Software"), to
