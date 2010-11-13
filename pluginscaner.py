@@ -8,11 +8,53 @@ Released under GPL Licenses.
 """
 
 import sys, io, os, re
+import threading
 import pickle
 import urllib
 import json
 from pyquery import PyQuery
 from optparse import OptionParser
+
+
+class HttpPool():
+
+    def __init__(self):
+        self.workers = []
+        #self.lock = threading.Lock()
+
+    def add(self, url, callback=None, args=()):
+        #lock = self.lock
+
+        def asynHttpRequest(*args, **opt):
+            #lock.acquire()
+            result = urllib.urlopen(url)
+            #lock.release()
+            data = result.read()
+
+            retry = opt.get("retry", 0)
+            if not data and retry < 5:
+                retry += 1
+                return asynHttpRequest(*args, retry=retry)
+
+            if callback:
+                callback({
+                    "url": url,
+                    "data": data
+                }, *args)
+
+        self.workers.append(
+            threading.Thread(target=asynHttpRequest, args=args)
+        )
+
+    def send(self):
+        for w in self.workers:
+            w.start()
+        for w in self.workers:
+            w.join()
+        self.onComplete()
+
+    def onComplete(self):
+        pass
 
 
 def main(argv=None):
@@ -24,18 +66,18 @@ def main(argv=None):
 
     VIMHOME = os.getcwd()
     refname = '.pluginsref'
-    ptable = {}
+    pluginLib = {}
 
     os.chdir(VIMHOME)
     hasRef = os.path.exists(refname)
     if hasRef:
         ref = open(refname, 'rb')
-        ptable = pickle.load(ref)
+        pluginLib = pickle.load(ref)
         ref.close()
 
     for pname in os.listdir(os.path.join(VIMHOME, 'plugin')):
-        if not pname in ptable:
-            ptable[pname] = {
+        if not pname in pluginLib:
+            pluginLib[pname] = {
                 'name': re.sub(r"\.vim$", "", pname),
                 'version': '0',
                 'latest': '0',
@@ -43,10 +85,9 @@ def main(argv=None):
                 'download': ''
             }
 
-
     if len(args) > 0:
 
-        plugin = ptable.get(args[0] + ".vim", None)
+        plugin = pluginLib.get(args[0] + ".vim", None)
 
         if not plugin:
             print 'Error: No available plugin for ' + args[0]
@@ -63,37 +104,46 @@ def main(argv=None):
         plugin['download'] = ''
 
         ref = open(refname, 'wb')
-        pickle.dump(ptable, ref)
+        pickle.dump(pluginLib, ref)
 
         openBrowser = raw_input("Download from Browser (y/n)? ")
         if openBrowser == 'y':
             os.system('open ' + plugin['url'])
 
-        return
-    
+    else:
 
-    SEARCHAPI = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCUaFs43lfy6X81Gohqx7Z5oWNgW5POHJM&cx=partner-pub-3005259998294962:bvyni59kjr1"
-    SITEROOT = "http://www.vim.org/scripts/"
+        SEARCHAPI = "https://www.googleapis.com/customsearch/v1?key=AIzaSyCUaFs43lfy6X81Gohqx7Z5oWNgW5POHJM&cx=partner-pub-3005259998294962:bvyni59kjr1"
+        SITEROOT = "http://www.vim.org/scripts/"
 
-    outdated = []
+        outdated = []
 
-    for plugin in ptable.values(): 
+        searchPool = HttpPool()
+        checkPool = HttpPool()
 
-        if not plugin["url"]:
+        def searchPlugin(res, plugin):
+            items = json.loads(res["data"]).get("items", [])
+            if not len(items):
+                return
 
-            result = urllib.urlopen(SEARCHAPI + "&q=" + plugin["name"])
-            #print result.read()
-            items = json.loads(result.read()).get("items", [])
-            result.close()
+            plugin["url"] = items[0]["link"]
 
-            if len(items):
-                plugin["url"] = items[0]["link"]
+            if plugin["url"]:
+                checkVersion(plugin)
 
-        if plugin["url"]:
 
-            html = urllib.urlopen(plugin["url"]).read()
-            pq = PyQuery(html)
+        def checkVersion(plugin):
+            if not plugin["download"]:
+                checkPool.add(plugin["url"], 
+                               callback=parseInfo,
+                               args=(plugin,))
+            else:
+                outdated.append(plugin)
+
+
+        def parseInfo(res, plugin):
+            backup = plugin.copy()
             try:
+                pq = PyQuery(res["data"])
                 latest = pq(".rowodd").eq(0)
                 latestVersion = latest.parent().find("td").eq(1).find("b").html()
 
@@ -105,25 +155,42 @@ def main(argv=None):
                     outdated.append(plugin)
 
             except Exception:
+                plugin.update(backup)
+                print "Error: {name} parse error!".format(**plugin)
+        
 
-                plugin["version"] = '0'
-                plugin["latest"] = '0'
-                plugin["download"] = ''
-
-                print Exception
+        def startCheck():
+            checkPool.send()
 
 
-    ref = open(refname, 'wb')
-    pickle.dump(ptable, ref)
+        def onComplete():
+            ref = open(refname, 'wb')
+            pickle.dump(pluginLib, ref)
 
-    if len(outdated):
-        print "The following plugins were updated:"
-        for p in outdated:
-            print "{name} {version} < {latest}".format(**p)
-    else:
-        print "Already up-to-date"
+            if len(outdated):
+                print "The following plugins were updated:"
+                for p in outdated:
+                    print "{name} {version} < {latest}".format(**p)
+            else:
+                print "Already up-to-date"
 
-    #print ptable
+            #print pluginLib
+
+
+        for plugin in pluginLib.values(): 
+            if not plugin["url"]:
+                searchPool.add(SEARCHAPI + "&q=" + plugin["name"],
+                               callback=searchPlugin,
+                               args=(plugin,))
+            else:
+                checkVersion(plugin)
+
+        searchPool.onComplete = startCheck
+        checkPool.onComplete = onComplete
+
+        searchPool.send()
+
+    #print pluginLib
 
     #myplugins = []
     #for fname in vimfiles:
