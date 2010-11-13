@@ -82,7 +82,8 @@ set matchpairs=(:),{:},[:],<:>
 set whichwrap=b,s,<,>,[,]
 set foldmethod=indent
 set diffopt+=iwhite,vertical " 忽略缩进的差异
-set cursorbind
+"set cursorbind
+set gdefault
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " interface
@@ -165,11 +166,14 @@ autocmd BufNewFile,BufRead *.vm setlocal ft=html
 autocmd BufNewFile,BufRead *.xul setlocal ft=xml
 autocmd BufNewFile,BufRead *.as	setlocal ft=actionscript
 autocmd BufNewFile,BufRead *.json setlocal ft=javascript
+autocmd BufNewFile,BufRead *.pac setlocal ft=javascript
+autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
 
 
 " language support
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
 " for AutoComplPop
 "autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
@@ -273,6 +277,25 @@ let g:mapleader=","
 map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
 map <leader>q :q<cr>
 
+nnoremap <leader><space> :noh<cr>
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+map <D-H> <C-h>
+map <D-J> <C-j>
+map <D-K> <C-k>
+map <D-L> <C-l>
+
+nnoremap <D-V> <C-w>v
+
+" for YankRing
+map <D-p> <C-p>
+
+nnoremap <leader><tab> :Sscratch<cr>
+
+
 
 " for make & debug
 noremap <silent> <F2> <ESC>:call MyLint()<CR>
@@ -289,6 +312,9 @@ nmap <s-tab> 	v<
 vmap <tab> 		>gv 
 vmap <s-tab> 	<gv
 
+nnoremap / /\v
+vnoremap / /\v
+
 inoremap ( ()<ESC>i
 "inoremap ) <c-r>=ClosePair(')')<cr>
 inoremap { {}<ESC>i
@@ -302,7 +328,7 @@ inoremap " ""<ESC>i
 "inoremap <expr><CR> StructStart() ? '<CR><ESC>kA<CR>' : '<CR>'
 
 " map cmd to ctrl
-if MySys() == "mac"
+if has("gui_macvim")
 	imap <D-c> <C-c>	"快速结束插入模式
 	map <D-y> <C-y>
 	map <D-e> <C-e>
@@ -315,17 +341,19 @@ if MySys() == "mac"
 	map <D-o> <C-o>
 	map <D-i> <C-i>
 	map <D-g> <C-g>
-	map <D-a> <C-a>
 	map <D-]> <C-]>
 	cmap <D-d> <C-d>
 	imap <D-e> <C-e>
 	imap <D-y> <C-y>
-	imap <D-x> <C-x>
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " plugin setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:JSLintHighlightErrorLine = 0
+
+let g:yankring_history_dir = '~/.vim/yankring'
 
 let g:ragtag_global_maps = 1
 
@@ -343,7 +371,7 @@ let g:bufExplorerResize=1
 "
 
 " tasklist
-nmap <silent> <leader>tl :TaskList<CR>
+nmap <silent> <leader>tl <Plug>TaskList
 
 
 " taglists setting
@@ -387,12 +415,17 @@ nmap <leader>fm :FufAddBookmark<cr>
 nmap <leader>fc :FufChangeList<cr>
 "noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
+
+nnoremap <silent> <leader>yr :YRShow<cr>
+inoremap <silent> <leader>yr <ESC>:YRShow<cr>
+
+
+
 " command-T
-nmap <leader>tt :CommandT<cr>
-"if has("gui_macvim")
-	"macmenu &File.New\ Tab key=<nop>
-	"map <D-t> :CommandT<CR>
-"endif
+"nmap <leader>tt :CommandT<cr>
+if has("gui_macvim")
+	map <D-t> :CommandT<CR>
+endif
 
 " showmarks
 if has("gui_running") || has("gui_macvim")
@@ -415,34 +448,68 @@ let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
 let VCSCommandSVKExec='disabled no such executable'
 nmap <leader>cd :VCSVimDiff
 
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplcache.
-let g:NeoComplCache_EnableAtStartup = 1
-" Use smartcase.
-let g:NeoComplCache_SmartCase = 1
+" Disable AutoComplPop. 
+let g:acp_enableAtStartup = 0 
+" Use neocomplcache. 
+let g:neocomplcache_enable_at_startup = 1 
+" Use smartcase. 
+let g:neocomplcache_enable_smart_case = 1 
+" Use camel case completion. 
+let g:neocomplcache_enable_camel_case_completion = 1 
+" Use underbar completion. 
+let g:neocomplcache_enable_underbar_completion = 1 
+" Set minimum syntax keyword length. 
+let g:neocomplcache_min_syntax_length = 3 
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*' 
+"
 
-" Use camel case completion.
-let g:NeoComplCache_EnableCamelCaseCompletion = 1
-" Use underbar completion.
-let g:NeoComplCache_EnableUnderbarCompletion = 1
-" Set minimum syntax keyword length.
-let g:NeoComplCache_MinSyntaxLength = 3
-" Set manual completion length.
-let g:NeoComplCache_ManualCompletionStartLength = 0
-" Set minimum keyword length.
-let g:NeoComplCache_MinKeywordLength = 2 
-"let g:NeoComplCache_MaxList = 9
+"imap <expr><Esc> pumvisible() ? "<c-y>" : "<Esc>"
 
-imap <expr><Esc> pumvisible() ? "<c-y>" : "<Esc>"
+"imap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
+"imap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
+"smap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
+"smap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
 
-imap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
-imap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
-smap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
-smap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
+" AutoComplPop like behavior. 
+"let g:neocomplcache_enable_auto_select = 1 
 
 
 " supertab
 "let g:SuperTabDefaultCompletionType = '<C-X><C-U>'
 
+
 let g:calendar_diary = '~/.vim/diary'
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+function Send_to_Screen(text)
+  if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
+    call Screen_Vars()
+  end
+
+  echo system("screen -S " . g:screen_sessionname . " -p " . g:screen_windowname . " -X stuff '" . substitute(a:text, "'", "'\\\\''", 'g') . "'")
+endfunction
+
+function Screen_Session_Names(A,L,P)
+  return system("screen -ls | awk '/Attached/ {print $1}'")
+endfunction
+
+function Screen_Vars()
+  if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
+    let g:screen_sessionname = ""
+    let g:screen_windowname = "0"
+  end
+
+  let g:screen_sessionname = input("session name: ", "", "custom,Screen_Session_Names")
+  let g:screen_windowname = input("window name: ", g:screen_windowname)
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+vmap <C-c><C-c> "ry :call Send_to_Screen(@r)<CR>
+nmap <C-c><C-c> vip<C-c><C-c>
+
+nmap <C-c>v :call Screen_Vars()<CR>
+
+

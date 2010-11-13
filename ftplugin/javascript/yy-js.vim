@@ -10,9 +10,6 @@
 python << EOF
 import os, vim
 
-def jsDebug():
-	pass
-
 def jsInsertCode(code, cmt):
 	nLine = int(vim.eval('line(".")'))
 	strLine = vim.current.line
@@ -70,7 +67,7 @@ endfunction
 
 function! MyJsMake()
 	call MyJsLint()
-	!tuicompiler % -s
+	!tuicompiler % -s -q
 endfunction
 
 function! MyJsLint()
@@ -78,8 +75,9 @@ function! MyJsLint()
 	make
 endfunction
 
-function! MyJsDebug()
-	py jsDebug()
+function! MyJsBuild()
+	call MyJsLint()
+	!tuicompiler % -s -z
 endfunction
 
 function! MyJsSetBreakPoint()
@@ -96,7 +94,7 @@ endfunction
 
 let b:myMake='MyJsMake'
 let b:myLint='MyJsLint'
-let b:myDebug='MyJsDebug'
+let b:myDebug='MyJsBuild'
 let b:mySetBreakPoint='MyJsSetBreakPoint'
 let b:mySetLog='MyJsSetLog'
 let b:myRemoveBreakPoint='MyJsRemoveBreakPoint'

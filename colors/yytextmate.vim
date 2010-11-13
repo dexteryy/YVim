@@ -35,6 +35,7 @@ if has("gui_running")
 	:hi SpecialKey guifg=#D3FE36
 	:hi Title guifg=#ff9900 gui=bold
 	:hi Statement guifg=#FFE619
+	":hi Statement       guifg=#F92672               gui=bold
 	:hi htmlStatement guifg=#99B5D9
 	:hi String guifg=#2CDF41
 	:hi Comment guifg=grey35 gui=italic
@@ -52,7 +53,7 @@ if has("gui_running")
 	:hi Operator gui=bold guifg=#FFE619
 	:hi Keyword gui=bold guifg=#FFE619
 	:hi Define guifg=#FFE619 gui=bold
-	:hi Type gui=bold guifg=#FFE619
+	:hi Type guifg=#99B5D9 "gui=bold guifg=#FFE619
 	:hi Function guifg=#FF6900 gui=NONE
 	:hi Structure guifg=#FF6900 gui=bold
 	:hi Label guifg=#FF6900
@@ -60,8 +61,12 @@ if has("gui_running")
 	:hi Builtin guifg=#99B5D9
 
 	:hi Ignore guifg=grey40
-	:hi StatusLineNC guibg=#E6E6E6 guifg=#000000 gui=none
-	:hi StatusLine guibg=#E6E6E6 guifg=#000000 gui=none 
+	":hi StatusLineNC guibg=#E6E6E6 guifg=#000000 gui=none
+	":hi StatusLine guibg=#E6E6E6 guifg=#000000 gui=none 
+	":hi StatusLine      guifg=#CD5907 guibg=fg
+	:hi StatusLine    guifg=#808080 guibg=#080808
+	:hi StatusLineNC    guifg=#808080 guibg=#080808
+	
 	:hi Todo guifg=orangered guibg=yellow2
 	:hi WarningMsg guifg=#CC1D20
 	:hi Debug guifg=#CC1D20
