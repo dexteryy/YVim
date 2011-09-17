@@ -68,7 +68,7 @@ let s:gitFunctions = {}
 " Returns the executable used to invoke git suitable for use in a shell
 " command.
 function! s:Executable()
-	return shellescape(VCSCommandGetOption('VCSCommandGitExec', 'git'))
+	return VCSCommandGetOption('VCSCommandGitExec', 'git')
 endfunction
 
 " Function: s:DoCommand(cmd, cmdName, statusText, options) {{{2

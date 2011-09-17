@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: syntax_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 01 Sep 2010
+" Last Modified: 08 Aug 2011.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -24,6 +24,9 @@
 " }}}
 "=============================================================================
 
+let s:save_cpo = &cpo
+set cpo&vim
+
 let s:source = {
       \ 'name' : 'syntax_complete',
       \ 'kind' : 'plugin',
@@ -33,9 +36,9 @@ function! s:source.initialize()"{{{
   " Initialize.
   let s:syntax_list = {}
   let s:completion_length = neocomplcache#get_auto_completion_length('syntax_complete')
-  
+
   " Set rank.
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_plugin_rank, 'syntax_complete', 8)
+  call neocomplcache#set_dictionary_helper(g:neocomplcache_plugin_rank, 'syntax_complete', 7)
 
   " Set caching event.
   autocmd neocomplcache Syntax * call s:caching()
@@ -47,7 +50,7 @@ function! s:source.initialize()"{{{
   if !isdirectory(g:neocomplcache_temporary_dir . '/syntax_cache')
     call mkdir(g:neocomplcache_temporary_dir . '/syntax_cache')
   endif
-  
+
   " Initialize check.
   call s:caching()
 endfunction"}}}
@@ -60,7 +63,7 @@ function! s:source.get_keyword_list(cur_keyword_str)"{{{
   if neocomplcache#within_comment()
     return []
   endif
-  
+
   let l:list = []
 
   let l:filetype = neocomplcache#get_context_filetype()
@@ -71,7 +74,7 @@ function! s:source.get_keyword_list(cur_keyword_str)"{{{
       let s:syntax_list[l:filetype] = l:keyword_lists
     endif
   endif
-  
+
   for l:source in neocomplcache#get_sources_list(s:syntax_list, l:filetype)
     let l:list += neocomplcache#dictionary_filter(l:source, a:cur_keyword_str, s:completion_length)
   endfor
@@ -88,7 +91,7 @@ function! s:caching()"{{{
     return
   endif
 
-  for l:filetype in keys(neocomplcache#get_source_filetypes(&filetype))
+  for l:filetype in neocomplcache#get_source_filetypes(&filetype)
     if !has_key(s:syntax_list, l:filetype)
       let l:keyword_lists = neocomplcache#cache#index_load_from_cache('syntax_cache', l:filetype, s:completion_length)
       if !empty(l:keyword_lists)
@@ -181,7 +184,10 @@ function! s:caching_from_syn(filetype)"{{{
   endfor
 
   " Save syntax cache.
-  call neocomplcache#cache#save_cache('syntax_cache', &filetype, neocomplcache#unpack_dictionary(l:keyword_lists))
+  let l:unpack_lists = neocomplcache#unpack_dictionary(l:keyword_lists)
+  if !empty(l:unpack_lists)
+    call neocomplcache#cache#save_cache('syntax_cache', &filetype, l:unpack_lists)
+  endif
 
   call neocomplcache#print_caching('')
 
@@ -315,5 +321,8 @@ if !exists('g:neocomplcache_min_syntax_length')
   let g:neocomplcache_min_syntax_length = 4
 endif
 "}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
 
 " vim: foldmethod=marker

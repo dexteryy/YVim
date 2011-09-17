@@ -39,7 +39,7 @@ if has("gui_running")
 	:hi htmlStatement guifg=#99B5D9
 	:hi String guifg=#2CDF41
 	:hi Comment guifg=grey35 gui=italic
-	:hi CommentDoc guifg=grey20 guibg=black gui=italic
+	:hi CommentDoc guifg=grey30 guibg=black gui=italic
 	:hi CommentDocTags guifg=grey35 guibg=black
 	:hi Conditional guifg=#FFE619
 	:hi Repeat guifg=#FFE619

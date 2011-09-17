@@ -2,9 +2,11 @@
 " What Is This: Calendar
 " File: calendar.vim
 " Author: Yasuhiro Matsumoto <mattn.jp@gmail.com>
-" Last Change: 06-May-2010.
-" Version: 2.2
+" Last Change: 27-Jan-2011.
+" Version: 2.5
 " Thanks:
+"     SethMilliken                  : gave a hint for 2.4
+"     bw1                           : bug fix
 "     Ingo Karkat                   : bug fix
 "     Thinca                        : bug report, bug fix
 "     Yu Pei                        : bug report
@@ -51,11 +53,15 @@
 "     :CalendarH ...
 "       show horizontal calendar ...
 "
-"     <Leader>ca
+"     <Leader>cal
 "       show calendar in normal mode
-"     <Leader>ch
+"     <Leader>caL
 "       show horizontal calendar ...
 " ChangeLog:
+"     2.5  : bug fix, 7.2 don't have relativenumber.
+"     2.4  : added g:calendar_options.
+"     2.3  : week number like ISO8601 
+"            g:calendar_monday and g:calendar_weeknm work together
 "     2.2  : http://gist.github.com/355513#file_customizable_keymap.diff
 "            http://gist.github.com/355513#file_winfixwidth.diff
 "     2.1  : bug fix, set filetype 'calendar'.
@@ -254,7 +260,6 @@
 "     *if you want to show week number, add this to your .vimrc:
 "
 "       set g:calendar_weeknm as below
-"       (Can't be used together with g:calendar_monday.)
 "
 "       let g:calendar_weeknm = 1 " WK01
 "       let g:calendar_weeknm = 2 " WK 1
@@ -318,7 +323,7 @@
 "       :echo calendar_version
 " GetLatestVimScripts: 52 1 :AutoInstall: calendar.vim
 
-let g:calendar_version = "2.2"
+let g:calendar_version = "2.5"
 if &compatible
   finish
 endif
@@ -356,6 +361,12 @@ if !exists("g:calendar_datetime")
  \&& g:calendar_datetime != 'title'
  \&& g:calendar_datetime != 'statusline')
   let g:calendar_datetime = 'title'
+endif
+if !exists("g:calendar_options")
+  let g:calendar_options="fdc=0 nonu"
+  if has("+relativenumber")
+    let g:calendar_options .= " nornu"
+  endif
 endif
 
 "*****************************************************************
@@ -453,7 +464,7 @@ function! s:CalendarDoAction(...)
 
   if b:CalendarDir
     let dir = 'H'
-    if !exists('g:calendar_monday') && exists('g:calendar_weeknm')
+    if exists('g:calendar_weeknm')
       let cnr = col('.') - (col('.')%(24+5)) + 1
     else
       let cnr = col('.') - (col('.')%(24)) + 1
@@ -678,33 +689,41 @@ function! Calendar(...)
         let vnweek = 7
       endif
       let vnweek = vnweek - 1
-    elseif exists('g:calendar_weeknm')
+    endif
+
+    if exists('g:calendar_weeknm')
       " if given g:calendar_weeknm, show week number(ref:ISO8601)
-      let viweek = vparam / 7
-      let vfweek = vparam % 7
-      if vnweek == 0
-        let vfweek = vfweek - 7
-        let viweek = viweek + 1
-      else
-        let vfweek = vfweek - vnweek
+
+      "vparam <= 1. day of month
+      "vnweek <= 1. weekday of month (0-6)
+      "viweek <= number of week
+      "vfweek <= 1. day of year
+
+      " mo di mi do fr sa so
+      " 6  5  4  3  2  1  0  vfweek
+      " 0  1  2  3  4  5  6  vnweek
+
+      let vfweek =((vparam % 7)  -vnweek+ 14-2) % 7
+      let viweek = (vparam - vfweek-2+7 ) / 7 +1 
+
+      if vfweek < 3
+         let viweek = viweek - 1
       endif
-      if vfweek <= 0 && viweek > 0
-        let viweek = viweek - 1
-        let vfweek = vfweek + 7
+
+      "vfweekl  <=year length
+      let vfweekl = 52
+      if (vfweek == 3)  
+        let vfweekl = 53
       endif
-      if vfweek > -4
-        let viweek = viweek + 1
-      endif
-      if vfweek > 3
-        let viweek = viweek + 1
-      endif
+
       if viweek == 0
-        let viweek = '??'
-      elseif viweek > 52
-        if vnweek != 0 && vnweek < 4
-          let viweek = 1
+        let viweek = 52
+        if ((vfweek == 2) && (((vyear-1) % 4) !=0)) 
+              \ || ((vfweek == 1) && (((vyear-1) % 4) ==0))
+          let viweek = 53
         endif
       endif
+
       let vcolumn = vcolumn + 5
     endif
 
@@ -814,7 +833,7 @@ function! Calendar(...)
 
       let vinpcur = vinpcur + 1
       if vinpcur % 7 == 0
-        if !exists('g:calendar_monday') && exists('g:calendar_weeknm')
+        if exists('g:calendar_weeknm')
           if g:calendar_mark != 'right'
             let vdisplay2=vdisplay2.' '
           endif
@@ -837,6 +856,11 @@ function! Calendar(...)
             endif
           endif
           let viweek = viweek + 1
+
+          if viweek > vfweekl
+            let viweek = 1
+          endif
+
         endif
         let vdisplay2=vdisplay2."\n"
         if g:calendar_mark == 'right'
@@ -851,7 +875,7 @@ function! Calendar(...)
         let vdisplay2=vdisplay2.'   '
         let vinpcur = vinpcur + 1
       endwhile
-      if !exists('g:calendar_monday') && exists('g:calendar_weeknm')
+      if exists('g:calendar_weeknm')
         if g:calendar_mark != 'right'
           let vdisplay2=vdisplay2.' '
         endif
@@ -993,28 +1017,32 @@ function! Calendar(...)
 
     " or not
     if dir
-      execute 'bo '.vheight.'split __Calendar'
+      silent execute 'bo '.vheight.'split __Calendar'
       setlocal winfixheight
     else
-      execute 'to '.vcolumn.'vsplit __Calendar'
+      silent execute 'to '.vcolumn.'vsplit __Calendar'
       setlocal winfixwidth
     endif
     call s:CalendarBuildKeymap(dir, vyear, vmnth)
     setlocal noswapfile
     setlocal buftype=nofile
     setlocal bufhidden=delete
-    setlocal nonumber
+    silent! exe "setlocal " . g:calendar_options
+    let nontext_columns = &foldcolumn + &nu * &numberwidth
+    if has("+relativenumber")
+      let nontext_columns += &rnu * &numberwidth
+    endif
     " Without this, the 'sidescrolloff' setting may cause the left side of the
     " calendar to disappear if the last inserted element is near the right
     " window border.
-    setlocal wrap
+    setlocal nowrap
     setlocal norightleft
-    setlocal foldcolumn=0
     setlocal modifiable
     setlocal nolist
     let b:Calendar='Calendar'
     setlocal filetype=calendar
     " is this a vertical (0) or a horizontal (1) split?
+    exe vcolumn + nontext_columns . "wincmd |"
   endif
   if g:calendar_datetime == "statusline"
     setlocal statusline=%{strftime('%c')}

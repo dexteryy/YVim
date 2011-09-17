@@ -109,7 +109,7 @@ let s:cvsFunctions = {}
 " Returns the executable used to invoke cvs suitable for use in a shell
 " command.
 function! s:Executable()
-	return shellescape(VCSCommandGetOption('VCSCommandCVSExec', 'cvs'))
+	return VCSCommandGetOption('VCSCommandCVSExec', 'cvs')
 endfunction
 
 " Function: s:DoCommand(cmd, cmdName, statusText, options) {{{2
@@ -410,23 +410,25 @@ com! CVSWatchers call s:CVSWatchers()
 " Section: Plugin command mappings {{{1
 
 let s:cvsExtensionMappings = {}
-let mappingInfo = [
-			\['CVSEdit', 'CVSEdit', 'e'],
-			\['CVSEditors', 'CVSEditors', 'E'],
-			\['CVSUnedit', 'CVSUnedit', 't'],
-			\['CVSWatchers', 'CVSWatchers', 'wv'],
-			\['CVSWatchAdd', 'CVSWatch add', 'wa'],
-			\['CVSWatchOff', 'CVSWatch off', 'wf'],
-			\['CVSWatchOn', 'CVSWatch on', 'wn'],
-			\['CVSWatchRemove', 'CVSWatch remove', 'wr']
-			\]
+if !exists("no_plugin_maps")
+	let mappingInfo = [
+				\['CVSEdit', 'CVSEdit', 'e'],
+				\['CVSEditors', 'CVSEditors', 'E'],
+				\['CVSUnedit', 'CVSUnedit', 't'],
+				\['CVSWatchers', 'CVSWatchers', 'wv'],
+				\['CVSWatchAdd', 'CVSWatch add', 'wa'],
+				\['CVSWatchOff', 'CVSWatch off', 'wf'],
+				\['CVSWatchOn', 'CVSWatch on', 'wn'],
+				\['CVSWatchRemove', 'CVSWatch remove', 'wr']
+				\]
 
-for [pluginName, commandText, shortCut] in mappingInfo
-	execute 'nnoremap <silent> <Plug>' . pluginName . ' :' . commandText . '<CR>'
-	if !hasmapto('<Plug>' . pluginName)
-		let s:cvsExtensionMappings[shortCut] = commandText
-	endif
-endfor
+	for [pluginName, commandText, shortCut] in mappingInfo
+		execute 'nnoremap <silent> <Plug>' . pluginName . ' :' . commandText . '<CR>'
+		if !hasmapto('<Plug>' . pluginName)
+			let s:cvsExtensionMappings[shortCut] = commandText
+		endif
+	endfor
+endif
 
 " Section: Plugin Registration {{{1
 let s:VCSCommandUtility = VCSCommandRegisterModule('CVS', expand('<sfile>'), s:cvsFunctions, s:cvsExtensionMappings)

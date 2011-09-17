@@ -70,7 +70,7 @@ let s:hgFunctions = {}
 " Returns the executable used to invoke hg suitable for use in a shell
 " command.
 function! s:Executable()
-	return shellescape(VCSCommandGetOption('VCSCommandHGExec', 'hg'))
+	return VCSCommandGetOption('VCSCommandHGExec', 'hg')
 endfunction
 
 " Function: s:DoCommand(cmd, cmdName, statusText, options) {{{2

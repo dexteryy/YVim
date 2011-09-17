@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: snippets.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 26 Oct 2009
+" Last Modified: 22 Apr 2011.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -25,14 +25,14 @@
 "=============================================================================
 
 " Only load this indent file when no other was loaded.
-if exists("b:did_indent")
+if exists('b:did_indent')
   finish
 endif
 let b:did_indent = 1
 
-setlocal expandtab
-setlocal shiftwidth=4
-setlocal softtabstop=4
+let s:save_cpo = &cpo
+set cpo&vim
+
 if !exists('b:undo_indent')
     let b:undo_indent = ''
 endif
@@ -54,5 +54,8 @@ function! SnippetsIndent()"{{{
 endfunction"}}}
 
 let b:undo_indent .= '
-    \ | setlocal expandtab< shiftwidth< softtabstop<
+    \ | setlocal indentexpr<
     \'
+
+let &cpo = s:save_cpo
+unlet s:save_cpo

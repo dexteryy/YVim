@@ -376,6 +376,9 @@ function! s:VCSCommandUtility.system(...)
 		set sxq=\"
 	endif
 	try
+		if exists('*iconv')
+			return iconv(call('system', a:000), &tenc, &enc)
+		endif
 		return call('system', a:000)
 	finally
 		if exists("save_sxq")
@@ -434,7 +437,7 @@ function! s:ExecuteExtensionMapping(mapping)
 	if !has_key(s:plugins[vcsType][2], a:mapping)
 		throw 'This extended mapping is not defined for ' . vcsType
 	endif
-	silent execute 'normal' ':' .  s:plugins[vcsType][2][a:mapping] . "\<CR>"
+	silent execute 'normal!' ':' .  s:plugins[vcsType][2][a:mapping] . "\<CR>"
 endfunction
 
 " Function: s:ExecuteVCSCommand(command, argList) {{{2
@@ -740,12 +743,12 @@ function! s:VCSAnnotate(bang, ...)
 			endif
 			let originalFileType = getbufvar(originalBuffer, '&ft')
 			let annotateFileType = getbufvar(annotateBuffer, '&ft')
-			execute "normal 0zR\<c-v>G/" . splitRegex . "/e\<cr>d"
+			execute "normal! 0zR\<c-v>G/" . splitRegex . "/e\<cr>d"
 			call setbufvar('%', '&filetype', getbufvar(originalBuffer, '&filetype'))
 			set scrollbind
 			leftabove vert new
-			normal 0P
-			execute "normal" . col('$') . "\<c-w>|"
+			normal! 0P
+			execute "normal!" . (col('$') + (&number ? &numberwidth : 0)). "\<c-w>|"
 			call s:SetupScratchBuffer('annotate', vcsType, originalBuffer, 'header')
 			wincmd l
 		endif
@@ -757,12 +760,12 @@ function! s:VCSAnnotate(bang, ...)
 				" No argument list means that we're annotating
 				" the current version, so jumping to the same
 				" line is the expected action.
-				execute "normal" line . 'G'
+				execute "normal!" line . 'G'
 				if has('folding')
 					" The execution of the buffer created autocommand
 					" re-folds the buffer.  Display the current line
 					" unfolded.
-					normal zv
+					normal! zv
 				endif
 			endif
 		endif
@@ -982,8 +985,9 @@ function! s:VCSVimDiff(...)
 								\ . '|call setbufvar('.originalBuffer.', ''&foldmethod'', '''.getbufvar(originalBuffer, '&foldmethod').''')'
 								\ . '|call setbufvar('.originalBuffer.', ''&foldlevel'', '''.getbufvar(originalBuffer, '&foldlevel').''')'
 								\ . '|call setbufvar('.originalBuffer.', ''&scrollbind'', '.getbufvar(originalBuffer, '&scrollbind').')'
+								\ . '|call setbufvar('.originalBuffer.', ''&cursorbind'', '.getbufvar(originalBuffer, '&cursorbind').')'
 								\ . '|call setbufvar('.originalBuffer.', ''&wrap'', '.getbufvar(originalBuffer, '&wrap').')'
-								\ . '|if &foldmethod==''manual''|execute ''normal zE''|endif'
+								\ . '|if &foldmethod==''manual''|execute ''normal! zE''|endif'
 					diffthis
 					wincmd w
 				else
@@ -1070,7 +1074,7 @@ function! VCSCommandChdir(directory)
 	if exists("*haslocaldir") && haslocaldir()
 		let command = 'lcd'
 	endif
-	execute command escape(a:directory, ' ')
+	execute command fnameescape(a:directory)
 endfunction
 
 " Function: VCSCommandChangeToCurrentFileDir() {{{2
@@ -1110,6 +1114,7 @@ endfunction
 function! VCSCommandRegisterModule(name, path, commandMap, mappingMap)
 	let s:plugins[a:name] = [a:path, a:commandMap, a:mappingMap]
 	if !empty(a:mappingMap)
+				\ && !exists("g:no_plugin_maps")
 				\ && !VCSCommandGetOption('VCSCommandDisableMappings', 0)
 				\ && !VCSCommandGetOption('VCSCommandDisableExtensionMappings', 0)
 		for shortcut in keys(a:mappingMap)
@@ -1157,7 +1162,7 @@ function! VCSCommandDoCommand(cmd, cmdName, statusText, options)
 	if match(a:cmd, '<VCSCOMMANDFILE>') > 0
 		let fullCmd = substitute(a:cmd, '<VCSCOMMANDFILE>', fileName, 'g')
 	else
-		let fullCmd = a:cmd . ' -- "' . fileName . '"'
+		let fullCmd = a:cmd . ' -- ' . shellescape(fileName)
 	endif
 
 	" Change to the directory of the current buffer.  This is done for CVS, but
@@ -1204,7 +1209,7 @@ function! VCSCommandDoCommand(cmd, cmdName, statusText, options)
 	" within a fold, but I prefer to simply unfold the result buffer altogether.
 
 	if has('folding')
-		normal zR
+		normal! zR
 	endif
 
 	$d
@@ -1281,6 +1286,14 @@ function! VCSCommandGetStatusLine()
 	endif
 endfunction
 
+function! VCSCommandSetVCSType(type)
+	if exists('b:VCSCommandBufferSetup')
+		unlet b:VCSCommandBufferSetup
+	endif
+	let b:VCSCommandVCSType = a:type
+	call s:SetupBuffer()
+endfunction
+
 " Section: Command definitions {{{1
 " Section: Primary commands {{{2
 com! -nargs=* VCSAdd call s:MarkOrigBufferForSetup(s:ExecuteVCSCommand('Add', [<f-args>]))
@@ -1309,23 +1322,25 @@ com! VCSCommandEnableBufferSetup call VCSCommandEnableBufferSetup()
 com! VCSReload let savedPlugins = s:plugins|let s:plugins = {}|call s:ClearMenu()|unlet! g:loaded_VCSCommand|runtime plugin/vcscommand.vim|for plugin in values(savedPlugins)|execute 'source' plugin[0]|endfor|unlet savedPlugins
 
 " Section: Plugin command mappings {{{1
-nnoremap <silent> <Plug>VCSAdd :VCSAdd<CR>
-nnoremap <silent> <Plug>VCSAnnotate :VCSAnnotate<CR>
-nnoremap <silent> <Plug>VCSCommit :VCSCommit<CR>
-nnoremap <silent> <Plug>VCSDelete :VCSDelete<CR>
-nnoremap <silent> <Plug>VCSDiff :VCSDiff<CR>
-nnoremap <silent> <Plug>VCSGotoOriginal :VCSGotoOriginal<CR>
-nnoremap <silent> <Plug>VCSClearAndGotoOriginal :VCSGotoOriginal!<CR>
-nnoremap <silent> <Plug>VCSInfo :VCSInfo<CR>
-nnoremap <silent> <Plug>VCSLock :VCSLock<CR>
-nnoremap <silent> <Plug>VCSLog :VCSLog<CR>
-nnoremap <silent> <Plug>VCSRevert :VCSRevert<CR>
-nnoremap <silent> <Plug>VCSReview :VCSReview<CR>
-nnoremap <silent> <Plug>VCSSplitAnnotate :VCSAnnotate!<CR>
-nnoremap <silent> <Plug>VCSStatus :VCSStatus<CR>
-nnoremap <silent> <Plug>VCSUnlock :VCSUnlock<CR>
-nnoremap <silent> <Plug>VCSUpdate :VCSUpdate<CR>
-nnoremap <silent> <Plug>VCSVimDiff :VCSVimDiff<CR>
+if !exists("no_plugin_maps")
+	nnoremap <silent> <Plug>VCSAdd :VCSAdd<CR>
+	nnoremap <silent> <Plug>VCSAnnotate :VCSAnnotate<CR>
+	nnoremap <silent> <Plug>VCSCommit :VCSCommit<CR>
+	nnoremap <silent> <Plug>VCSDelete :VCSDelete<CR>
+	nnoremap <silent> <Plug>VCSDiff :VCSDiff<CR>
+	nnoremap <silent> <Plug>VCSGotoOriginal :VCSGotoOriginal<CR>
+	nnoremap <silent> <Plug>VCSClearAndGotoOriginal :VCSGotoOriginal!<CR>
+	nnoremap <silent> <Plug>VCSInfo :VCSInfo<CR>
+	nnoremap <silent> <Plug>VCSLock :VCSLock<CR>
+	nnoremap <silent> <Plug>VCSLog :VCSLog<CR>
+	nnoremap <silent> <Plug>VCSRevert :VCSRevert<CR>
+	nnoremap <silent> <Plug>VCSReview :VCSReview<CR>
+	nnoremap <silent> <Plug>VCSSplitAnnotate :VCSAnnotate!<CR>
+	nnoremap <silent> <Plug>VCSStatus :VCSStatus<CR>
+	nnoremap <silent> <Plug>VCSUnlock :VCSUnlock<CR>
+	nnoremap <silent> <Plug>VCSUpdate :VCSUpdate<CR>
+	nnoremap <silent> <Plug>VCSVimDiff :VCSVimDiff<CR>
+endif
 
 " Section: Default mappings {{{1
 
@@ -1349,7 +1364,7 @@ let s:defaultMappings = [
 			\['v', 'VCSVimDiff'],
 			\]
 
-if !VCSCommandGetOption('VCSCommandDisableMappings', 0)
+if !exists("g:no_plugin_maps") && !VCSCommandGetOption('VCSCommandDisableMappings', 0)
 	for [s:shortcut, s:vcsFunction] in VCSCommandGetOption('VCSCommandMappings', s:defaultMappings)
 		call s:CreateMapping(s:shortcut, '<Plug>' . s:vcsFunction, '''' . s:vcsFunction . '''')
 	endfor

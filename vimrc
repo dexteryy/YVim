@@ -74,8 +74,10 @@ set nobackup
 set undodir=~/.vim/undos
 set undofile
 
+set expandtab
 set shiftwidth=4
 set tabstop=4
+set softtabstop=4
 set nowrap
 set wildmenu
 set matchpairs=(:),{:},[:],<:>
@@ -125,9 +127,9 @@ let g:xml_use_xhtml = 1 "for xml.vim
 
 if has("gui_macvim")
 
-	set columns=171
-	set lines=58
-	winpos 52 42 
+	"set columns=171
+	"set lines=58
+	"winpos 52 42 
 
 	let macvim_skip_cmd_opt_movement = 1
 	let macvim_hig_shift_movement = 1
@@ -157,9 +159,15 @@ endif
 autocmd! bufwritepost .vimrc source ~/.vimrc
 autocmd! bufwritepost vimrc source ~/.vimrc
 
-let g:jslint_neverAutoRun=1
+"let g:jslint_neverAutoRun=1
 
-"autocmd BufEnter * lcd %:p:h
+
+if exists('+autochdir')
+	set autochdir
+else
+	autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+endif
+
 
 " filetype
 autocmd BufNewFile,BufRead *.vm setlocal ft=html
@@ -171,6 +179,7 @@ autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
 
 
 " language support
+autocmd FileType javascript setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
@@ -277,7 +286,7 @@ let g:mapleader=","
 map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
 map <leader>q :q<cr>
 
-nnoremap <leader><space> :noh<cr>
+nnoremap <leader><space> :noh<cr>:set nocrb<cr>
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -378,17 +387,19 @@ nmap <silent> <leader>tl <Plug>TaskList
 nmap <silent> <leader>tg :TlistToggle<CR>
 "let Tlist_Use_SingleClick=1
 "Tlist_Process_File_Always=1
-let Tlist_File_Fold_Auto_Close=1
-let Tlist_Exit_OnlyWindow = 1
-let Tlist_Show_Menu=1
-let Tlist_GainFocus_On_ToggleOpen=1
-let Tlist_Close_OnSelect=1
-let Tlist_Compact_Format=1
-let Tlist_Use_Right_Window = 1
-let Tlist_WinWidth = 30
-let Tlist_Inc_Winwidth = 0
+"let Tlist_File_Fold_Auto_Close=1
+"let Tlist_Exit_OnlyWindow = 1
+"let Tlist_Show_Menu=1
+"let Tlist_GainFocus_On_ToggleOpen=1
+"let Tlist_Close_OnSelect=1
+"let Tlist_Compact_Format=1
+"let Tlist_Use_Right_Window = 1
+"let Tlist_WinWidth = 30
+"let Tlist_Inc_Winwidth = 0
 
-let g:tlist_javascript_settings = 'javascript;f:function;c:class;o:object;m:method;s:string;a:array;n:constant'
+"let g:tlist_javascript_settings = 'javascript;f:function;c:class;o:object;m:method;s:string;a:array;n:constant'
+let Tlist_JS_Settings = 'javascript;s:string;a:array;o:object;f:function'
+
 
 " winManager setting
 "let g:winManagerWindowLayout="BufExplorer,FileExplorer|taglist" 
@@ -509,33 +520,32 @@ let g:calendar_diary = '~/.vim/diary'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-function Send_to_Screen(text)
-  if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
-    call Screen_Vars()
-  end
+"function Send_to_Screen(text)
+  "if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
+    "call Screen_Vars()
+  "end
 
-  echo system("screen -S " . g:screen_sessionname . " -p " . g:screen_windowname . " -X stuff '" . substitute(a:text, "'", "'\\\\''", 'g') . "'")
-endfunction
+  "echo system("screen -S " . g:screen_sessionname . " -p " . g:screen_windowname . " -X stuff '" . substitute(a:text, "'", "'\\\\''", 'g') . "'")
+"endfunction
 
-function Screen_Session_Names(A,L,P)
-  return system("screen -ls | awk '/Attached/ {print $1}'")
-endfunction
+"function Screen_Session_Names(A,L,P)
+  "return system("screen -ls | awk '/Attached/ {print $1}'")
+"endfunction
 
-function Screen_Vars()
-  if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
-    let g:screen_sessionname = ""
-    let g:screen_windowname = "0"
-  end
+"function Screen_Vars()
+  "if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
+    "let g:screen_sessionname = ""
+    "let g:screen_windowname = "0"
+  "end
 
-  let g:screen_sessionname = input("session name: ", "", "custom,Screen_Session_Names")
-  let g:screen_windowname = input("window name: ", g:screen_windowname)
-endfunction
+  "let g:screen_sessionname = input("session name: ", "", "custom,Screen_Session_Names")
+  "let g:screen_windowname = input("window name: ", g:screen_windowname)
+"endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-vmap <C-c><C-c> "ry :call Send_to_Screen(@r)<CR>
-nmap <C-c><C-c> vip<C-c><C-c>
+"vmap <C-c><C-c> "ry :call Send_to_Screen(@r)<CR>
+"nmap <C-c><C-c> vip<C-c><C-c>
 
-nmap <C-c>v :call Screen_Vars()<CR>
-
+"nmap <C-c>v :call Screen_Vars()<CR>
 

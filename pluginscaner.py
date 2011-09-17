@@ -20,15 +20,13 @@ class HttpPool():
 
     def __init__(self):
         self.workers = []
-        #self.lock = threading.Lock()
+        self.lock = threading.Lock()
 
     def add(self, url, callback=None, args=()):
-        #lock = self.lock
+        lock = self.lock
 
         def asynHttpRequest(*args, **opt):
-            #lock.acquire()
             result = urllib.urlopen(url)
-            #lock.release()
             data = result.read()
 
             retry = opt.get("retry", 0)
@@ -36,11 +34,15 @@ class HttpPool():
                 retry += 1
                 return asynHttpRequest(*args, retry=retry)
 
+            lock.acquire()
+
             if callback:
                 callback({
                     "url": url,
                     "data": data
                 }, *args)
+
+            lock.release()
 
         self.workers.append(
             threading.Thread(target=asynHttpRequest, args=args)
@@ -121,6 +123,7 @@ def main(argv=None):
         checkPool = HttpPool()
 
         def searchPlugin(res, plugin):
+            print "search: ", plugin["name"]
             items = json.loads(res["data"]).get("items", [])
             if not len(items):
                 return
@@ -141,6 +144,7 @@ def main(argv=None):
 
 
         def parseInfo(res, plugin):
+            print "check: ", plugin["name"]
             backup = plugin.copy()
             try:
                 pq = PyQuery(res["data"])

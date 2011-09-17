@@ -63,7 +63,7 @@ let s:bzrFunctions = {}
 " Returns the executable used to invoke bzr suitable for use in a shell
 " command.
 function! s:Executable()
-	return shellescape(VCSCommandGetOption('VCSCommandBZRExec', 'bzr'))
+	return VCSCommandGetOption('VCSCommandBZRExec', 'bzr')
 endfunction
 
 " Function: s:DoCommand(cmd, cmdName, statusText) {{{2
@@ -123,7 +123,7 @@ function! s:bzrFunctions.Annotate(argList)
 
   let resultBuffer = s:DoCommand('blame' . options, 'annotate', caption, {})
   if resultBuffer > 0
-    normal 1G2dd
+    normal! 1G2dd
   endif
   return resultBuffer
 endfunction

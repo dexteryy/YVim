@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: keyword_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 20 Aug 2010
+" Last Modified: 22 Jul 2011.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -24,6 +24,9 @@
 " }}}
 "=============================================================================
 
+let s:save_cpo = &cpo
+set cpo&vim
+
 let s:source = {
       \ 'name' : 'keyword_complete',
       \ 'kind' : 'complfunc',
@@ -32,9 +35,6 @@ let s:source = {
 function! s:source.initialize()"{{{
   " Set rank.
   call neocomplcache#set_dictionary_helper(g:neocomplcache_plugin_rank, 'keyword_complete', 5)
-
-  " Set completion length.
-  call neocomplcache#set_completion_length('keyword_complete', 0)
 
   " Initialize.
   for l:plugin in values(neocomplcache#available_plugins())
@@ -64,6 +64,7 @@ function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)"{{{
     if (has_key(g:neocomplcache_plugin_disable, l:name)
         \ && g:neocomplcache_plugin_disable[l:name])
         \ || len(a:cur_keyword_str) < neocomplcache#get_completion_length(l:name)
+        \ || neocomplcache#is_plugin_locked(l:name)
       " Skip plugin.
       continue
     endif
@@ -91,5 +92,8 @@ endfunction"}}}
 function! neocomplcache#sources#keyword_complete#define()"{{{
   return s:source
 endfunction"}}}
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
 
 " vim: foldmethod=marker
