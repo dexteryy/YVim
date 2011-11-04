@@ -50,7 +50,9 @@ if v:version < 700
 	finish
 endif
 
-runtime plugin/vcscommand.vim
+if !exists('g:loaded_VCSCommand')
+	runtime plugin/vcscommand.vim
+endif
 
 if !executable(VCSCommandGetOption('VCSCommandSVNExec', 'svn'))
 	" SVN is not installed
@@ -89,22 +91,17 @@ endfunction
 
 " Function: s:svnFunctions.Identify(buffer) {{{2
 function! s:svnFunctions.Identify(buffer)
-	let fileName = resolve(bufname(a:buffer))
-	if isdirectory(fileName)
-		let directoryName = fileName
-	else
-		let directoryName = fnamemodify(fileName, ':h')
-	endif
-	if strlen(directoryName) > 0
-		let svnDir = directoryName . '/.svn'
-	else
-		let svnDir = '.svn'
-	endif
-	if isdirectory(svnDir)
-		return 1
-	else
-		return 0
-	endif
+	let oldCwd = VCSCommandChangeToCurrentFileDir(resolve(bufname(a:buffer)))
+	try
+		call s:VCSCommandUtility.system(s:Executable() . ' info .')
+		if(v:shell_error)
+			return 0
+		else
+			return g:VCSCOMMAND_IDENTIFY_EXACT
+		endif
+	finally
+		call VCSCommandChdir(oldCwd)
+	endtry
 endfunction
 
 " Function: s:svnFunctions.Add() {{{2
@@ -115,7 +112,7 @@ endfunction
 " Function: s:svnFunctions.Annotate(argList) {{{2
 function! s:svnFunctions.Annotate(argList)
 	if len(a:argList) == 0
-		if &filetype == 'SVNannotate'
+		if &filetype ==? 'svnannotate'
 			" Perform annotation of the version indicated by the current line.
 			let caption = matchstr(getline('.'),'\v^\s+\zs\d+')
 			let options = ' -r' . caption
@@ -187,7 +184,7 @@ endfunction
 function! s:svnFunctions.GetBufferInfo()
 	let originalBuffer = VCSCommandGetOriginalBuffer(bufnr('%'))
 	let fileName = bufname(originalBuffer)
-	let statusText = s:VCSCommandUtility.system(s:Executable() . ' status --non-interactive -vu -- "' . fileName . '"')
+	let statusText = s:VCSCommandUtility.system(s:Executable() . ' status --non-interactive -v -- "' . fileName . '"')
 	if(v:shell_error)
 		return []
 	endif

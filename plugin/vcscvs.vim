@@ -89,7 +89,9 @@ if v:version < 700
 	finish
 endif
 
-runtime plugin/vcscommand.vim
+if !exists('g:loaded_VCSCommand')
+	runtime plugin/vcscommand.vim
+endif
 
 if !executable(VCSCommandGetOption('VCSCommandCVSExec', 'cvs'))
 	" CVS is not installed
@@ -180,7 +182,7 @@ endfunction
 " Function: s:cvsFunctions.Annotate(argList) {{{2
 function! s:cvsFunctions.Annotate(argList)
 	if len(a:argList) == 0
-		if &filetype == 'CVSannotate'
+		if &filetype ==? 'cvsannotate'
 			" This is a CVSAnnotate buffer.  Perform annotation of the version
 			" indicated by the current line.
 			let caption = matchstr(getline('.'),'\v^[0-9.]+')

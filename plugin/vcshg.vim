@@ -50,7 +50,9 @@ if v:version < 700
 	finish
 endif
 
-runtime plugin/vcscommand.vim
+if !exists('g:loaded_VCSCommand')
+	runtime plugin/vcscommand.vim
+endif
 
 if !executable(VCSCommandGetOption('VCSCommandHGExec', 'hg'))
 	" HG is not installed
@@ -110,10 +112,10 @@ endfunction
 " Function: s:hgFunctions.Annotate(argList) {{{2
 function! s:hgFunctions.Annotate(argList)
 	if len(a:argList) == 0
-		if &filetype == 'HGannotate'
+		if &filetype ==? 'hgannotate'
 			" Perform annotation of the version indicated by the current line.
-			let caption = matchstr(getline('.'),'\v^\s+\zs\d+')
-			let options = ' -r' . caption
+			let caption = matchstr(getline('.'),'\v^\s*\w+\s+\zs\d+')
+			let options = ' -un -r' . caption
 		else
 			let caption = ''
 			let options = ' -un'

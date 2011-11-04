@@ -43,7 +43,9 @@ if v:version < 700
   finish
 endif
 
-runtime plugin/vcscommand.vim
+if !exists('g:loaded_VCSCommand')
+	runtime plugin/vcscommand.vim
+endif
 
 if !executable(VCSCommandGetOption('VCSCommandBZRExec', 'bzr'))
   " BZR is not installed
@@ -105,7 +107,7 @@ endfunction
 " Function: s:bzrFunctions.Annotate(argList) {{{2
 function! s:bzrFunctions.Annotate(argList)
   if len(a:argList) == 0
-    if &filetype == 'BZRannotate'
+    if &filetype ==? 'bzrannotate'
       " Perform annotation of the version indicated by the current line.
       let caption = matchstr(getline('.'),'\v^\s+\zs\d+')
       let options = ' -r' . caption

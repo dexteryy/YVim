@@ -379,6 +379,9 @@ let g:bufExplorerResize=1
 " 默认键映射 <leader>bv :VSBufExplorer
 "
 
+let g:quickrun_no_default_key_mappings = 1
+silent! map <unique> <Leader>R <Plug>(quickrun)
+
 " tasklist
 nmap <silent> <leader>tl <Plug>TaskList
 
@@ -452,9 +455,27 @@ endif
 
 
 
-"let NERDCreateDefaultMappings=0
-let NERDShutUp=1
-let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
+let NERDCreateDefaultMappings=0
+"let NERDShutUp=1
+"let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
+nmap <leader>nc <plug>NERDCommenterComment
+vmap <leader>nc <plug>NERDCommenterComment
+nmap <leader>n<space> <plug>NERDCommenterToggle
+vmap <leader>n<space> <plug>NERDCommenterToggle
+nmap <leader>nm <plug>NERDCommenterMinimal
+vmap <leader>nm <plug>NERDCommenterMinimal
+nmap <leader>ns <plug>NERDCommenterSexy
+vmap <leader>ns <plug>NERDCommenterSexy
+nmap <leader>ni <plug>NERDCommenterInvert
+vmap <leader>ni <plug>NERDCommenterInvert
+nmap <leader>nn <plug>NERDCommenterNest
+vmap <leader>nn <plug>NERDCommenterNest
+nmap <leader>nu <plug>NERDCommenterUncomment
+vmap <leader>nu <plug>NERDCommenterUncomment
+nmap <leader>nl <plug>NERDCommenterAlignLeft
+vmap <leader>nl <plug>NERDCommenterAlignLeft
+nmap <leader>nb <plug>NERDCommenterAlignBoth
+vmap <leader>nb <plug>NERDCommenterAlignBoth
 
 let VCSCommandSVKExec='disabled no such executable'
 nmap <leader>cd :VCSVimDiff

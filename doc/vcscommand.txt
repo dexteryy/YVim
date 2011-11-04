@@ -447,6 +447,7 @@ The following variables are available:
 |VCSCommandSVNDiffOpt|
 |VCSCommandSVNExec|
 |VCSCommandVCSTypeOverride|
+|VCSCommandVCSTypePreference|
 
 VCSCommandCommitOnWrite				*VCSCommandCommitOnWrite*
 
@@ -592,6 +593,13 @@ item in the high-level List is a List containing two elements.  The first
 element is a regular expression that will be matched against the full file
 name of a given buffer.  If it matches, the second element will be used as the
 VCS type.
+
+VCSCommandVCSTypePreference			*VCSCommandVCSTypePreference*
+
+This variable allows the VCS type detection to be weighted towards a specific
+VCS, in case more than one potential VCS is detected as useable.  The format
+of the variable is either a list or a space-separated string containing the
+ordered-by-preference abbreviations of the preferred VCS types.
 
 5.2 VCSCommand events				*vcscommand-events*
 

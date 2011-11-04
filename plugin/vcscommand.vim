@@ -272,6 +272,13 @@
 "   full file name of a given buffer.  If it matches, the second element will
 "   be used as the VCS type.
 "
+" VCSCommandVCSTypePreference
+"   This variable allows the VCS type detection to be weighted towards a
+"   specific VCS, in case more than one potential VCS is detected as useable.
+"   The format of the variable is either a list or a space-separated string
+"   containing the ordered-by-preference abbreviations of the preferred VCS
+"   types.
+"
 " Event documentation {{{2
 "   For additional customization, VCSCommand.vim uses User event autocommand
 "   hooks.  Each event is in the VCSCommand group, and different patterns
@@ -350,8 +357,8 @@ let s:VCSCommandUtility = {}
 " plugin-specific information:  {vcs -> [script, {command -> function}, {key -> mapping}]}
 let s:plugins = {}
 
-" temporary values of overridden configuration variables
-let s:optionOverrides = {}
+" Stack of dictionaries representing nested options
+let s:executionContext = []
 
 " state flag used to vary behavior of certain automated actions
 let s:isEditFileRunning = 0
@@ -376,15 +383,27 @@ function! s:VCSCommandUtility.system(...)
 		set sxq=\"
 	endif
 	try
-		if exists('*iconv')
-			return iconv(call('system', a:000), &tenc, &enc)
+		let output = call('system', a:000)
+		if exists('*iconv') && has('multi_byte')
+			if(strlen(&tenc) && &tenc != &enc)
+				let output = iconv(output, &tenc, &enc)
+			else
+				let originalBuffer = VCSCommandGetOriginalBuffer(VCSCommandGetOption('VCSCommandEncodeAsFile', 0))
+				if originalBuffer
+					let fenc = getbufvar(originalBuffer, '&fenc')
+					if fenc != &enc
+						let output = iconv(output, fenc, &enc)
+					endif
+				endif
+			endif
+
 		endif
-		return call('system', a:000)
 	finally
 		if exists("save_sxq")
 			let &sxq = save_sxq
 		endif
 	endtry
+	return output
 endfunction
 
 " Function: s:VCSCommandUtility.addMenuItem(shortcut, command) {{{2
@@ -394,6 +413,20 @@ function! s:VCSCommandUtility.addMenuItem(shortcut, command)
 	if s:menuEnabled
 	    exe 'amenu <silent> '.s:menuPriority.' '.s:menuRoot.'.'.a:shortcut.' '.a:command
 	endif
+endfunction
+
+" Function: s:VCSCommandUtility.pushContext(context) {{{2
+" Adds a dictionary containing current options to the stack.
+
+function! s:VCSCommandUtility.pushContext(context)
+	call insert(s:executionContext, a:context)
+endfunction
+
+" Function: s:VCSCommandUtility.popContext() {{{2
+" Removes a dictionary containing current options from the stack.
+
+function! s:VCSCommandUtility.popContext()
+	call remove(s:executionContext, 0)
 endfunction
 
 " Function: s:ClearMenu() {{{2
@@ -545,6 +578,64 @@ function! s:EditFile(command, originalBuffer, statusText)
 	endtry
 endfunction
 
+" Function:  s:IdentifyVCSType() {{{2
+" This function implements the non-cached identification strategy for
+" VcsCommandGetVCSType().
+"
+" Returns:  VCS type name identified for the given buffer; an exception is
+" thrown in case no type can be identified.
+
+function!  s:IdentifyVCSType(buffer)
+	if exists("g:VCSCommandVCSTypeOverride")
+		let fullpath = fnamemodify(bufname(a:buffer), ':p')
+		for [path, vcsType] in g:VCSCommandVCSTypeOverride
+			if match(fullpath, path) > -1
+				return vcsType
+			endif
+		endfor
+	endif
+	let matches = []
+	let exactMatch = ''
+	let exactMatchCount = 0
+	for vcsType in keys(s:plugins)
+		let identified = s:plugins[vcsType][1].Identify(a:buffer)
+		if identified
+			if identified == g:VCSCOMMAND_IDENTIFY_EXACT
+				let exactMatch = vcsType
+				let exactMatchCount += 1
+			endif
+			call add(matches, [vcsType, identified])
+		endif
+	endfor
+	if len(matches) == 1
+		return matches[0][0]
+	elseif len(matches) == 0
+		throw 'No suitable plugin'
+	else
+		let preferences = VCSCommandGetOption("VCSCommandVCSTypePreference", [])
+		if len(preferences) > 0
+			if type(preferences) == 1
+				let listPreferences = split(preferences, '\W\+')
+				unlet preferences
+				let preferences = listPreferences
+			endif
+			for preferred in preferences
+				for [vcsType, identified] in matches
+					if vcsType ==? preferred
+						return vcsType
+					endif
+				endfor
+			endfor
+		endif
+
+		if exactMatchCount == 1
+			return exactMatch
+		endif
+
+		throw 'can''t identify VCS type for current buffer due to too many matching VCS:  ' . join(map(matches, 'v:val[0]'))
+	endif
+endfunction
+
 " Function: s:SetupScratchBuffer(command, vcsType, originalBuffer, statusText) {{{2
 " Creates convenience buffer variables and the name of a vcscommand result
 " buffer.
@@ -623,21 +714,6 @@ function! s:MarkOrigBufferForSetup(buffer)
 		endif
 	endif
 	return a:buffer
-endfunction
-
-" Function: s:OverrideOption(option, [value]) {{{2
-" Provides a temporary override for the given VCS option.  If no value is
-" passed, the override is disabled.
-
-function! s:OverrideOption(option, ...)
-	if a:0 == 0
-		call remove(s:optionOverrides[a:option], -1)
-	else
-		if !has_key(s:optionOverrides, a:option)
-			let s:optionOverrides[a:option] = []
-		endif
-		call add(s:optionOverrides[a:option], a:1)
-	endif
 endfunction
 
 " Function: s:WipeoutCommandBuffers() {{{2
@@ -721,6 +797,7 @@ endfunction
 
 " Function: s:VCSAnnotate(...) {{{2
 function! s:VCSAnnotate(bang, ...)
+	call s:VCSCommandUtility.pushContext({'VCSCommandEncodeAsFile': bufnr('%')})
 	try
 		let line = line('.')
 		let currentBuffer = bufnr('%')
@@ -743,7 +820,15 @@ function! s:VCSAnnotate(bang, ...)
 			endif
 			let originalFileType = getbufvar(originalBuffer, '&ft')
 			let annotateFileType = getbufvar(annotateBuffer, '&ft')
-			execute "normal! 0zR\<c-v>G/" . splitRegex . "/e\<cr>d"
+
+			let saveselection = &selection
+			set selection=inclusive
+			try
+				execute "normal! 0zR\<c-v>G/" . splitRegex . "/e\<cr>d"
+			finally
+				let &selection = saveselection
+			endtry
+
 			call setbufvar('%', '&filetype', getbufvar(originalBuffer, '&filetype'))
 			set scrollbind
 			leftabove vert new
@@ -774,6 +859,8 @@ function! s:VCSAnnotate(bang, ...)
 	catch
 		call s:ReportError(v:exception)
 		return -1
+	finally
+		call s:VCSCommandUtility.popContext()
 	endtry
 endfunction
 
@@ -841,6 +928,11 @@ endfunction
 " Function: s:VCSFinishCommit(logMessageList, originalBuffer) {{{2
 function! s:VCSFinishCommit(logMessageList, originalBuffer)
 	let messageFileName = tempname()
+	if exists('*iconv') && has('multi_byte')
+		if(strlen(&tenc) && &tenc != &enc)
+			call map(a:logMessageList, 'iconv(v:val, &enc, &tenc)')
+		endif
+	endif
 	call writefile(a:logMessageList, messageFileName)
 	try
 		let resultBuffer = s:ExecuteVCSCommand('Commit', [messageFileName])
@@ -877,21 +969,31 @@ function! s:VCSGotoOriginal(bang)
 endfunction
 
 function! s:VCSDiff(...)  "{{{2
-	let resultBuffer = s:ExecuteVCSCommand('Diff', a:000)
-	if resultBuffer > 0
-		let &filetype = 'diff'
-	elseif resultBuffer == 0
-		echomsg 'No differences found'
-	endif
-	return resultBuffer
+	call s:VCSCommandUtility.pushContext({'VCSCommandEncodeAsFile': bufnr('%')})
+	try
+		let resultBuffer = s:ExecuteVCSCommand('Diff', a:000)
+		if resultBuffer > 0
+			let &filetype = 'diff'
+		elseif resultBuffer == 0
+			echomsg 'No differences found'
+		endif
+		return resultBuffer
+	finally
+		call s:VCSCommandUtility.popContext()
+	endtry
 endfunction
 
 function! s:VCSReview(...)  "{{{2
-	let resultBuffer = s:ExecuteVCSCommand('Review', a:000)
-	if resultBuffer > 0
-		let &filetype = getbufvar(b:VCSCommandOriginalBuffer, '&filetype')
-	endif
-	return resultBuffer
+	call s:VCSCommandUtility.pushContext({'VCSCommandEncodeAsFile': bufnr('%')})
+	try
+		let resultBuffer = s:ExecuteVCSCommand('Review', a:000)
+		if resultBuffer > 0
+			let &filetype = getbufvar(b:VCSCommandOriginalBuffer, '&filetype')
+		endif
+		return resultBuffer
+	finally
+		call s:VCSCommandUtility.popContext()
+	endtry
 endfunction
 
 " Function: s:VCSVimDiff(...) {{{2
@@ -931,11 +1033,11 @@ function! s:VCSVimDiff(...)
 				diffthis
 				let t:vcsCommandVimDiffScratchList = [resultBuffer]
 				" If no split method is defined, cheat, and set it to vertical.
+				call s:VCSCommandUtility.pushContext({'VCSCommandSplit': orientation})
 				try
-					call s:OverrideOption('VCSCommandSplit', orientation)
 					let resultBuffer = s:VCSReview(a:2)
 				finally
-					call s:OverrideOption('VCSCommandSplit')
+					call s:VCSCommandUtility.popContext()
 				endtry
 				if resultBuffer < 0
 					echomsg 'Can''t open revision ' . a:1
@@ -945,22 +1047,16 @@ function! s:VCSVimDiff(...)
 				diffthis
 				let t:vcsCommandVimDiffScratchList += [resultBuffer]
 			else
-				" Add new buffer
-				call s:OverrideOption('VCSCommandEdit', 'split')
+				" Add new buffer.  Force splitting behavior, otherwise why use vimdiff?
+				call s:VCSCommandUtility.pushContext({'VCSCommandEdit': 'split', 'VCSCommandSplit': orientation})
 				try
-					" Force splitting behavior, otherwise why use vimdiff?
-					call s:OverrideOption('VCSCommandSplit', orientation)
-					try
-						if(a:0 == 0)
-							let resultBuffer = s:VCSReview()
-						else
-							let resultBuffer = s:VCSReview(a:1)
-						endif
-					finally
-						call s:OverrideOption('VCSCommandSplit')
-					endtry
+					if(a:0 == 0)
+						let resultBuffer = s:VCSReview()
+					else
+						let resultBuffer = s:VCSReview(a:1)
+					endif
 				finally
-					call s:OverrideOption('VCSCommandEdit')
+					call s:VCSCommandUtility.popContext()
 				endtry
 				if resultBuffer < 0
 					echomsg 'Can''t open current revision'
@@ -1021,49 +1117,31 @@ endfunction
 " Section: Public functions {{{1
 
 " Function: VCSCommandGetVCSType() {{{2
-" Sets the b:VCSCommandVCSType variable in the given buffer to the
-" appropriate source control system name.
+" This function sets the b:VCSCommandVCSType variable in the given buffer to the
+" appropriate source control system name and returns the same name.
 "
-" This uses the Identify extension function to test the buffer.  If the
-" Identify function returns VCSCOMMAND_IDENTIFY_EXACT, the match is considered
-" exact.  If the Identify function returns VCSCOMMAND_IDENTIFY_INEXACT, the
-" match is considered inexact, and is only applied if no exact match is found.
-" Multiple inexact matches is currently considered an error.
+" Returns:  VCS type name identified for the given buffer.  An exception is
+" thrown if no type can be identified.
+"
+" Rules for determining type:
+"   1. use previously-cached value
+"   2. use value from 'VCSCommandVCSTypeOverride'
+"   3. use single match 
+"   4. use first matching value from 'VCSCommandTypePreference'
+"   5. use single exact match
+"   6. error if multiple matching types
+"   7. error if no matching types
 
 function! VCSCommandGetVCSType(buffer)
-	let vcsType = getbufvar(a:buffer, 'VCSCommandVCSType')
-	if strlen(vcsType) > 0
-		return vcsType
-	endif
-	if exists("g:VCSCommandVCSTypeOverride")
-		let fullpath = fnamemodify(bufname(a:buffer), ':p')
-		for [path, vcsType] in g:VCSCommandVCSTypeOverride
-			if match(fullpath, path) > -1
-				call setbufvar(a:buffer, 'VCSCommandVCSType', vcsType)
-				return vcsType
-			endif
-		endfor
-	endif
-	let matches = []
-	for vcsType in keys(s:plugins)
-		let identified = s:plugins[vcsType][1].Identify(a:buffer)
-		if identified
-			if identified == g:VCSCOMMAND_IDENTIFY_EXACT
-				let matches = [vcsType]
-				break
-			else
-				let matches += [vcsType]
-			endif
+	let vcsType = VCSCommandGetOption('VCSCommandVCSTypeExplicitOverride', '')
+	if len(vcsType) == 0
+		let vcsType = getbufvar(a:buffer, 'VCSCommandVCSType')
+		if strlen(vcsType) == 0
+			let vcsType = s:IdentifyVCSType(a:buffer)
+			call setbufvar(a:buffer, 'VCSCommandVCSType', vcsType)
 		endif
-	endfor
-	if len(matches) == 1
-		call setbufvar(a:buffer, 'VCSCommandVCSType', matches[0])
-		return matches[0]
-	elseif len(matches) == 0
-		throw 'No suitable plugin'
-	else
-		throw 'Too many matching VCS:  ' . join(matches)
 	endif
+	return vcsType
 endfunction
 
 " Function: VCSCommandChdir(directory) {{{2
@@ -1074,7 +1152,11 @@ function! VCSCommandChdir(directory)
 	if exists("*haslocaldir") && haslocaldir()
 		let command = 'lcd'
 	endif
-	execute command fnameescape(a:directory)
+	if exists("*fnameescape")
+		execute command fnameescape(a:directory)
+	else
+		execute command escape(a:directory, ' ')
+	endif
 endfunction
 
 " Function: VCSCommandChangeToCurrentFileDir() {{{2
@@ -1226,9 +1308,12 @@ endfunction
 " searched in the window, buffer, then global spaces.
 
 function! VCSCommandGetOption(name, default)
-	if has_key(s:optionOverrides, a:name) && len(s:optionOverrides[a:name]) > 0
-		return s:optionOverrides[a:name][-1]
-	elseif exists('w:' . a:name)
+	for context in s:executionContext
+		if has_key(context, a:name)
+			return context[a:name]
+		endif
+	endfor
+	if exists('w:' . a:name)
 		return w:{a:name}
 	elseif exists('b:' . a:name)
 		return b:{a:name}
