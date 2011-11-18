@@ -539,6 +539,12 @@ autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 let g:calendar_diary = '~/.vim/diary'
 
 
+"Slimv
+let g:slimv_leader = ",l"
+"let g:slimv_lisp = "/usr/local/bin/ccl"
+"let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"ccl --load ~/.vim/slime/start-swank.lisp\""' 
+
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 "function Send_to_Screen(text)
