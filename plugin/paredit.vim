@@ -1,7 +1,7 @@
 " paredit.vim:
 "               Paredit mode for Slimv
-" Version:      0.9.0
-" Last Change:  26 Sep 2011
+" Version:      0.9.5
+" Last Change:  08 Feb 2012
 " Maintainer:   Tamas Kovacs <kovisoft at gmail dot com>
 " License:      This file is placed in the public domain.
 "               No warranty, express or implied.
@@ -200,7 +200,7 @@ function! PareditOpfunc( func, type, visualmode )
     let ve_save = &virtualedit
     set virtualedit=all
     let regname = v:register
-    let reg_save = @@
+    let save_0 = getreg( '0' )
 
     if a:visualmode  " Invoked from Visual mode, use '< and '> marks.
         silent exe "normal! `<" . a:type . "`>"
@@ -222,6 +222,10 @@ function! PareditOpfunc( func, type, visualmode )
     else
         silent exe "normal! y"
         let putreg = getreg( '"' )
+        if a:func == 'd'
+            " Register "0 is corrupted by the above 'y' command
+            call setreg( '0', save_0 ) 
+        endif
 
         " Find and keep unbalanced matched characters in the region
         let endingwhitespace = matchstr(putreg, "\\s*$")
@@ -233,7 +237,7 @@ function! PareditOpfunc( func, type, visualmode )
         endif
 
         if matched == ''
-            silent exe "normal! gvx"
+            silent exe "normal! gvd"
         else
             silent exe "normal! gvc" . matched
             silent exe "normal! l"
@@ -245,8 +249,12 @@ function! PareditOpfunc( func, type, visualmode )
 
     let &selection = sel_save
     let &virtualedit = ve_save
-    let @@ = reg_save
-    call setreg( regname, putreg ) 
+    if a:func == 'd' && regname == '"'
+        " Do not currupt the '"' register and hence the "0 register
+        call setreg( '1', putreg ) 
+    else
+        call setreg( regname, putreg ) 
+    endif
 endfunction
 
 " Set delete mode also saving repeat count
@@ -266,8 +274,11 @@ endfunction
 
 " General change operator handling
 function! PareditChange( type, ... )
+    let ve_save = &virtualedit
+    set virtualedit=all
     call PareditOpfunc( 'c', a:type, a:0 )
     startinsert
+    let &virtualedit = ve_save
 endfunction
 
 " Delete v:count number of lines
@@ -292,12 +303,19 @@ endfunction
 
 " Paste text from put register in a balanced way
 function! PareditPut( cmd )
-    let reg_save = @@
-    let putreg = getreg( v:register )
+    let regname = v:register
+    let reg_save = getreg( regname )
+    let putreg = reg_save
 
     " Find unpaired matched characters by eliminating paired ones
     let matched = s:GetMatchedChars( putreg, s:InsideString( '.' ), s:InsideComment( '.' ) )
     let matched = s:Unbalanced( matched )
+
+    if matched !~ '\S\+'
+        " Register contents is balanced, perform default put function
+        silent exe "normal! " . (v:count>1 ? v:count : '') . (regname=='"' ? '' : '"'.regname) . a:cmd
+        return
+    endif
 
     " Replace all unpaired matched characters with a space in order to keep balance
     let i = 0
@@ -309,13 +327,9 @@ function! PareditPut( cmd )
     endwhile
 
     " Store balanced text in put register and call the appropriate put command
-    call setreg( '"', putreg ) 
-    if v:count > 1
-        silent exe "normal! " . v:count . a:cmd
-    else
-        silent exe "normal! " . a:cmd
-    endif
-    let @@ = reg_save
+    call setreg( regname, putreg ) 
+    silent exe "normal! " . (v:count>1 ? v:count : '') . (regname=='"' ? '' : '"'.regname) . a:cmd
+    call setreg( regname, reg_save ) 
 endfunction
 
 " Toggle paredit mode
@@ -347,11 +361,10 @@ endfunction
 
 " Is this a Slimv REPL buffer?
 function! s:IsReplBuffer()
-    if exists( 'g:slimv_repl_dir' ) && exists( 'g:slimv_repl_file' )
-        let repl_name = g:slimv_repl_dir . g:slimv_repl_file
-        return bufnr( repl_name ) == bufnr( '%' )
+    if exists( 'g:slimv_repl_name' )
+        return bufnr( g:slimv_repl_name ) == bufnr( '%' )
     else
-        return bufname( '%' ) =~ '.*\.repl\..*'
+        return 0
     endif
 endfunction
 
@@ -361,7 +374,7 @@ function! s:GetReplPromptPos()
     if !s:IsReplBuffer()
         return [0, 0]
     endif
-    return [ line( "'s" ), col( "'s" ) ]
+    return [ b:repl_prompt_line, b:repl_prompt_col ]
 endfunction
 
 " Is the current top level form balanced, i.e all opening delimiters
@@ -372,7 +385,7 @@ function! s:IsBalanced()
     let line = getline( '.' )
     let matchb = max( [l-g:paredit_matchlines, 1] )
     let matchf = min( [l+g:paredit_matchlines, line('$')] )
-    let prompt = line( "'s" )
+    let [prompt, cp] = s:GetReplPromptPos()
     if s:IsReplBuffer() && l >= prompt && matchb < prompt
         " Do not go before the last command prompt in the REPL buffer
         let matchb = prompt
@@ -618,7 +631,8 @@ endfunction
 
 " Handle <BS> keypress
 function! PareditBackspace( repl_mode )
-    if a:repl_mode && line( "." ) == line( "'s" ) && col( "." ) <= col( "'s" )
+    let [lp, cp] = s:GetReplPromptPos()
+    if a:repl_mode && line( "." ) == lp && col( "." ) <= cp
         " No BS allowed before the previous EOF mark in the REPL
         " i.e. don't delete Lisp prompt
         return ""

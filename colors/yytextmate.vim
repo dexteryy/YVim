@@ -73,4 +73,7 @@ if has("gui_running")
 	:hi ErrorMsg guifg=#F9F9F9 guibg=#BF0013
 	:hi Error guifg=#F9F9F9 guibg=#BF0013 
 	:hi SpellErrors guifg=#F9F9F9 guibg=#BF0013
+
+    :hi IndentGuidesOdd  guibg=#1e1e3D ctermbg=1
+    :hi IndentGuidesEven guibg=#1e1e3D ctermbg=1
 end

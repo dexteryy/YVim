@@ -58,12 +58,23 @@ EOF
 function! s:SetMyMake()
 	let s:cpo_save = &cpo
 	set cpo-=C
-	setlocal makeprg=jsl\ -nologo\ -nofilelisting\ -nosummary\ -nocontext\ -conf\ '$HOME/.jsl-conf'\ -process\ %
-	setlocal errorformat=%f(%l):\ %m
+	"setlocal makeprg=jshint\ %\ --config\ '$HOME/.jshintrc'\
+    setlocal makeprg=jshint\ %
+    setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
 	let &cpo = s:cpo_save
 	unlet s:cpo_save
-	let g:current_compiler = "jsl"
+	let g:current_compiler = "jshint"
 endfunction
+
+"function! s:SetMyMake()
+	"let s:cpo_save = &cpo
+	"set cpo-=C
+	"setlocal makeprg=jsl\ -nologo\ -nofilelisting\ -nosummary\ -nocontext\ -conf\ '$HOME/.jsl-conf'\ -process\ %
+	"setlocal errorformat=%f(%l):\ %m
+	"let &cpo = s:cpo_save
+	"unlet s:cpo_save
+	"let g:current_compiler = "jsl"
+"endfunction
 
 function! MyJsMake()
 	call MyJsLint()

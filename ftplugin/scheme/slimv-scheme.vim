@@ -1,7 +1,7 @@
 " slimv-scheme.vim:
 "               Scheme filetype plugin for Slimv
-" Version:      0.9.2
-" Last Change:  20 Oct 2011
+" Version:      0.9.5
+" Last Change:  06 Mar 2012
 " Maintainer:   Tamas Kovacs <kovisoft at gmail dot com>
 " License:      This file is placed in the public domain.
 "               No warranty, express or implied.
@@ -10,7 +10,7 @@
 " =====================================================================
 "
 "  Load Once:
-if exists("b:did_ftplugin")
+if exists("b:did_ftplugin") || exists("g:slimv_disable_scheme")
     finish
 endif
 
@@ -21,7 +21,7 @@ let g:slimv_scheme_loaded = 1
 
 " Try to autodetect Scheme executable
 " Returns list [Scheme executable, Scheme implementation]
-function! b:SlimvAutodetect()
+function! b:SlimvAutodetect( preferred )
     " Currently only MIT Scheme on Linux
     if executable( 'scheme' )
         " MIT Scheme
@@ -41,6 +41,18 @@ function! b:SlimvImplementation()
     return 'mit'
 endfunction
 
+" Try to autodetect SWANK and build the command to load the SWANK server
+function! b:SlimvSwankLoader()
+    let swanks = split( globpath( &runtimepath, 'slime/contrib/swank-mit-scheme.scm'), '\n' )
+    if len( swanks ) == 0
+        return ''
+    endif
+    if g:slimv_impl == 'mit'
+        return '"' . g:slimv_lisp . '" --load "' . swanks[0] . '"'
+    endif
+    return ''
+endfunction
+
 " Filetype specific initialization for the REPL buffer
 function! b:SlimvInitRepl()
     set filetype=scheme
@@ -56,10 +68,16 @@ endfunction
 " Source Slimv general part
 runtime ftplugin/**/slimv.vim
 
-endif "!exists( 'g:slimv_lisp_loaded' )
+endif "!exists( 'g:slimv_scheme_loaded' )
 " ---------- End of part loaded once ----------
 
 runtime ftplugin/**/lisp.vim
+
+" The balloonexpr of MIT-Scheme is broken. Disable it.
+let g:slimv_balloon = 0
+
+" The fuzzy completion of MIT-Scheme is broken. Disable it.
+let g:slimv_simple_compl = 1
 
 " Must be called for each lisp buffer
 call SlimvInitBuffer()

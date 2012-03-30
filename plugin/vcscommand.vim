@@ -818,6 +818,7 @@ function! s:VCSAnnotate(bang, ...)
 			if splitRegex == ''
 				return annotateBuffer
 			endif
+			wincmd J
 			let originalFileType = getbufvar(originalBuffer, '&ft')
 			let annotateFileType = getbufvar(annotateBuffer, '&ft')
 
@@ -1081,9 +1082,11 @@ function! s:VCSVimDiff(...)
 								\ . '|call setbufvar('.originalBuffer.', ''&foldmethod'', '''.getbufvar(originalBuffer, '&foldmethod').''')'
 								\ . '|call setbufvar('.originalBuffer.', ''&foldlevel'', '''.getbufvar(originalBuffer, '&foldlevel').''')'
 								\ . '|call setbufvar('.originalBuffer.', ''&scrollbind'', '.getbufvar(originalBuffer, '&scrollbind').')'
-								\ . '|call setbufvar('.originalBuffer.', ''&cursorbind'', '.getbufvar(originalBuffer, '&cursorbind').')'
 								\ . '|call setbufvar('.originalBuffer.', ''&wrap'', '.getbufvar(originalBuffer, '&wrap').')'
-								\ . '|if &foldmethod==''manual''|execute ''normal! zE''|endif'
+					if has('cursorbind')
+						let t:vcsCommandVimDiffRestoreCmd .= '|call setbufvar('.originalBuffer.', ''&cursorbind'', '.getbufvar(originalBuffer, '&cursorbind').')'
+					endif
+					let t:vcsCommandVimDiffRestoreCmd .= '|if &foldmethod==''manual''|execute ''normal! zE''|endif'
 					diffthis
 					wincmd w
 				else
