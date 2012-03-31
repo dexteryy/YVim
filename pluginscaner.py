@@ -7,7 +7,7 @@ Copyright (c) 2010 Dexter.Yy
 Released under GPL Licenses.
 """
 
-import sys, io, os, re
+import sys, os, re
 import threading
 import pickle
 import urllib
@@ -136,7 +136,7 @@ def main(argv=None):
 
         def checkVersion(plugin):
             if not plugin["download"]:
-                checkPool.add(plugin["url"], 
+                checkPool.add(plugin["url"],
                                callback=parseInfo,
                                args=(plugin,))
             else:
@@ -161,7 +161,7 @@ def main(argv=None):
             except Exception:
                 plugin.update(backup)
                 print "Error: {name} parse error!".format(**plugin)
-        
+
 
         def startCheck():
             checkPool.send()
@@ -181,7 +181,7 @@ def main(argv=None):
             #print pluginLib
 
 
-        for plugin in pluginLib.values(): 
+        for plugin in pluginLib.values():
             if not plugin["url"]:
                 searchPool.add(SEARCHAPI + "&q=" + plugin["name"],
                                callback=searchPlugin,
@@ -199,7 +199,7 @@ def main(argv=None):
     #myplugins = []
     #for fname in vimfiles:
         #f = open(fname)
-        #version = None 
+        #version = None
         #for line in f:
             #verline = re.search(r"^\s*\"\s*Version:.+?([\d\.]+)", line, re.I)
             #if verline:

@@ -81,7 +81,7 @@ set softtabstop=4
 set nowrap
 set wildmenu
 set wildmode=longest:full,full
-set wildignore=*.orig
+set wildignore+=*.orig,*.pyc
 set matchpairs=(:),{:},[:],<:>
 set whichwrap=b,s,<,>,[,]
 set foldmethod=marker
@@ -159,7 +159,7 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 autocmd! bufwritepost .vimrc source ~/.vimrc
-autocmd! bufwritepost vimrc source ~/.vimrc
+autocmd! bufwritepost vimrc source ~/.vim/vimrc
 
 "let g:jslint_neverAutoRun=1
 
@@ -176,6 +176,7 @@ autocmd BufNewFile,BufRead *.vm setlocal ft=html
 autocmd BufNewFile,BufRead *.xul setlocal ft=xml
 autocmd BufNewFile,BufRead *.as	setlocal ft=actionscript
 autocmd BufNewFile,BufRead *.json setlocal ft=javascript
+autocmd BufNewFile,BufRead jquery.*.js set ft=javascript syntax=jquery
 autocmd BufNewFile,BufRead *.pac setlocal ft=javascript
 autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
 
@@ -244,6 +245,19 @@ function! QFSwitch() " toggle quickfix window
 	endif
 endfunction
 
+function! LLSwitch() " toggle location list window
+	redir => ls_output
+		execute ':silent! ls'
+	redir END
+
+	let exists = match(ls_output, "[Location List")
+	if exists == -1
+		execute ':lopen'
+	else
+		execute ':lclose'
+	endif
+endfunction
+
 function! MyMake()
 	exe 'call ' . b:myMake . '()'
 endfunction
@@ -309,6 +323,7 @@ nnoremap <leader><tab> :Sscratch<cr>
 
 
 " for make & debug
+noremap <silent> <F1> <ESC>:call LLSwitch()<CR>
 noremap <silent> <F2> <ESC>:call MyLint()<CR>
 noremap <silent> <F3> :call MyDebug()<CR>
 noremap <silent> <F4> :call MyMake()<CR>
@@ -326,14 +341,14 @@ vmap <s-tab> 	<gv
 nnoremap / /\v
 vnoremap / /\v
 
-inoremap ( ()<ESC>i
-"inoremap ) <c-r>=ClosePair(')')<cr>
-inoremap { {}<ESC>i
-"inoremap } <c-r>=ClosePair('}')<cr>
-inoremap [ []<ESC>i
-"inoremap ] <c-r>=ClosePair(']')<cr>
-inoremap " ""<ESC>i
+"inoremap ( ()<ESC>i
+"inoremap { {}<ESC>i
+"inoremap [ []<ESC>i
+"inoremap " ""<ESC>i
 "inoremap < <><esc>i
+"inoremap ) <c-r>=ClosePair(')')<cr>
+"inoremap } <c-r>=ClosePair('}')<cr>
+"inoremap ] <c-r>=ClosePair(']')<cr>
 "inoremap > <c-r>=ClosePair('>')<cr>
 
 "inoremap <expr><CR> StructStart() ? '<CR><ESC>kA<CR>' : '<CR>'
@@ -362,14 +377,17 @@ endif
 " plugin setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+nnoremap <leader>/ :Ack 
+
+" Syntastic
+let g:syntastic_javascript_checker = 'jshint'
+let g:loaded_html_syntax_checker = 1
+let g:syntastic_auto_loc_list=1
+
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
-
-let g:JSLintHighlightErrorLine = 0
-
-let g:yankring_history_dir = '~/.vim/yankring'
 
 let g:ragtag_global_maps = 1
 
@@ -436,10 +454,17 @@ nmap <leader>fm :FufAddBookmark<cr>
 nmap <leader>fc :FufChangeList<cr>
 "noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
-
+" yankring
+let g:yankring_history_dir = '~/.vim/yankring'
+let g:yankring_replace_n_pkey = 'P'
+"inoremap } <c-r>=ClosePair('}')<cr>
 nnoremap <silent> <leader>yr :YRShow<cr>
 inoremap <silent> <leader>yr <ESC>:YRShow<cr>
 
+
+" ctrl-p
+let g:ctrlp_working_path_mode = 2 " .git/ .hg/ .svn/ .bzr/ _darcs/ or your own marker_dir/ marker_file
+let g:ctrlp_map = '<c-p>'
 
 
 " command-T
