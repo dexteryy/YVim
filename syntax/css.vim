@@ -1,282 +1,239 @@
-" Vim syntax file
-" Language:	Cascading Style Sheets
-" Maintainer:	Claudio Fleiner <claudio@fleiner.com>
-" URL:		http://www.fleiner.com/vim/syntax/css.vim
-" Last Change:	2010 Jul 28
-" CSS2 by Nikolai Weibull
-" Full CSS2, HTML4 support by Yeti
+" Better CSS Syntax for Vim
+" Language: Cascading Style Sheets
+" Maintainer:   Chris Yip <yesu326@gmail.com>, twitter: @Chris_Ys
+" URL:  http://www.vim.org/scripts/script.php?script_id=3220
+" GIT:  http://github.com/ChrisYis/Better-CSS-Syntax-for-Vim
+" Last Change:  2011/3/1
+" Full CSS2, most of HTML5 & CSS3 properties (include prefix like -moz-) supported
 
-" For version 5.x: Clear all syntax items
-" For version 6.x: Quit when a syntax file was already loaded
-if !exists("main_syntax")
-  if version < 600
-    syntax clear
-  elseif exists("b:current_syntax")
+" Quit when a syntax file was already loaded
+if exists("b:current_syntax")
   finish
 endif
-  let main_syntax = 'css'
-endif
 
 syn case ignore
+set iskeyword+=-
 
-syn keyword cssTagName abbr acronym address applet area a b base
-syn keyword cssTagName basefont bdo big blockquote body br button
-syn keyword cssTagName caption center cite code col colgroup dd del
-syn keyword cssTagName dfn dir div dl dt em fieldset font form frame
-syn keyword cssTagName frameset h1 h2 h3 h4 h5 h6 head hr html img i
-syn keyword cssTagName iframe img input ins isindex kbd label legend li
-syn keyword cssTagName link map menu meta noframes noscript ol optgroup
-syn keyword cssTagName option p param pre q s samp script select small
-syn keyword cssTagName span strike strong style sub sup tbody td
-syn keyword cssTagName textarea tfoot th thead title tr tt ul u var
-syn match cssTagName "\<table\>"
-syn match cssTagName "\*"
+syn region cssAtkeyword start=/@\(media\|import\)/ end=/\ze{/ contains=cssAtType, cssAtkey, cssValFn, cssValBlock
 
-syn match cssTagName "@page\>" nextgroup=cssDefinition
+syn keyword cssAtType media import contained
+syn keyword cssAtkey all braille embossed handheld print projection screen speech tty tv contained
 
-syn match cssSelectorOp "[+>.]"
-syn match cssSelectorOp2 "[~|]\?=" contained
-syn region cssAttributeSelector matchgroup=cssSelectorOp start="\[" end="]" transparent contains=cssUnicodeEscape,cssSelectorOp2,cssStringQ,cssStringQQ
+syn region cssValBlock start=/(/ end=/)/ contained contains=cssAtProps
 
-try
-syn match cssIdentifier "#[A-Za-zÀ-ÿ_@][A-Za-zÀ-ÿ0-9_@-]*"
-catch /^.*/
+syn match cssAtProps /[^()]*/ contained contains=cssMediaProp,cssAtValBlock
+syn keyword cssMediaProp grid monochrome orientation scan contained
+syn match cssMediaProp /color\(-index\)\=\ze\s*[:)]/ contained
+syn match cssMediaProp /\(\(device\)-\)\=aspect-ratio\ze\s*[:)]/ contained
+syn match cssMediaProp /\(\(max\|min\)-\)\=device-\(height\|width\)\ze\s*[:)]/ contained
+syn match cssMediaProp /\(\(max\|min\)-\)\=\(height\|width\)\ze\s*[:)]/ contained
+
+syn region cssAtValBlock start=/:\zs/ end=/\ze[)]/ contained contains=cssAttr,cssColor,cssImportant,cssNumber,cssUnits,cssQuote,cssFunction
+
+syn region cssValFn start=/\<url\s*(/ end=/)\ze/ contained contains=cssPathFn
+
+syn match cssTagName /\*/
+syn keyword cssTagName a abbr acronym address applet area article aside audio b base basefont bdo big blockquote body br button canvas caption center cite code col colgroup command datalist dd del details dfn dir div dl dt em embed fieldset font form figcaption figure footer frame frameset h1 h2 h3 h4 h5 h6 head header hgroup hr html img i iframe img input ins isindex kbd keygen label legend li link map mark menu meta meter nav noframes noscript object ol optgroup option output p param pre progress q rp rt ruby s samp script section select small span strike strong style sub summary sup table tbody td textarea tfoot th thead time title tr tt ul u var variant video xmp
+
+syn match cssClass "\.[A-Za-z][A-Za-z0-9_-]\{0,\}"
+
 syn match cssIdentifier "#[A-Za-z_@][A-Za-z0-9_@-]*"
-endtry
 
+syn match cssPrefix /\(-\(webkit\|moz\|o\|ms\)-\)\|filter/
 
-syn match cssMedia "@media\>" nextgroup=cssMediaType skipwhite skipnl
-syn keyword cssMediaType contained screen print aural braile embosed handheld projection ty tv all nextgroup=cssMediaComma,cssMediaBlock skipwhite skipnl
-syn match cssMediaComma "," nextgroup=cssMediaType skipwhite skipnl
-syn region cssMediaBlock transparent matchgroup=cssBraces start='{' end='}' contains=cssTagName,cssError,cssComment,cssDefinition,cssURL,cssUnicodeEscape,cssIdentifier
+syn match cssNumber /\(-\)\=\(\.\d\+\|\d\+\(\.\d\+\)\{0,\}\)/ contained
 
-syn match cssValueInteger contained "[-+]\=\d\+"
-syn match cssValueNumber contained "[-+]\=\d\+\(\.\d*\)\="
-syn match cssValueLength contained "[-+]\=\d\+\(\.\d*\)\=\(%\|mm\|cm\|in\|pt\|pc\|em\|ex\|px\)"
-syn match cssValueAngle contained "[-+]\=\d\+\(\.\d*\)\=\(deg\|grad\|rad\)"
-syn match cssValueTime contained "+\=\d\+\(\.\d*\)\=\(ms\|s\)"
-syn match cssValueFrequency contained "+\=\d\+\(\.\d*\)\=\(Hz\|kHz\)"
+syn keyword cssPseudo link visited active hover focus left right root empty target enabled disabled checked indeterminate valid invalid required
+syn match cssPseudo /\:first\-\(letter\|line\|child\)\>/
+syn match cssPseudo /\:\{1,2\}first\-\(letter\|line\)\>/
+syn match cssPseudo /\:\(last\|only\)-child\>/
+syn match cssPseudo /\:\(first\|last\|only\)-of-type)\>/
+syn match cssPseudo /\:nth\(-last\)\{0,1\}-child([0-9]*[n]*)/
+syn match cssPseudo /\:nth\(-last\)\{0,1\}-of-type([0-9]*[n]*)/
+syn match cssPseudo /\:not([#\.]\{0,\}\S\+)/
+syn match cssPseudo /\:lang([a-zA-Z]\{2\}\(-[a-zA-Z]\{2\}\)\{0,1\})\>/
+syn match cssPseudo /\:read\-\(only\|write\)\>/
+syn match cssPseudo /\:\{1,2\}\(after\|before\)\>/
+syn match cssPseudo /\:\{2\}selection\>/
+syn match cssPseudo /\:\{2\}value\>/
 
-syn match cssFontDescriptor "@font-face\>" nextgroup=cssFontDescriptorBlock skipwhite skipnl
-syn region cssFontDescriptorBlock contained transparent matchgroup=cssBraces start="{" end="}" contains=cssComment,cssError,cssUnicodeEscape,cssFontProp,cssFontAttr,cssCommonAttr,cssStringQ,cssStringQQ,cssFontDescriptorProp,cssValue.*,cssFontDescriptorFunction,cssUnicodeRange,cssFontDescriptorAttr
-syn match cssFontDescriptorProp contained "\<\(unicode-range\|unit-per-em\|panose-1\|cap-height\|x-height\|definition-src\)\>"
-syn keyword cssFontDescriptorProp contained src stemv stemh slope ascent descent widths bbox baseline centerline mathline topline
-syn keyword cssFontDescriptorAttr contained all
-syn region cssFontDescriptorFunction contained matchgroup=cssFunctionName start="\<\(uri\|url\|local\|format\)\s*(" end=")" contains=cssStringQ,cssStringQQ oneline keepend
-syn match cssUnicodeRange contained "U+[0-9A-Fa-f?]\+"
-syn match cssUnicodeRange contained "U+\x\+-\x\+"
+syn region cssFuncRegion start=/{/ end=/}/ contains=cssPropRegion
 
-syn keyword cssColor contained aqua black blue fuchsia gray green lime maroon navy olive purple red silver teal yellow
-" FIXME: These are actually case-insentivie too, but (a) specs recommend using
-" mixed-case (b) it's hard to highlight the word `Background' correctly in
-" all situations
-syn case match
-syn keyword cssColor contained ActiveBorder ActiveCaption AppWorkspace ButtonFace ButtonHighlight ButtonShadow ButtonText CaptionText GrayText Highlight HighlightText InactiveBorder InactiveCaption InactiveCaptionText InfoBackground InfoText Menu MenuText Scrollbar ThreeDDarkShadow ThreeDFace ThreeDHighlight ThreeDLightShadow ThreeDShadow Window WindowFrame WindowText Background
-syn case ignore
-syn match cssColor contained "\<transparent\>"
-syn match cssColor contained "\<white\>"
-syn match cssColor contained "#[0-9A-Fa-f]\{3\}\>"
-syn match cssColor contained "#[0-9A-Fa-f]\{6\}\>"
-"syn match cssColor contained "\<rgb\s*(\s*\d\+\(\.\d*\)\=%\=\s*,\s*\d\+\(\.\d*\)\=%\=\s*,\s*\d\+\(\.\d*\)\=%\=\s*)"
-syn region cssURL contained matchgroup=cssFunctionName start="\<url\s*(" end=")" oneline keepend
-syn region cssFunction contained matchgroup=cssFunctionName start="\<\(rgb\|clip\|attr\|counter\|rect\)\s*(" end=")" oneline keepend
+syn match cssPropRegion /[^{}]*/ contained contains=cssProp,cssAttrBlock,cssPrefix,cssComment transparent
 
-syn match cssImportant contained "!\s*important\>"
+syn region cssAttrBlock start=/:\zs/ end=/\ze[;}]\{1\}/ contained contains=cssAttr,cssColor,cssImportant,cssNumber,cssUnits,cssQuote,cssFunction
 
-syn keyword cssCommonAttr contained auto none inherit
-syn keyword cssCommonAttr contained top bottom
-syn keyword cssCommonAttr contained medium normal
+syn keyword cssAttr above absolute accent adjacent after alias all alphabetic alternate always auto avoid balance baseline back before behind below blink block bold bolder border both bottom capitalize caption cell center central circle clear clone code collapse compact copy crop cross crosshair current dashed default digits disc discard dot dotted double embed end fast faster fill first fixed forward front hanging help here hidden hide high higher horizontal icon ideographic inherit inhibit initial invert italic justify kashida landscape last left level lighter linear loud low lower ltr mathematical manual medium meet menu middle modal move multiple moderate narrower new none normal nowrap oblique overline parent perceptual pointer portrait progress reduced relative reverse ridge right root rtl same saturation scroll separate show silent single slice slide slow slower solid soft square start static stretch strong sub super suppress tab text tibetan top underline unrestricted vertical visible wait wider window contained
 
-syn match cssFontProp contained "\<font\(-\(family\|style\|variant\|weight\|size\(-adjust\)\=\|stretch\)\)\=\>"
-syn match cssFontAttr contained "\<\(sans-\)\=\<serif\>"
-syn match cssFontAttr contained "\<small\(-\(caps\|caption\)\)\=\>"
-syn match cssFontAttr contained "\<x\{1,2\}-\(large\|small\)\>"
-syn match cssFontAttr contained "\<message-box\>"
-syn match cssFontAttr contained "\<status-bar\>"
-syn match cssFontAttr contained "\<\(\(ultra\|extra\|semi\|status-bar\)-\)\=\(condensed\|expanded\)\>"
-syn keyword cssFontAttr contained cursive fantasy monospace italic oblique
-syn keyword cssFontAttr contained bold bolder lighter larger smaller
-syn keyword cssFontAttr contained icon menu
-syn match cssFontAttr contained "\<caption\>"
-syn keyword cssFontAttr contained large smaller larger
-syn keyword cssFontAttr contained narrower wider
+syn match cssAttr /\<transparent\>/ contained
 
-syn keyword cssColorProp contained color
-syn match cssColorProp contained "\<background\(-\(color\|image\|attachment\|position\)\)\=\>"
-syn keyword cssColorAttr contained center scroll fixed
-syn match cssColorAttr contained "\<repeat\(-[xy]\)\=\>"
-syn match cssColorAttr contained "\<no-repeat\>"
+syn match cssAttr /\<\(absolute\|relative\)-colorimetric\>/ contained
+syn match cssAttr /<\(pause\|rest\)-\(after\|before\)\>/ contained
+syn match cssAttr /\<\(x-\)\=\(weak\|strong\|low\|high\)\>/ contained
+syn match cssAttr /\(in\|out\)\(set\|side\)/ contained
+syn match cssAttr /\<\(block\|inline\)-axis\>/ contained
+syn match cssAttr /\<\(border\|content\)-box\>/ contained
+syn match cssAttr /\<x-\(loud\|soft\|slow\|fast\|low\|high\)\>/ contained
+syn match cssAttr /\<context-menu\|not-allowed\|vertical-text\|all-scroll\|from-image\|spell-out\|line-through\|bidi-override\|keep-all\>/ contained
+syn match cssAttr /\<inline\(-\(block\|table\)\)\{0,1\}\>/ contained
+syn match cssAttr /\<table\(-\(caption\|cell\|column\|row\)\)\{0,1\}\>/ contained
+syn match cssAttr /\<table\(-\(column\|footer\|header\|row\)-group\)\>/ contained
+syn match cssAttr /\<ruby\(-\(base\|text\)\(-group\)\{0,1\}\)\{0,1\}\>/ contained
+syn match cssAttr /\<\(exclude\|include\)-ruby\>/ contained
+syn match cssAttr /\<\(consider\|disregard\)-shifts\>/ contained
+syn match cssAttr /\<list-item\|run-in\>/ contained
+syn match cssAttr /\<\(\(\(block\|inline\)-line\)\|max\|grid\)-height\>/ contained
+syn match cssAttr /\<\(far\|left\|right\)-side\>/ contained
+syn match cssAttr /\<\(left\|right\)wards\>/ contained
+syn match cssAttr /\<\(center\|far\)-\(left\|right\)\>/ contained
+syn match cssAttr /\<\(\(text-\)\=\(before\|after\)-\(edge\|central\|ideographic\|alphabetic\|hanging\|mathematical\|use-script\)\)\>/ contained
+syn match cssAttr /\<\([nwse]\{1,4\}\|col\|row\)-resize\>/ contained
+syn match cssAttr /\<use-scriot\|reset-size\|caps-height\|status-bar\|message-box\>/ contained
+syn match cssAttr /\<small-\(caps\|caption\)\>/ contained
+syn match cssAttr /\<\(\(ultra\|extra\|semi\)-\)\=\(condensed\|expanded\)\>/ contained
+syn match cssAttr /\<no-\(change\|content\|display\|drop\|limit\|repeat\)\>/ contained
+syn match cssAttr /\<repeat\(-\(x\|y\)\)\=\>/ contained
+syn match cssAttr /\<\(end\|line\)-edge\>/ contained
+syn match cssAttr /\<break-\(all\|word\|strict\)\>/ contained
+syn match cssAttr /\<\(upper\|lower\)case\>/ contained
+syn match cssAttr /\<distribute\(-\(letter\|space\)\)\=\>/ contained
+syn match cssAttr /\<\(literal\|no\)-punctuation\>/ contained
+syn match cssAttr /\<inter-\(word\|ideograph\|cluster\)\>/ contained
+syn match cssAttr /\<\(font\|text\|max\)-size\>/ contained
+syn match cssAttr /\<ease\(-\(in\|out\|in-out\)\)\=\>/ contained
+syn match cssAttr /\<text-\(top\|bottom\)\>/ contained
+syn match cssAttr /\<pre\(-\(wrap\|line\)\)\=\>/ contained
+syn match cssAttr /\<preserve\(-\(breaks\)\)\=\>/ contained
 
-syn match cssTextProp "\<\(\(word\|letter\)-spacing\|text\(-\(decoration\|transform\|align\|index\|shadow\)\)\=\|vertical-align\|unicode-bidi\|line-height\)\>"
-syn match cssTextAttr contained "\<line-through\>"
-syn match cssTextAttr contained "\<text-indent\>"
-syn match cssTextAttr contained "\<\(text-\)\=\(top\|bottom\)\>"
-syn keyword cssTextAttr contained underline overline blink sub super middle
-syn keyword cssTextAttr contained capitalize uppercase lowercase center justify baseline sub super
+syn match cssProp /\(appearance\|binding\|bottom\|clear\|clip\|color\|columns\|content\|crop\|cursor\|direction\|elevation\|empty-cells\|hanging-punctuation\|height\|hyphens\|icon\|inline-box-align\|left\|letter-spacing\|move-to\|opacity\|orphans\|phonemes\|position\|play-during\|presentation-level\|punctuation-trim\|quotes\|rendering-intent\|resize\|richness\|right\|size\|speech-rate\|stress\|string-set\|tab-size\|table-layout\|top\|unicode-bidi\|vertical-align\|visibility\|volume\|widows\|width\|z-index\|zimuth\)\ze\s*:/ contained
 
-syn match cssBoxProp contained "\<\(margin\|padding\|border\)\(-\(top\|right\|bottom\|left\)\)\=\>"
-syn match cssBoxProp contained "\<border-\(\(\(top\|right\|bottom\|left\)-\)\=\(width\|color\|style\)\)\=\>"
-syn match cssBoxProp contained "\<\(width\|z-index\)\>"
-syn match cssBoxProp contained "\<\(min\|max\)-\(width\|height\)\>"
-syn keyword cssBoxProp contained width height float clear overflow clip visibility
-syn keyword cssBoxAttr contained thin thick both
-syn keyword cssBoxAttr contained dotted dashed solid double groove ridge inset outset
-syn keyword cssBoxAttr contained hidden visible scroll collapse
+syn match cssProp /\(\<\|\)transform\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)alignment-\(adjust\|baseline\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)animation\(-\(delay\|direction\|duration\|iteration-count\|name\|play-state\|timing-function\)\)\{0,1\}\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)background\(-\(attachment\|break\|clip\|color\|image\|origin\|position\|repeat\|size\)\)\{0,1\}\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)baseline-shift\|caption-side\|color-profile\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)bookmark-\(label\|level\|target\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)border\(-\(bottom\|collapse\|color\|image\|left\|length\|radius\|right\|spacing\|style\|top\|width\)\)\{0,1\}\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)border\(-\(bottom\|left\|right\|top\)\(-\(color\|style\|wdith\)\)\{0,1\}\)\{0,1\}\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)border-\(bottom\|top\)-\(left\|right\)-radius\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)box-\(align\|decoration-break\|direction\|flex\|\(flex\|ordinal\)-group\|lines\|orient\|pack\|shadow\|sizing\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)column\(-\(\break-\(after\|before\)\|count\|fill\|gap\|rule\(-\(color\|style\|width\)\)\{0,1\}\)\|span\|width\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)counter-\(increment\|reset\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)cue\(-\(after\|before\)\)\{0,1\}\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)display\(-\(model\|role\)\)\{0,1\}\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)dominant-baseline\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)drop-initial-\(\(\(after\|before\)-\(adjust\|align\)\)\|size\|value\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)fit\(-position\)\{0,1\}\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)float\>\(-offset\)\{0,1\}\ze\s*:/ contained
+syn match cssProp /\(\<\|\)font\(-\(family\|size\(-adjust\)\=\|stretch\|style\|variant\|weight\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)grid-\(columns\|rows\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)hyphenate-\(after\|before\|character\|lines\|resource\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)image-\(orientation\|resolution\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)line-\(height\|stacking\(-\(ruby\|shift\|strategy\)\)\=\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)list-style\(-\(image\|position\|type\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)\(margin\|padding\)\(-\(bottom\|left\|right\|top\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)mark\(s\|-\(after\|before\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)marquee-\(direction\|play-count\|speed\|style\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)\(max\|min\)-\(height\|width\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)nav-\(down\|index\|left\|right\|up\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)outline\(-\(color\|offset\|style\|width\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)overflow\(-\(style\|x\|y\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)page\(-\(break-\(after\|before\|inside\)\|policy\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)pause\(-\(after\|before\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)pitch\(-range\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)rest\(-\(after\|before\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)rotation\(-point\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)ruby-\(align\|overhang\|position\|span\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)speak\(-\(header\|numeral\|punctuation\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)target\(-\(name\|new\|position\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)text-\(align\(-last\)\=\|decoration\|emphasis\|height\|indent\|justify\|outline\|replace\|shadow\|transform\|wrap\|overflow\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)transition\(-\(delay\|duration\|property\|timing-function\)\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)voice-\(balance\|duration\|family\|pitch\(-range\)\=\|rate\|stress\|volume\)\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)white-space\(-collapse\)\=\>\ze\s*:/ contained
+syn match cssProp /\(\<\|\)word-\(break\|spacing\|wrap\)\>\ze\s*:/ contained
 
-syn keyword cssGeneratedContentProp contained content quotes
-syn match cssGeneratedContentProp contained "\<counter-\(reset\|increment\)\>"
-syn match cssGeneratedContentProp contained "\<list-style\(-\(type\|position\|image\)\)\=\>"
-syn match cssGeneratedContentAttr contained "\<\(no-\)\=\(open\|close\)-quote\>"
-syn match cssAuralAttr contained "\<lower\>"
-syn match cssGeneratedContentAttr contained "\<\(lower\|upper\)-\(roman\|alpha\|greek\|latin\)\>"
-syn match cssGeneratedContentAttr contained "\<\(hiragana\|katakana\)\(-iroha\)\=\>"
-syn match cssGeneratedContentAttr contained "\<\(decimal\(-leading-zero\)\=\|cjk-ideographic\)\>"
-syn keyword cssGeneratedContentAttr contained disc circle square hebrew armenian georgian
-syn keyword cssGeneratedContentAttr contained inside outside
+syn match cssSelector /\[[#\.]\{0,1\}\c[-a-z0-9]\+\([*^$]\{0,1\}=\c[-a-z0-9_'"]\+\)*\]/
 
-syn match cssPagingProp contained "\<page\(-break-\(before\|after\|inside\)\)\=\>"
-syn keyword cssPagingProp contained size marks inside orphans widows
-syn keyword cssPagingAttr contained landscape portrait crop cross always avoid
+syn match cssUnits /%\|\(cm\|deg\|dpi\|dpcm\|em\|ex|\in\|mm\|pc\|pt\|px\|s\)\ze\s*[,;)}]\=/ contained
 
-syn keyword cssUIProp contained cursor
-syn match cssUIProp contained "\<outline\(-\(width\|style\|color\)\)\=\>"
-syn match cssUIAttr contained "\<[ns]\=[ew]\=-resize\>"
-syn keyword cssUIAttr contained default crosshair pointer move wait help
-syn keyword cssUIAttr contained thin thick
-syn keyword cssUIAttr contained dotted dashed solid double groove ridge inset outset
-syn keyword cssUIAttr contained invert
+syn match cssColor /#\(\x\{6\}\|\x\{3\}\)/ contained
 
-syn match cssRenderAttr contained "\<marker\>"
-syn match cssRenderProp contained "\<\(display\|marker-offset\|unicode-bidi\|white-space\|list-item\|run-in\|inline-table\)\>"
-syn keyword cssRenderProp contained position top bottom direction
-syn match cssRenderProp contained "\<\(left\|right\)\>"
-syn keyword cssRenderAttr contained block inline compact
-syn match cssRenderAttr contained "\<table\(-\(row-gorup\|\(header\|footer\)-group\|row\|column\(-group\)\=\|cell\|caption\)\)\=\>"
-syn keyword cssRenderAttr contained static relative absolute fixed
-syn keyword cssRenderAttr contained ltr rtl embed bidi-override pre nowrap
-syn match cssRenderAttr contained "\<bidi-override\>"
+syn match cssImportant /!important\>/ contained
 
+syn region cssComment start=/\/\*/ end=/\*\// contains=@Spell
 
-syn match cssAuralProp contained "\<\(pause\|cue\)\(-\(before\|after\)\)\=\>"
-syn match cssAuralProp contained "\<\(play-during\|speech-rate\|voice-family\|pitch\(-range\)\=\|speak\(-\(punctuation\|numerals\)\)\=\)\>"
-syn keyword cssAuralProp contained volume during azimuth elevation stress richness
-syn match cssAuralAttr contained "\<\(x-\)\=\(soft\|loud\)\>"
-syn keyword cssAuralAttr contained silent
-syn match cssAuralAttr contained "\<spell-out\>"
-syn keyword cssAuralAttr contained non mix
-syn match cssAuralAttr contained "\<\(left\|right\)-side\>"
-syn match cssAuralAttr contained "\<\(far\|center\)-\(left\|center\|right\)\>"
-syn keyword cssAuralAttr contained leftwards rightwards behind
-syn keyword cssAuralAttr contained below level above higher
-syn match cssAuralAttr contained "\<\(x-\)\=\(slow\|fast\)\>"
-syn keyword cssAuralAttr contained faster slower
-syn keyword cssAuralAttr contained male female child code digits continuous
+syn region cssFunction start=/\c[-a-z0-9@]*(/ end=/)/ contained contains=cssPathFn,cssAttValFn
 
-syn match cssTableProp contained "\<\(caption-side\|table-layout\|border-collapse\|border-spacing\|empty-cells\|speak-header\)\>"
-syn keyword cssTableAttr contained fixed collapse separate show hide once always
+syn region cssPathFn start=/\<url\s*(\zs/ end=/\ze)/ contained
 
-" FIXME: This allows cssMediaBlock before the semicolon, which is wrong.
-syn region cssInclude start="@import" end=";" contains=cssComment,cssURL,cssUnicodeEscape,cssMediaType
-syn match cssBraces contained "[{}]"
-syn match cssError contained "{@<>"
-syn region cssDefinition transparent matchgroup=cssBraces start='{' end='}' contains=css.*Attr,css.*Prop,cssComment,cssValue.*,cssColor,cssURL,cssImportant,cssError,cssStringQ,cssStringQQ,cssFunction,cssUnicodeEscape
-syn match cssBraceError "}"
+syn region cssAttValFn start=/\<\(rotate\|rgba\)\s*(\zs/ end=/\ze)/ contained contains=cssNumber,cssUnits
 
-syn match cssPseudoClass ":\S*" contains=cssPseudoClassId,cssUnicodeEscape
-syn keyword cssPseudoClassId contained link visited active hover focus before after left right
-syn match cssPseudoClassId contained "\<first\(-\(line\|letter\|child\)\)\=\>"
-syn region cssPseudoClassLang matchgroup=cssPseudoClassId start=":lang(" end=")" oneline
+syn match cssBraket /[{}]/ contained
 
-syn region cssComment start="/\*" end="\*/" contains=@Spell
-
-syn match cssUnicodeEscape "\\\x\{1,6}\s\?"
-syn match cssSpecialCharQQ +\\"+ contained
-syn match cssSpecialCharQ +\\'+ contained
-syn region cssStringQQ start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=cssUnicodeEscape,cssSpecialCharQQ
-syn region cssStringQ start=+'+ skip=+\\\\\|\\'+ end=+'+ contains=cssUnicodeEscape,cssSpecialCharQ
-syn match cssClassName "\.[A-Za-z][A-Za-z0-9_-]\+"
-
-if main_syntax == "css"
-  syn sync minlines=10
-endif
+syn match cssQuote /\('.*'\|".*"\)/ contained
 
 " Define the default highlighting.
-" For version 5.7 and earlier: only when not done already
-" For version 5.8 and later: only when an item doesn't have highlighting yet
-if version >= 508 || !exists("did_css_syn_inits")
-  if version < 508
-    let did_css_syn_inits = 1
-    command -nargs=+ HiLink hi link <args>
-  else
-    command -nargs=+ HiLink hi def link <args>
-  endif
+command -nargs=+ HLink hi def link <args>
 
-  HiLink cssComment Comment
-  HiLink cssTagName Statement
-  HiLink cssSelectorOp Special
-  HiLink cssSelectorOp2 Special
-  HiLink cssFontProp StorageClass
-  HiLink cssColorProp StorageClass
-  HiLink cssTextProp StorageClass
-  HiLink cssBoxProp StorageClass
-  HiLink cssRenderProp StorageClass
-  HiLink cssAuralProp StorageClass
-  HiLink cssRenderProp StorageClass
-  HiLink cssGeneratedContentProp StorageClass
-  HiLink cssPagingProp StorageClass
-  HiLink cssTableProp StorageClass
-  HiLink cssUIProp StorageClass
-  HiLink cssFontAttr Type
-  HiLink cssColorAttr Type
-  HiLink cssTextAttr Type
-  HiLink cssBoxAttr Type
-  HiLink cssRenderAttr Type
-  HiLink cssAuralAttr Type
-  HiLink cssGeneratedContentAttr Type
-  HiLink cssPagingAttr Type
-  HiLink cssTableAttr Type
-  HiLink cssUIAttr Type
-  HiLink cssCommonAttr Type
-  HiLink cssPseudoClassId PreProc
-  HiLink cssPseudoClassLang Constant
-  HiLink cssValueLength Number
-  HiLink cssValueInteger Number
-  HiLink cssValueNumber Number
-  HiLink cssValueAngle Number
-  HiLink cssValueTime Number
-  HiLink cssValueFrequency Number
-  HiLink cssFunction Constant
-  HiLink cssURL String
-  HiLink cssFunctionName Function
-  HiLink cssColor Constant
-  HiLink cssIdentifier Function
-  HiLink cssInclude Include
-  HiLink cssImportant Special
-  HiLink cssBraces Function
-  HiLink cssBraceError Error
-  HiLink cssError Error
-  HiLink cssInclude Include
-  HiLink cssUnicodeEscape Special
-  HiLink cssStringQQ String
-  HiLink cssStringQ String
-  HiLink cssMedia Special
-  HiLink cssMediaType Special
-  HiLink cssMediaComma Normal
-  HiLink cssFontDescriptor Special
-  HiLink cssFontDescriptorFunction Constant
-  HiLink cssFontDescriptorProp StorageClass
-  HiLink cssFontDescriptorAttr Type
-  HiLink cssUnicodeRange Constant
-  HiLink cssClassName Function
-  delcommand HiLink
-endif
+HLink cssAtkeyword Constant
+HLink cssAtType Identifier
+HLink cssAtkey Special
+HLink cssMediaProp Type
+HLink cssAtProps Function
+
+HLink cssAttr SpecialKey
+
+HLink cssAttValFn Function
+
+HLink cssValBlock Function
+HLink cssValFn Function
+
+HLink cssAttrBlock Normal
+
+HLink cssBraket Function
+
+HLink cssClass Function
+
+HLink cssColor Constant
+
+HLink cssComment Comment
+
+HLink cssError ErrorMsg
+
+HLink cssPathFn Directory
+
+HLink cssFunction Function
+HLink cssFnValBlock Function
+
+HLink cssFuncRegion Function
+
+HLink cssIdentifier Identifier
+
+HLink cssImportant PreProc
+
+HLink cssUnits Special
+
+HLink cssNumber Number
+
+HLink cssPrefix Special
+
+HLink cssProp Type
+
+HLink cssPropRegion Normal
+
+HLink cssPseudo Structure
+
+HLink cssQuote String
+
+HLink cssSelector Structure
+
+HLink cssString String
+
+HLink cssTagName Statement
+
+HLink cssURL String
+
+delcommand HLink
 
 let b:current_syntax = "css"
-
-if main_syntax == 'css'
-  unlet main_syntax
-endif
-
-
-" vim: ts=8
-
+syn sync minlines=10

@@ -410,6 +410,7 @@ silent! map <unique> <Leader>R <Plug>(quickrun)
 " tasklist
 nmap <silent> <leader>tl <Plug>TaskList
 
+nnoremap <leader>tb :TagbarToggle<CR>
 
 " taglists setting
 nmap <silent> <leader>tg :TlistToggle<CR>
