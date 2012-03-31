@@ -567,6 +567,9 @@ autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
 
+" fugitive
+autocmd BufReadPost fugitive://* set bufhidden=delete
+
 
 let g:calendar_diary = '~/.vim/diary'
 
