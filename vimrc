@@ -379,7 +379,11 @@ endif
 
 nnoremap <leader>/ :Ack 
 
+let g:flake8_ignore = 'E401,E501'
+
 " Syntastic
+let g:syntastic_python_checker = 'flake8'
+let g:syntastic_python_checker_args = '--ignore="E401,E501"'
 let g:syntastic_javascript_checker = 'jshint'
 let g:loaded_html_syntax_checker = 1
 let g:syntastic_auto_loc_list=1

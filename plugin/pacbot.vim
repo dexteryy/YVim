@@ -5,7 +5,7 @@ function! EnablePAC()
 	if &filetype == 'javascript'
 		!pacbot -u -o %
 	elseif &filetype == 'yaml'
-		!pacbot %
+		!pacbot -o $HOME'/Sites/rules.pac' %
 	endif
 endfunction
 

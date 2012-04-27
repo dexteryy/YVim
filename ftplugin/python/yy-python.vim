@@ -98,7 +98,7 @@ function! MyPyMake()
 endfunction
 
 function! MyPyLint()
-	!flake8 %
+    :call Flake8()
 endfunction
 
 function! MyPyDebug()

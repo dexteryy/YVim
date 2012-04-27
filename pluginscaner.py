@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """
 Vim Plugins Update Scaner
@@ -133,7 +133,6 @@ def main(argv=None):
             if plugin["url"]:
                 checkVersion(plugin)
 
-
         def checkVersion(plugin):
             if not plugin["download"]:
                 checkPool.add(plugin["url"],
@@ -141,7 +140,6 @@ def main(argv=None):
                                args=(plugin,))
             else:
                 outdated.append(plugin)
-
 
         def parseInfo(res, plugin):
             print "check: ", plugin["name"]
@@ -162,10 +160,8 @@ def main(argv=None):
                 plugin.update(backup)
                 print "Error: {name} parse error!".format(**plugin)
 
-
         def startCheck():
             checkPool.send()
-
 
         def onComplete():
             ref = open(refname, 'wb')
@@ -179,7 +175,6 @@ def main(argv=None):
                 print "Already up-to-date"
 
             #print pluginLib
-
 
         for plugin in pluginLib.values():
             if not plugin["url"]:
