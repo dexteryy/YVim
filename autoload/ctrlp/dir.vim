@@ -17,16 +17,14 @@ let s:ars = [
 	\ 's:glob',
 	\ ]
 
-let s:dir_var = {
+cal add(g:ctrlp_ext_vars, {
 	\ 'init': 'ctrlp#dir#init('.join(s:ars, ', ').')',
 	\ 'accept': 'ctrlp#dir#accept',
 	\ 'lname': 'dirs',
 	\ 'sname': 'dir',
 	\ 'type': 'path',
-	\ }
-
-let g:ctrlp_ext_vars = exists('g:ctrlp_ext_vars') && !empty(g:ctrlp_ext_vars)
-	\ ? add(g:ctrlp_ext_vars, s:dir_var) : [s:dir_var]
+	\ 'specinput': 1,
+	\ })
 
 let s:id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
 " Utilities {{{1
@@ -34,9 +32,9 @@ fu! s:globdirs(dirs, depth)
 	let entries = split(globpath(a:dirs, s:glob), "\n")
 	let [dirs, depth] = [ctrlp#dirnfile(entries)[0], a:depth + 1]
 	cal extend(g:ctrlp_alldirs, dirs)
-	if !empty(dirs) && !s:max(len(g:ctrlp_alldirs), s:maxfiles)
-		\ && depth <= s:maxdepth
-		sil! cal ctrlp#progress(len(g:ctrlp_alldirs))
+	let nr = len(g:ctrlp_alldirs)
+	if !empty(dirs) && !s:max(nr, s:maxfiles) && depth <= s:maxdepth
+		sil! cal ctrlp#progress(nr)
 		cal s:globdirs(join(dirs, ','), depth)
 	en
 endf
@@ -48,25 +46,24 @@ endf
 fu! ctrlp#dir#init(...)
 	let s:cwd = getcwd()
 	for each in range(len(s:ars))
-		exe 'let' s:ars[each] '=' string(eval('a:'.(each + 1)))
+		let {s:ars[each]} = a:{each + 1}
 	endfo
-	let cadir = ctrlp#utils#cachedir().ctrlp#utils#lash().s:dir_var['sname']
-	let cafile = cadir.ctrlp#utils#lash().ctrlp#utils#cachefile(s:dir_var['sname'])
+	let cadir = ctrlp#utils#cachedir().ctrlp#utils#lash().'dir'
+	let cafile = cadir.ctrlp#utils#lash().ctrlp#utils#cachefile('dir')
 	if g:ctrlp_newdir || !filereadable(cafile)
-		let g:ctrlp_alldirs = []
+		let [s:initcwd, g:ctrlp_alldirs] = [s:cwd, []]
 		cal s:globdirs(s:cwd, 0)
 		cal ctrlp#rmbasedir(g:ctrlp_alldirs)
-		let read_cache = 0
 		if len(g:ctrlp_alldirs) <= s:compare_lim
 			cal sort(g:ctrlp_alldirs, 'ctrlp#complen')
 		en
-	el
-		let g:ctrlp_alldirs = ctrlp#utils#readfile(cafile)
-		let read_cache = 1
-	en
-	if !read_cache
 		cal ctrlp#utils#writecache(g:ctrlp_alldirs, cadir, cafile)
 		let g:ctrlp_newdir = 0
+	el
+		if !( exists('s:initcwd') && s:initcwd == s:cwd )
+			let s:initcwd = s:cwd
+			let g:ctrlp_alldirs = ctrlp#utils#readfile(cafile)
+		en
 	en
 	retu g:ctrlp_alldirs
 endf

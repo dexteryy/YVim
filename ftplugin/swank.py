@@ -4,8 +4,8 @@
 #
 # SWANK client for Slimv
 # swank.py:     SWANK client code for slimv.vim plugin
-# Version:      0.9.6
-# Last Change:  25 Mar 2012
+# Version:      0.9.8
+# Last Change:  30 Jun 2012
 # Maintainer:   Tamas Kovacs <kovisoft at gmail dot com>
 # License:      This file is placed in the public domain.
 #               No warranty, express or implied.
@@ -363,7 +363,7 @@ def swank_parse_inspect_content(pcont):
     """
     global inspect_content
 
-    cur_line = vim.eval('line(".")')
+    vim.command('let oldpos=winsaveview()')
     buf = vim.current.buffer
     # First 2 lines are filled in swank_parse_inspect()
     buf[2:] = []
@@ -378,20 +378,15 @@ def swank_parse_inspect_content(pcont):
         logprint(str(el))
         if type(el) == list:
             if el[0] == ':action':
-                item = '<' + unquote(el[2]) + '> '
+                item = '{<' + unquote(el[2]) + '>'
+                tail = '<>}'
             else:
-                item = '[' + unquote(el[2]) + '] '
-            if linestart < 0:
-                lst.append("\n")
-                linestart = len(lst)
-            lst.insert(linestart, item)
+                item = '{[' + unquote(el[2]) + ']'
+                tail = '[]}'
+            lst.insert(len(lst), item)
             linestart = -1
             text = unquote(el[1])
-            if text[-len(item):] == ' ' * len(item):
-                # If possible, remove spaces from the end in the length of item info
-                lst.append(text[:-len(item)])
-            else:
-                lst.append(text)
+            lst.append(text + tail)
         else:
             text = unquote(el)
             lst.append(text)
@@ -399,23 +394,32 @@ def swank_parse_inspect_content(pcont):
                 linestart = len(lst)
     if int(istate) > int(end):
         # Swank returns end+1000 if there are more entries to request
-        # Save current range for the next request
-        vc = ":let b:range_start=" + start
-        vim.command(vc)
-        vc = ":let b:range_end=" + end
-        vim.command(vc)
         if linestart >= 0 and linestart < len(lst) and (len(lst[linestart]) == 0 or lst[linestart][0] != '['):
             lst[linestart:] = "[--more--]"
         else:
             lst.append("\n[--more--]")
+        lst.append("\n[--all---]")
     buf = vim.current.buffer
     buf.append([''])
     buf.append("".join(lst).split("\n"))
-    buf.append(['', '[<<]'])
-    vim.command('normal! ' + cur_line + 'G')
+    inspect_path = vim.eval('s:inspect_path')
+    if len(inspect_path) > 1:
+        ret = '[<<] Return to ' + ' -> '.join(inspect_path[:-1])
+    else:
+        ret = '[<<] Exit Inspector'
+    buf.append(['', ret])
     vim.command('normal! 3G0')
     vim.command('call SlimvHelp(2)')
-    vim.command('normal! j')
+    vim.command('call winrestview(oldpos)')
+    if int(istate) > int(end):
+        # There are more entries to request
+        # Save current range for the next request
+        vim.command("let b:range_start=" + start)
+        vim.command("let b:range_end=" + end)
+        vim.command("let b:inspect_more=" + end)
+    else:
+        # No ore entries left
+        vim.command("let b:inspect_more=0")
 
 def swank_parse_inspect(struct):
     """
@@ -964,7 +968,7 @@ def swank_completions(symbol):
     swank_rex(':simple-completions', cmd, 'nil', 't')
 
 def swank_fuzzy_completions(symbol):
-    cmd = '(swank:fuzzy-completions "' + symbol + '" ' + get_swank_package() + ' :limit 200 :time-limit-in-msec 2000)' 
+    cmd = '(swank:fuzzy-completions "' + symbol + '" ' + get_swank_package() + ' :limit 2000 :time-limit-in-msec 2000)' 
     swank_rex(':fuzzy-completions', cmd, 'nil', 't')
 
 def swank_undefine_function(fn):
@@ -989,6 +993,8 @@ def swank_inspector_nth_action(n):
     swank_rex(':inspector-call-nth-action', cmd, 'nil', 't', str(n))
 
 def swank_inspector_pop():
+    # Remove the last two entries from the inspect path
+    vim.command('let s:inspect_path = s:inspect_path[:-2]')
     swank_rex(':inspector-pop', '(swank:inspector-pop)', 'nil', 't')
 
 def swank_inspect_in_frame(symbol, n):

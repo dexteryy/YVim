@@ -31,7 +31,7 @@ def jsSetBreakpoint():
 vim.command('let b:myLogCount = 0')
 def jsSetLog():
 	vim.command('let b:myLogCount += 1')
-	jsInsertCode('console.info("log: " + %s)' 
+	jsInsertCode('console.info("log: ", %s)' 
 		% str(vim.eval('b:myLogCount')), 'log')
 
 def jsRemoveAllDebug():

@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: tags_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 19 Sep 2011.
+" Last Modified: 25 Jun 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -36,14 +36,20 @@ function! s:source.initialize()"{{{
   " Initialize
   let s:async_tags_list = {}
   let s:tags_list = {}
-  let s:completion_length = neocomplcache#get_auto_completion_length('tags_complete')
+  let s:completion_length =
+        \ neocomplcache#get_auto_completion_length('tags_complete')
+
+  let g:neocomplcache_tags_caching_limit_file_size =
+        \ get(g:, 'neocomplcache_tags_caching_limit_file_size', 500000)
 
   " Create cache directory.
-  if !isdirectory(g:neocomplcache_temporary_dir . '/tags_cache')
-    call mkdir(g:neocomplcache_temporary_dir . '/tags_cache', 'p')
+  if !isdirectory(neocomplcache#get_temporary_directory() . '/tags_cache')
+    call mkdir(neocomplcache#get_temporary_directory() . '/tags_cache', 'p')
   endif
 
-  command! -nargs=? -complete=buffer NeoComplCacheCachingTags call s:caching_tags(<q-args>, 1)
+  command! -nargs=0 -bar
+        \ NeoComplCacheCachingTags
+        \ call s:caching_tags(1)
 endfunction"}}}
 
 function! s:source.finalize()"{{{
@@ -57,7 +63,7 @@ endfunction"}}}
 function! s:source.get_keyword_list(cur_keyword_str)"{{{
   if !has_key(s:async_tags_list, bufnr('%'))
         \ && !has_key(s:tags_list, bufnr('%'))
-    call s:caching_tags(bufnr('%'), 0)
+    call s:caching_tags(0)
   endif
 
   if neocomplcache#within_comment()
@@ -90,17 +96,18 @@ function! s:initialize_tags(filename)"{{{
         \              'tags_cache', a:filename, ft, 'T', 0)
         \ }
 endfunction"}}}
-function! s:caching_tags(bufname, force)"{{{
-  let bufnumber = (a:bufname == '') ? bufnr('%') : bufnr(a:bufname)
+function! s:caching_tags(force)"{{{
+  let bufnumber = bufnr('%')
 
   let s:async_tags_list[bufnumber] = []
-  for tags in split(getbufvar(bufnumber, '&tags'), ',')
-    let filename = fnamemodify(tags, ':p')
-    if filereadable(filename)
-          \ && (a:force || getfsize(filename)
-          \               < g:neocomplcache_caching_limit_file_size)
+  for tags in map(filter(tagfiles(), 'getfsize(v:val) > 0'),
+        \ "neocomplcache#util#substitute_path_separator(
+        \    fnamemodify(v:val, ':p'))")
+    if tags !~? '/doc/tags\%(-\w\+\)\?$' &&
+          \ (a:force || getfsize(tags)
+          \         < g:neocomplcache_tags_caching_limit_file_size)
       call add(s:async_tags_list[bufnumber],
-            \ s:initialize_tags(filename))
+            \ s:initialize_tags(tags))
     endif
   endfor
 endfunction"}}}

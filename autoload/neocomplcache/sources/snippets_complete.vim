@@ -51,7 +51,7 @@ function! s:source.initialize()"{{{
   endif
 
   call neocomplcache#set_dictionary_helper(
-        \ g:neocomplcache_plugin_rank, 'snippets_complete', 8)
+        \ g:neocomplcache_source_rank, 'snippets_complete', 8)
 
   let s:snippets_dir = []
   let s:runtime_dir = split(globpath(&runtimepath,

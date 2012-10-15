@@ -10,17 +10,16 @@ if exists('g:loaded_ctrlp_changes') && g:loaded_ctrlp_changes
 en
 let g:loaded_ctrlp_changes = 1
 
-let s:changes_var = {
-	\ 'init': 'ctrlp#changes#init(s:bufnr, s:crfile)',
+cal add(g:ctrlp_ext_vars, {
+	\ 'init': 'ctrlp#changes#init(s:bufnr, s:crbufnr)',
 	\ 'accept': 'ctrlp#changes#accept',
 	\ 'lname': 'changes',
 	\ 'sname': 'chs',
 	\ 'exit': 'ctrlp#changes#exit()',
 	\ 'type': 'tabe',
-	\ }
-
-let g:ctrlp_ext_vars = exists('g:ctrlp_ext_vars') && !empty(g:ctrlp_ext_vars)
-	\ ? add(g:ctrlp_ext_vars, s:changes_var) : [s:changes_var]
+	\ 'sort': 0,
+	\ 'nolim': 1,
+	\ })
 
 let s:id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
 " Utilities {{{1
@@ -45,41 +44,34 @@ fu! s:process(clines, ...)
 endf
 
 fu! s:syntax()
-	if !hlexists('CtrlPBufName')
-		hi link CtrlPBufName Directory
+	if !ctrlp#nosy()
+		cal ctrlp#hicheck('CtrlPBufName', 'Directory')
+		cal ctrlp#hicheck('CtrlPTabExtra', 'Comment')
+		sy match CtrlPBufName '\t|\d\+:\zs[^|]\+\ze|\d\+:\d\+|$'
+		sy match CtrlPTabExtra '\zs\t.*\ze$' contains=CtrlPBufName
 	en
-	if !hlexists('CtrlPTabExtra')
-		hi link CtrlPTabExtra Comment
-	en
-	sy match CtrlPBufName '\t|\d\+:\zs[^|]\+\ze|\d\+:\d\+|$'
-	sy match CtrlPTabExtra '\zs\t.*\ze$' contains=CtrlPBufName
 endf
 " Public {{{1
-fu! ctrlp#changes#init(original_bufnr, fname)
-	let fname = exists('s:bufname') ? s:bufname : a:fname
-	let bufs = exists('s:clmode') && s:clmode
-		\ ? filter(ctrlp#buffers(), 'filereadable(v:val)') : [fname]
+fu! ctrlp#changes#init(original_bufnr, bufnr)
+	let bufnr = exists('s:bufnr') ? s:bufnr : a:bufnr
+	let bufs = exists('s:clmode') && s:clmode ? ctrlp#buffers('id') : [bufnr]
+	cal filter(bufs, 'v:val > 0')
 	let [swb, &swb] = [&swb, '']
 	let lines = []
 	for each in bufs
-		let [bname, fnamet] = [fnamemodify(each, ':p'), fnamemodify(each, ':t')]
-		let bufnr = bufnr('^'.bname.'$')
-		if bufnr > 0
-			cal extend(lines, s:process(s:changelist(bufnr), bufnr, fnamet))
-		en
+		let fnamet = fnamemodify(bufname(each), ':t')
+		cal extend(lines, s:process(s:changelist(each), each, fnamet))
 	endfo
 	sil! exe 'noa hid b' a:original_bufnr
 	let &swb = swb
-	let g:ctrlp_nolimit = 1
-	if has('syntax') && exists('g:syntax_on')
-		cal ctrlp#syntax()
-		cal s:syntax()
-	en
+	cal ctrlp#syntax()
+	cal s:syntax()
 	retu lines
 endf
 
 fu! ctrlp#changes#accept(mode, str)
 	let info = matchlist(a:str, '\t|\(\d\+\):[^|]\+|\(\d\+\):\(\d\+\)|$')
+	if info == [] | retu | en
 	let bufnr = str2nr(get(info, 1))
 	if bufnr
 		cal ctrlp#acceptfile(a:mode, fnamemodify(bufname(bufnr), ':p'))
@@ -91,13 +83,13 @@ endf
 fu! ctrlp#changes#cmd(mode, ...)
 	let s:clmode = a:mode
 	if a:0 && !empty(a:1)
-		let s:bufname = fnamemodify(a:1, ':p')
+		let s:bufnr = bufnr('^'.fnamemodify(a:1, ':p').'$')
 	en
 	retu s:id
 endf
 
 fu! ctrlp#changes#exit()
-	unl! s:clmode s:bufname
+	unl! s:clmode s:bufnr
 endf
 "}}}
 

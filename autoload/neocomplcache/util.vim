@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: util.vim
 " AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 05 Jan 2012.
+" Last Modified: 18 Aug 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -72,7 +72,7 @@ endfunction"}}}
 function! neocomplcache#util#has_vimproc(...)"{{{
   return call(s:V.has_vimproc, a:000)
 endfunction"}}}
-function! neocomplcache#util#is_win(...)"{{{
+function! neocomplcache#util#is_windows(...)"{{{
   return call(s:V.is_windows, a:000)
 endfunction"}}}
 function! neocomplcache#util#is_mac(...)"{{{
@@ -81,8 +81,29 @@ endfunction"}}}
 function! neocomplcache#util#get_last_status(...)"{{{
   return call(s:V.get_last_status, a:000)
 endfunction"}}}
+function! neocomplcache#util#escape_pattern(...)"{{{
+  return call(s:V.escape_pattern, a:000)
+endfunction"}}}
+function! neocomplcache#util#iconv(...)
+  return call(s:V.iconv, a:000)
+endfunction
 
 function! neocomplcache#util#glob(pattern, ...)"{{{
+  if a:pattern =~ "'"
+    " Use glob('*').
+    let cwd = getcwd()
+    let base = neocomplcache#util#substitute_path_separator(
+          \ fnamemodify(a:pattern, ':h'))
+    lcd `=base`
+
+    let files = map(split(neocomplcache#util#substitute_path_separator(
+          \ glob('*')), '\n'), "base . '/' . v:val")
+
+    lcd `=cwd`
+
+    return files
+  endif
+
   " let is_force_glob = get(a:000, 0, 0)
   let is_force_glob = get(a:000, 0, 1)
 
@@ -91,7 +112,7 @@ function! neocomplcache#util#glob(pattern, ...)"{{{
     return filter(vimproc#readdir(a:pattern[: -2]), 'v:val !~ "/\\.\\.\\?$"')
   else
     " Escape [.
-    if neocomplcache#util#is_win()
+    if neocomplcache#util#is_windows()
       let glob = substitute(a:pattern, '\[', '\\[[]', 'g')
     else
       let glob = escape(a:pattern, '[')
@@ -101,7 +122,19 @@ function! neocomplcache#util#glob(pattern, ...)"{{{
   endif
 endfunction"}}}
 function! neocomplcache#util#expand(path)"{{{
-  return expand(escape(a:path, '*?[]"={}'))
+  return expand(escape(a:path, '*?[]"={}'), 1)
+endfunction"}}}
+function! neocomplcache#util#set_default_dictionary_helper(variable, keys, value)"{{{
+  for key in split(a:keys, '\s*,\s*')
+    if !has_key(a:variable, key)
+      let a:variable[key] = a:value
+    endif
+  endfor
+endfunction"}}}
+function! neocomplcache#util#set_dictionary_helper(variable, keys, value)"{{{
+  for key in split(a:keys, '\s*,\s*')
+    let a:variable[key] = a:value
+  endfor
 endfunction"}}}
 
 let &cpo = s:save_cpo

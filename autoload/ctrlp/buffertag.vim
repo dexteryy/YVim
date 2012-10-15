@@ -13,7 +13,7 @@ if exists('g:loaded_ctrlp_buftag') && g:loaded_ctrlp_buftag
 en
 let g:loaded_ctrlp_buftag = 1
 
-let s:buftag_var = {
+cal add(g:ctrlp_ext_vars, {
 	\ 'init': 'ctrlp#buffertag#init(s:crfile)',
 	\ 'accept': 'ctrlp#buffertag#accept',
 	\ 'lname': 'buffer tags',
@@ -21,48 +21,27 @@ let s:buftag_var = {
 	\ 'exit': 'ctrlp#buffertag#exit()',
 	\ 'type': 'tabs',
 	\ 'opts': 'ctrlp#buffertag#opts()',
-	\ }
-
-let g:ctrlp_ext_vars = exists('g:ctrlp_ext_vars') && !empty(g:ctrlp_ext_vars)
-	\ ? add(g:ctrlp_ext_vars, s:buftag_var) : [s:buftag_var]
+	\ })
 
 let s:id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
 
-fu! ctrlp#buffertag#opts()
-	let opts = {
-		\ 'g:ctrlp_buftag_systemenc': ['s:enc', &enc],
-		\ 'g:ctrlp_buftag_ctags_bin': ['s:bin', ''],
-		\ 'g:ctrlp_buftag_types': ['s:usr_types', ''],
-		\ }
-	for [ke, va] in items(opts)
-		exe 'let' va[0] '=' string(exists(ke) ? eval(ke) : va[1])
-	endfo
-endf
-cal ctrlp#buffertag#opts()
+let [s:pref, s:opts] = ['g:ctrlp_buftag_', {
+	\ 'systemenc': ['s:enc', &enc],
+	\ 'ctags_bin': ['s:bin', ''],
+	\ 'types': ['s:usr_types', {}],
+	\ }]
 
-fu! s:bins()
-	let bins = [
-		\ 'ctags-exuberant',
-		\ 'exuberant-ctags',
-		\ 'exctags',
-		\ '/usr/local/bin/ctags',
-		\ '/opt/local/bin/ctags',
-		\ 'ctags',
-		\ 'ctags.exe',
-		\ 'tags',
-		\ ]
-	if empty(s:bin)
-		for bin in bins | if executable(bin)
-			let s:bin = bin
-			brea
-		en | endfo
-	el
-		let s:bin = expand(s:bin, 1)
-	en
-endf
-cal s:bins()
+let s:bins = [
+	\ 'ctags-exuberant',
+	\ 'exuberant-ctags',
+	\ 'exctags',
+	\ '/usr/local/bin/ctags',
+	\ '/opt/local/bin/ctags',
+	\ 'ctags',
+	\ 'ctags.exe',
+	\ 'tags',
+	\ ]
 
-" s:types {{{2
 let s:types = {
 	\ 'asm'    : '%sasm%sasm%sdlmt',
 	\ 'aspperl': '%sasp%sasp%sfsv',
@@ -109,9 +88,22 @@ if executable('jsctags')
 	cal extend(s:types, { 'javascript': { 'args': '-f -', 'bin': 'jsctags' } })
 en
 
-if type(s:usr_types) == 4
+fu! ctrlp#buffertag#opts()
+	for [ke, va] in items(s:opts)
+		let {va[0]} = exists(s:pref.ke) ? {s:pref.ke} : va[1]
+	endfo
+	" Ctags bin
+	if empty(s:bin)
+		for bin in s:bins | if executable(bin)
+			let s:bin = bin
+			brea
+		en | endfo
+	el
+		let s:bin = expand(s:bin, 1)
+	en
+	" Types
 	cal extend(s:types, s:usr_types)
-en
+endf
 " Utilities {{{1
 fu! s:validfile(fname, ftype)
 	if ( !empty(a:fname) || !empty(a:ftype) ) && filereadable(a:fname)
@@ -193,24 +185,20 @@ endf
 fu! s:parseline(line)
 	let eval = '\v^([^\t]+)\t(.+)\t\/\^(.+)\$\/\;\"\t(.+)\tline(no)?\:(\d+)'
 	let vals = matchlist(a:line, eval)
-	if empty(vals) | retu '' | en
+	if vals == [] | retu '' | en
 	let [bufnr, bufname] = [bufnr('^'.vals[2].'$'), fnamemodify(vals[2], ':p:t')]
 	retu vals[1].'	'.vals[4].'|'.bufnr.':'.bufname.'|'.vals[6].'| '.vals[3]
 endf
 
 fu! s:syntax()
-	if !hlexists('CtrlPTagKind')
-		hi link CtrlPTagKind Title
+	if !ctrlp#nosy()
+		cal ctrlp#hicheck('CtrlPTagKind', 'Title')
+		cal ctrlp#hicheck('CtrlPBufName', 'Directory')
+		cal ctrlp#hicheck('CtrlPTabExtra', 'Comment')
+		sy match CtrlPTagKind '\zs[^\t|]\+\ze|\d\+:[^|]\+|\d\+|'
+		sy match CtrlPBufName '|\d\+:\zs[^|]\+\ze|\d\+|'
+		sy match CtrlPTabExtra '\zs\t.*\ze$' contains=CtrlPBufName,CtrlPTagKind
 	en
-	if !hlexists('CtrlPBufName')
-		hi link CtrlPBufName Directory
-	en
-	if !hlexists('CtrlPTabExtra')
-		hi link CtrlPTabExtra Comment
-	en
-	sy match CtrlPTagKind '\zs[^\t|]\+\ze|\d\+:[^|]\+|\d\+|'
-	sy match CtrlPBufName '|\d\+:\zs[^|]\+\ze|\d\+|'
-	sy match CtrlPTabExtra '\zs\t.*\ze$' contains=CtrlPBufName,CtrlPTagKind
 endf
 " Public {{{1
 fu! ctrlp#buffertag#init(fname)
@@ -223,14 +211,13 @@ fu! ctrlp#buffertag#init(fname)
 		let tftype = get(split(getbufvar(bname, '&ft'), '\.'), 0, '')
 		cal extend(lines, s:process(bname, tftype))
 	endfo
-	if has('syntax') && exists('g:syntax_on')
-		cal s:syntax()
-	en
+	cal s:syntax()
 	retu lines
 endf
 
 fu! ctrlp#buffertag#accept(mode, str)
 	let vals = matchlist(a:str, '\v^[^\t]+\t+[^\t|]+\|(\d+)\:[^\t|]+\|(\d+)\|')
+	if vals == [] | retu | en
 	let [bufnm, linenr] = [fnamemodify(bufname(str2nr(vals[1])), ':p'), vals[2]]
 	cal ctrlp#acceptfile(a:mode, bufnm, linenr)
 endf

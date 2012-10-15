@@ -10,23 +10,35 @@ if ( exists('g:loaded_ctrlp_undo') && g:loaded_ctrlp_undo )
 en
 let g:loaded_ctrlp_undo = 1
 
-let s:undo_var = {
-	\ 'init': 'ctrlp#undo#init(s:undos)',
+cal add(g:ctrlp_ext_vars, {
+	\ 'init': 'ctrlp#undo#init()',
 	\ 'accept': 'ctrlp#undo#accept',
 	\ 'lname': 'undo',
 	\ 'sname': 'udo',
+	\ 'enter': 'ctrlp#undo#enter()',
 	\ 'exit': 'ctrlp#undo#exit()',
 	\ 'type': 'line',
-	\ }
-
-let g:ctrlp_ext_vars = exists('g:ctrlp_ext_vars') && !empty(g:ctrlp_ext_vars)
-	\ ? add(g:ctrlp_ext_vars, s:undo_var) : [s:undo_var]
+	\ 'sort': 0,
+	\ 'nolim': 1,
+	\ })
 
 let s:id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
 
 let s:text = map(['second', 'seconds', 'minutes', 'hours', 'days', 'weeks',
 	\ 'months', 'years'], '" ".v:val." ago"')
 " Utilities {{{1
+fu! s:getundo()
+	if exists('*undotree')
+		\ && ( v:version > 703 || ( v:version == 703 && has('patch005') ) )
+		retu [1, undotree()]
+	el
+		redi => result
+		sil! undol
+		redi END
+		retu [0, split(result, "\n")[1:]]
+	en
+endf
+
 fu! s:flatten(tree, cur)
 	let flatdict = {}
 	for each in a:tree
@@ -68,11 +80,10 @@ fu! s:elapsed(nr)
 endf
 
 fu! s:syntax()
+	if ctrlp#nosy() | retu | en
 	for [ke, va] in items({'T': 'Directory', 'Br': 'Comment', 'Nr': 'String',
 		\ 'Sv': 'Comment', 'Po': 'Title'})
-		if !hlexists('CtrlPUndo'.ke)
-			exe 'hi link CtrlPUndo'.ke va
-		en
+		cal ctrlp#hicheck('CtrlPUndo'.ke, va)
 	endfo
 	sy match CtrlPUndoT '\v\d+ \zs[^ ]+\ze|\d+:\d+:\d+'
 	sy match CtrlPUndoBr '\[\|\]'
@@ -101,24 +112,22 @@ endf
 fu! s:formatul(...)
 	let parts = matchlist(a:1,
 		\ '\v^\s+(\d+)\s+\d+\s+([^ ]+\s?[^ ]+|\d+\s\w+\s\w+)(\s*\d*)$')
-	retu parts[2].' ['.parts[1].']'.( parts[3] != '' ? ' saved' : '' )
+	retu parts == [] ? '----'
+		\ : parts[2].' ['.parts[1].']'.( parts[3] != '' ? ' saved' : '' )
 endf
 " Public {{{1
-fu! ctrlp#undo#init(undo)
-	let entries = a:undo[0] ? a:undo[1]['entries'] : a:undo[1]
+fu! ctrlp#undo#init()
+	let entries = s:undos[0] ? s:undos[1]['entries'] : s:undos[1]
 	if empty(entries) | retu [] | en
-	if has('syntax') && exists('g:syntax_on')
-		cal s:syntax()
-	en
-	let g:ctrlp_nolimit = 1
 	if !exists('s:lines')
-		if a:undo[0]
-			let entries = s:dict2list(s:flatten(entries, a:undo[1]['seq_cur']))
+		if s:undos[0]
+			let entries = s:dict2list(s:flatten(entries, s:undos[1]['seq_cur']))
 			let s:lines = map(sort(entries, 's:compval'), 's:format(v:val)')
 		el
 			let s:lines = map(reverse(entries), 's:formatul(v:val)')
 		en
 	en
+	cal s:syntax()
 	retu s:lines
 endf
 
@@ -131,6 +140,10 @@ endf
 
 fu! ctrlp#undo#id()
 	retu s:id
+endf
+
+fu! ctrlp#undo#enter()
+	let s:undos = s:getundo()
 endf
 
 fu! ctrlp#undo#exit()

@@ -87,7 +87,7 @@ set whichwrap=b,s,<,>,[,]
 set foldmethod=marker
 set diffopt+=iwhite,vertical " 忽略缩进的差异
 "set cursorbind
-set gdefault
+"set gdefault
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " interface
@@ -179,6 +179,7 @@ autocmd BufNewFile,BufRead *.json setlocal ft=javascript
 autocmd BufNewFile,BufRead jquery.*.js set ft=javascript syntax=jquery
 autocmd BufNewFile,BufRead *.pac setlocal ft=javascript
 autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
+autocmd BufNewFile,BufRead *.md setlocal ft=markdown
 
 
 " language support
@@ -201,6 +202,14 @@ autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 " sudo save
 command W :w ! sudo tee %
 
+:command! -nargs=+ SuperRetab call SuperRetab(<f-args>)
+
+function! SuperRetab(p, n)
+    execute 'setl et! ts='.a:p.' sw='.a:p.' sts='.a:p
+    retab!
+    execute 'setl et ts='.a:n.' sw='.a:n.' sts='.a:n
+    retab
+endfunction
 
 function! GetMySession(spath, ssname)
 	if a:ssname == 0
@@ -323,14 +332,15 @@ nnoremap <leader><tab> :Sscratch<cr>
 
 
 " for make & debug
-noremap <silent> <F1> <ESC>:call LLSwitch()<CR>
+"noremap <silent> <F1> <ESC>:call LLSwitch()<CR>
 noremap <silent> <F2> <ESC>:call MyLint()<CR>
 noremap <silent> <F3> :call MyDebug()<CR>
 noremap <silent> <F4> :call MyMake()<CR>
 noremap <silent> <F5> <ESC>:call QFSwitch()<CR>
-noremap <silent> <F6> :call MySetBreakPoint()<CR>
-noremap <silent> <F7> :call MySetLog()<CR>
-noremap <silent> <F8> :call MyRemoveBreakPoint()<CR>
+noremap <silent> <F6> <ESC>:call LLSwitch()<CR>
+noremap <silent> <F7> :call MySetBreakPoint()<CR>
+noremap <silent> <F8> :call MySetLog()<CR>
+noremap <silent> <F9> :call MyRemoveBreakPoint()<CR>
 
 
 nmap <tab> 		v>
@@ -386,7 +396,7 @@ let g:syntastic_python_checker = 'flake8'
 let g:syntastic_python_checker_args = '--ignore="E401,E501"'
 let g:syntastic_javascript_checker = 'jshint'
 let g:loaded_html_syntax_checker = 1
-let g:syntastic_auto_loc_list=1
+let g:syntastic_auto_loc_list=0
 
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_enable_on_vim_startup = 1

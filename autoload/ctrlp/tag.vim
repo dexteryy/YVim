@@ -10,16 +10,14 @@ if exists('g:loaded_ctrlp_tag') && g:loaded_ctrlp_tag
 en
 let g:loaded_ctrlp_tag = 1
 
-let s:tag_var = {
-	\ 'init': 'ctrlp#tag#init(s:tagfiles)',
+cal add(g:ctrlp_ext_vars, {
+	\ 'init': 'ctrlp#tag#init()',
 	\ 'accept': 'ctrlp#tag#accept',
 	\ 'lname': 'tags',
 	\ 'sname': 'tag',
+	\ 'enter': 'ctrlp#tag#enter()',
 	\ 'type': 'tabs',
-	\ }
-
-let g:ctrlp_ext_vars = exists('g:ctrlp_ext_vars') && !empty(g:ctrlp_ext_vars)
-	\ ? add(g:ctrlp_ext_vars, s:tag_var) : [s:tag_var]
+	\ })
 
 let s:id = g:ctrlp_builtins + len(g:ctrlp_ext_vars)
 " Utilities {{{1
@@ -56,21 +54,23 @@ fu! s:filter(tags)
 	endw
 	retu alltags
 endf
+
+fu! s:syntax()
+	if !ctrlp#nosy()
+		cal ctrlp#hicheck('CtrlPTabExtra', 'Comment')
+		sy match CtrlPTabExtra '\zs\t.*\ze$'
+	en
+endf
 " Public {{{1
-fu! ctrlp#tag#init(tagfiles)
-	if empty(a:tagfiles) | retu [] | en
+fu! ctrlp#tag#init()
+	if empty(s:tagfiles) | retu [] | en
 	let g:ctrlp_alltags = []
-	let tagfiles = sort(filter(a:tagfiles, 'count(a:tagfiles, v:val) == 1'))
+	let tagfiles = sort(filter(s:tagfiles, 'count(s:tagfiles, v:val) == 1'))
 	for each in tagfiles
 		let alltags = s:filter(ctrlp#utils#readfile(each))
 		cal extend(g:ctrlp_alltags, alltags)
 	endfo
-	if has('syntax') && exists('g:syntax_on')
-		if !hlexists('CtrlPTabExtra')
-			hi link CtrlPTabExtra Comment
-		en
-		sy match CtrlPTabExtra '\zs\t.*\ze$'
-	en
+	cal s:syntax()
 	retu g:ctrlp_alltags
 endf
 
@@ -100,6 +100,12 @@ endf
 
 fu! ctrlp#tag#id()
 	retu s:id
+endf
+
+fu! ctrlp#tag#enter()
+	let tfs = tagfiles()
+	let s:tagfiles = tfs != [] ? filter(map(tfs, 'fnamemodify(v:val, ":p")'),
+		\ 'filereadable(v:val)') : []
 endf
 "}}}
 

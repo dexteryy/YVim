@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: helper.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 02 Jan 2012.
+" Last Modified: 23 Aug 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -133,17 +133,20 @@ function! neocomplcache#sources#vim_complete#helper#get_command_completion(comma
 endfunction"}}}
 function! neocomplcache#sources#vim_complete#helper#get_completion_name(command_name)"{{{
   if !has_key(s:internal_candidates_list, 'command_completions')
-    let s:internal_candidates_list.command_completions = s:caching_completion_from_dict('command_completions')
+    let s:internal_candidates_list.command_completions =
+          \ s:caching_completion_from_dict('command_completions')
   endif
   if !has_key(s:global_candidates_list, 'command_completions')
     let s:global_candidates_list.commands = s:get_cmdlist()
   endif
 
   if has_key(s:internal_candidates_list.command_completions, a:command_name)
-        \&& exists('*neocomplcache#sources#vim_complete#helper#'.s:internal_candidates_list.command_completions[a:command_name])
+        \&& exists('*neocomplcache#sources#vim_complete#helper#'
+        \ .s:internal_candidates_list.command_completions[a:command_name])
     return s:internal_candidates_list.command_completions[a:command_name]
   elseif has_key(s:global_candidates_list.command_completions, a:command_name)
-        \&& exists('*neocomplcache#sources#vim_complete#helper#'.s:global_candidates_list.command_completions[a:command_name])
+        \&& exists('*neocomplcache#sources#vim_complete#helper#'
+        \ .s:global_candidates_list.command_completions[a:command_name])
     return s:global_candidates_list.command_completions[a:command_name]
   else
     return ''
@@ -216,7 +219,8 @@ function! neocomplcache#sources#vim_complete#helper#command(cur_text, cur_keywor
       let s:global_candidates_list.commands = s:get_cmdlist()
     endif
     if !has_key(s:internal_candidates_list, 'commands')
-      let s:internal_candidates_list.commands = s:caching_from_dict('commands', 'c')
+      let s:internal_candidates_list.commands =
+            \ s:caching_from_dict('commands', 'c')
 
       let s:internal_candidates_list.command_prototypes =
             \ s:caching_prototype_from_dict('command_prototypes')
@@ -237,7 +241,8 @@ function! neocomplcache#sources#vim_complete#helper#command(cur_text, cur_keywor
   else
     " Commands args.
     let command = neocomplcache#sources#vim_complete#get_command(a:cur_text)
-    let completion_name = neocomplcache#sources#vim_complete#helper#get_completion_name(command)
+    let completion_name =
+          \ neocomplcache#sources#vim_complete#helper#get_completion_name(command)
 
     " Prevent infinite loop.
     let cur_text = completion_name ==# 'command' ?
@@ -265,23 +270,28 @@ function! neocomplcache#sources#vim_complete#helper#command_args(cur_text, cur_k
           \ s:caching_from_dict('command_replaces', '')
   endif
 
-  return s:internal_candidates_list.command_args + s:internal_candidates_list.command_replaces
+  return s:internal_candidates_list.command_args +
+        \ s:internal_candidates_list.command_replaces
 endfunction"}}}
 function! neocomplcache#sources#vim_complete#helper#custom(command_name, cur_text, cur_keyword_str)"{{{
   if !has_key(g:neocomplcache_vim_completefuncs, a:command_name)
     return []
   endif
 
-  return s:make_completion_list(split(call(g:neocomplcache_vim_completefuncs[a:command_name],
-        \ [a:cur_keyword_str, getline('.'), len(a:cur_text)]), '\n'), '[vim] custom', '')
+  return s:make_completion_list(split(
+        \ call(g:neocomplcache_vim_completefuncs[a:command_name],
+        \ [a:cur_keyword_str, getline('.'), len(a:cur_text)]),
+        \ '\n'), '[vim] custom', '')
 endfunction"}}}
 function! neocomplcache#sources#vim_complete#helper#customlist(command_name, cur_text, cur_keyword_str)"{{{
   if !has_key(g:neocomplcache_vim_completefuncs, a:command_name)
     return []
   endif
 
-  return s:make_completion_list(call(g:neocomplcache_vim_completefuncs[a:command_name],
-        \ [a:cur_keyword_str, getline('.'), len(a:cur_text)]), '[vim] customlist', '')
+  return s:make_completion_list(
+        \ call(g:neocomplcache_vim_completefuncs[a:command_name],
+        \ [a:cur_keyword_str, getline('.'), len(a:cur_text)]),
+        \ '[vim] customlist', '')
 endfunction"}}}
 function! neocomplcache#sources#vim_complete#helper#dir(cur_text, cur_keyword_str)"{{{
   " Check dup.
@@ -454,14 +464,15 @@ function! neocomplcache#sources#vim_complete#helper#tag_listfiles(cur_text, cur_
   return []
 endfunction"}}}
 function! neocomplcache#sources#vim_complete#helper#var_dictionary(cur_text, cur_keyword_str)"{{{
-  let var_name = matchstr(a:cur_text, '\%(\a:\)\?\h\w*\ze\.\%(\h\w*\%(()\?\)\?\)\?$')
+  let var_name = matchstr(a:cur_text,
+        \'\%(\a:\)\?\h\w*\ze\.\%(\h\w*\%(()\?\)\?\)\?$')
+  let list = []
   if a:cur_text =~ '[btwg]:\h\w*\.\%(\h\w*\%(()\?\)\?\)\?$'
     let list = has_key(s:global_candidates_list.dictionary_variables, var_name) ?
           \ values(s:global_candidates_list.dictionary_variables[var_name]) : []
   elseif a:cur_text =~ 's:\h\w*\.\%(\h\w*\%(()\?\)\?\)\?$'
-    let list = values(get(s:get_cached_script_candidates().dictionary_variables, var_name, {}))
-  else
-    let list = s:get_local_dictionary_variables(var_name)
+    let list = values(get(s:get_cached_script_candidates().dictionary_variables,
+          \ var_name, {}))
   endif
 
   return list
@@ -545,58 +556,6 @@ function! s:get_local_variables()"{{{
 
   return values(keyword_dict)
 endfunction"}}}
-function! s:get_local_dictionary_variables(var_name)"{{{
-  " Get local dictionary variable list.
-
-  " Search function.
-  let line_num = line('.') - 1
-  let end_line = (line('.') > 100) ? line('.') - 100 : 1
-  while line_num >= end_line
-    let line = getline(line_num)
-    if line =~ '\<fu\%[nction]\>'
-      break
-    endif
-
-    let line_num -= 1
-  endwhile
-  let line_num += 1
-
-  let end_line = line('.') - 1
-  let keyword_dict = {}
-  let var_pattern = a:var_name.'\.\h\w*\%(()\?\)\?'
-  while line_num <= end_line
-    let line = getline(line_num)
-
-    if line =~ var_pattern
-      while line =~ var_pattern
-        let var_name = matchstr(line, '\a:[[:alnum:]_:]*\ze\.\h\w*')
-        if var_name =~ '^[btwg]:'
-          let candidates = s:global_candidates_list.dictionary_variables
-          if !has_key(candidates, var_name)
-            let candidates[var_name] = {}
-          endif
-          let candidates_dict = candidates[var_name]
-        elseif var_name =~ '^s:' && has_key(s:script_candidates_list, bufnr('%'))
-          let candidates = s:script_candidates_list[bufnr('%')].dictionary_variables
-          if !has_key(candidates, var_name)
-            let candidates[var_name] = {}
-          endif
-          let candidates_dict = candidates[var_name]
-        else
-          let candidates_dict = keyword_dict
-        endif
-
-        call s:analyze_dictionary_variable_line(line, candidates_dict, var_name)
-
-        let line = line[matchend(line, var_pattern) :]
-      endwhile
-    endif
-
-    let line_num += 1
-  endwhile
-
-  return values(keyword_dict)
-endfunction"}}}
 
 function! s:get_cached_script_candidates()"{{{
   return has_key(s:script_candidates_list, bufnr('%')) && v:version > 700 ?
@@ -658,7 +617,8 @@ function! s:caching_from_dict(dict_name, kind)"{{{
   return keyword_list
 endfunction"}}}
 function! s:caching_completion_from_dict(dict_name)"{{{
-  let dict_files = split(globpath(&runtimepath, 'autoload/neocomplcache/sources/vim_complete/'.a:dict_name.'.dict'), '\n')
+  let dict_files = split(globpath(&runtimepath,
+        \ 'autoload/neocomplcache/sources/vim_complete/'.a:dict_name.'.dict'), '\n')
   if empty(dict_files)
     return {}
   endif
@@ -722,9 +682,13 @@ function! s:get_cmdlist()"{{{
   redir END
 
   let keyword_list = []
-  let completions = [ 'augroup', 'buffer', 'command', 'dir', 'environment', 
-        \ 'event', 'expression', 'file', 'shellcmd', 'function', 
-        \ 'help', 'highlight', 'mapping', 'menu', 'option', 'tag', 'tag_listfiles', 
+  let completions = [ 'augroup', 'buffer', 'behave',
+        \ 'color', 'command', 'compiler', 'cscope',
+        \ 'dir', 'environment', 'event', 'expression',
+        \ 'file', 'file_in_path', 'filetype', 'function',
+        \ 'help', 'highlight', 'history', 'locale',
+        \ 'mapping', 'menu', 'option', 'shellcmd', 'sign',
+        \ 'syntax', 'tag', 'tag_listfiles',
         \ 'var', 'custom', 'customlist' ]
   let command_prototypes = {}
   let command_completions = {}
