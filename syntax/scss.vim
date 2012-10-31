@@ -105,3 +105,6 @@ hi def link scssImport    Include
 hi def link scssImportStr Include
 
 let b:current_syntax = "scss"
+if main_syntax == 'scss'
+  unlet main_syntax
+endif
