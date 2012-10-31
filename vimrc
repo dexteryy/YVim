@@ -428,7 +428,11 @@ silent! map <unique> <Leader>R <Plug>(quickrun)
 nmap <silent> <leader>tl <Plug>TaskList
 
 " tagbar
+let g:tagbar_width = 20
+let g:tagbar_singleclick = 1
+let g:tagbar_iconchars = ['▾', '▸']
 nnoremap <leader>tb :TagbarToggle<CR>
+"autocmd FileType * nested :call tagbar#autoopen(0)
 
 " winManager setting
 "let g:winManagerWindowLayout="BufExplorer,FileExplorer|taglist" 
@@ -441,6 +445,8 @@ let g:netrw_winsize = 30
 "nmap <silent> <leader>fe :Sexplore!<cr>
 
 " NERDTree setting
+"let NERDTreeMinimalUI = 1
+let g:NERDTreeWinSize = 20
 nmap <silent> <leader>nt :NERDTree<cr>
 
 " Most Recently Used (MRU)

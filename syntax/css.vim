@@ -193,7 +193,7 @@ HLink cssAttrBlock Normal
 HLink cssBraces Delimiter
 HLink cssBraket Function
 
-HLink cssClass Label 
+HLink cssClass Identifier
 
 HLink cssColor Constant
 
