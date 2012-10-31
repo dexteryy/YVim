@@ -175,12 +175,12 @@ endif
 autocmd BufNewFile,BufRead *.vm setlocal ft=html
 autocmd BufNewFile,BufRead *.xul setlocal ft=xml
 autocmd BufNewFile,BufRead *.as	setlocal ft=actionscript
-autocmd BufNewFile,BufRead *.json setlocal ft=javascript
 autocmd BufNewFile,BufRead jquery.*.js set ft=javascript syntax=jquery
 autocmd BufNewFile,BufRead *.pac setlocal ft=javascript
 autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
 autocmd BufNewFile,BufRead *.md setlocal ft=markdown
-autocmd BufNewFile,BufRead *.scss set ft=scss
+"autocmd BufNewFile,BufRead *.json setlocal ft=javascript
+"autocmd BufNewFile,BufRead *.scss set ft=scss
 
 
 " language support
