@@ -4,7 +4,7 @@
 " Author:      Jan Larres <jan@majutsushi.net>
 " Licence:     Vim licence
 " Website:     http://majutsushi.github.com/tagbar/
-" Version:     2.3
+" Version:     2.4.1
 " Note:        This plugin was heavily inspired by the 'Taglist' plugin by
 "              Yegappan Lakshmanan and uses a small amount of code from it.
 "
@@ -109,8 +109,9 @@ command! -nargs=0 TagbarToggle        call tagbar#ToggleWindow()
 command! -nargs=? TagbarOpen          call tagbar#OpenWindow(<f-args>)
 command! -nargs=0 TagbarOpenAutoClose call tagbar#OpenWindow('fc')
 command! -nargs=0 TagbarClose         call tagbar#CloseWindow()
-command! -nargs=1 TagbarSetFoldlevel  call tagbar#SetFoldLevel(<args>)
+command! -nargs=1 -bang TagbarSetFoldlevel  call tagbar#SetFoldLevel(<args>, <bang>0)
 command! -nargs=0 TagbarShowTag       call tagbar#OpenParents()
+command! -nargs=1 TagbarGetTypeConfig call tagbar#gettypeconfig(<f-args>)
 command! -nargs=? TagbarDebug         call tagbar#StartDebug(<f-args>)
 command! -nargs=0 TagbarDebugEnd      call tagbar#StopDebug()
 

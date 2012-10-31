@@ -180,10 +180,13 @@ autocmd BufNewFile,BufRead jquery.*.js set ft=javascript syntax=jquery
 autocmd BufNewFile,BufRead *.pac setlocal ft=javascript
 autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
 autocmd BufNewFile,BufRead *.md setlocal ft=markdown
+autocmd BufNewFile,BufRead *.scss set ft=scss
 
 
 " language support
 autocmd FileType javascript setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
+autocmd FileType css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType scss setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
@@ -424,25 +427,8 @@ silent! map <unique> <Leader>R <Plug>(quickrun)
 " tasklist
 nmap <silent> <leader>tl <Plug>TaskList
 
+" tagbar
 nnoremap <leader>tb :TagbarToggle<CR>
-
-" taglists setting
-nmap <silent> <leader>tg :TlistToggle<CR>
-"let Tlist_Use_SingleClick=1
-"Tlist_Process_File_Always=1
-"let Tlist_File_Fold_Auto_Close=1
-"let Tlist_Exit_OnlyWindow = 1
-"let Tlist_Show_Menu=1
-"let Tlist_GainFocus_On_ToggleOpen=1
-"let Tlist_Close_OnSelect=1
-"let Tlist_Compact_Format=1
-"let Tlist_Use_Right_Window = 1
-"let Tlist_WinWidth = 30
-"let Tlist_Inc_Winwidth = 0
-
-"let g:tlist_javascript_settings = 'javascript;f:function;c:class;o:object;m:method;s:string;a:array;n:constant'
-let Tlist_JS_Settings = 'javascript;s:string;a:array;o:object;f:function'
-
 
 " winManager setting
 "let g:winManagerWindowLayout="BufExplorer,FileExplorer|taglist" 
@@ -580,6 +566,12 @@ autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
+" html5
+let g:html5_event_handler_attributes_complete = 0
+let g:html5_rdfa_attributes_complete = 0
+let g:html5_microdata_attributes_complete = 0
+let g:html5_aria_attributes_complete = 0
+let g:aria_attributes_complete = 0
 
 " fugitive
 autocmd BufReadPost fugitive://* set bufhidden=delete
