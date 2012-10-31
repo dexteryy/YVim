@@ -47,18 +47,19 @@ if has("gui_running")
 	:hi Boolean guifg=#D4FF36
 	:hi Number guifg=#D4FF36
 	:hi Special guifg=#99B5D9
-	:hi Identifier guifg=#ff9900 gui=bold
+	:hi Identifier guifg=#FF6900 gui=bold
 	:hi Include guifg=red
 	:hi PreProc guifg=#FF6900
 	:hi Operator gui=bold guifg=#FFE619
 	:hi Keyword gui=bold guifg=#FFE619
 	:hi Define guifg=#FFE619 gui=bold
 	:hi Type guifg=#99B5D9 "gui=bold guifg=#FFE619
-	:hi Function guifg=#FFE619 gui=NONE
+	:hi Function guifg=#FFE619 gui=none
 	:hi Structure guifg=#FF6900 gui=bold
 	:hi Label guifg=#FF6900
 	:hi Exception guifg=#CC1D20
 	:hi Builtin guifg=#99B5D9
+	:hi Delimiter guifg=#ffffff
 
 	:hi Ignore guifg=grey40
 	":hi StatusLineNC guibg=#E6E6E6 guifg=#000000 gui=none

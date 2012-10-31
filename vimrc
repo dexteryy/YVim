@@ -180,7 +180,7 @@ autocmd BufNewFile,BufRead *.pac setlocal ft=javascript
 autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
 autocmd BufNewFile,BufRead *.md setlocal ft=markdown
 "autocmd BufNewFile,BufRead *.json setlocal ft=javascript
-"autocmd BufNewFile,BufRead *.scss set ft=scss
+autocmd BufNewFile,BufRead *.scss set ft=scss
 
 
 " language support

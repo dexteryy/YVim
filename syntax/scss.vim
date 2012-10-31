@@ -10,7 +10,7 @@ if !exists("main_syntax")
   elseif exists("b:current_syntax")
     finish
   endif
-  let main_syntax = 'html'
+  let main_syntax = 'scss'
 endif
 
 runtime! syntax/css.vim

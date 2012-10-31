@@ -190,9 +190,10 @@ HLink cssValFn Function
 
 HLink cssAttrBlock Normal
 
+HLink cssBraces Delimiter
 HLink cssBraket Function
 
-HLink cssClass Function
+HLink cssClass Label 
 
 HLink cssColor Constant
 
@@ -205,7 +206,7 @@ HLink cssPathFn Directory
 HLink cssFunction Function
 HLink cssFnValBlock Function
 
-HLink cssFuncRegion Function
+HLink cssFuncRegion Delimiter
 
 HLink cssIdentifier Identifier
 
@@ -229,7 +230,7 @@ HLink cssSelector Structure
 
 HLink cssString String
 
-HLink cssTagName Statement
+HLink cssTagName Label
 
 HLink cssURL String
 
