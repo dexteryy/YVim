@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: omni_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 09 Aug 2012.
+" Last Modified: 25 Oct 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -40,49 +40,61 @@ function! s:source.initialize()"{{{
   if !exists('g:neocomplcache_omni_patterns')
     let g:neocomplcache_omni_patterns = {}
   endif
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  call neocomplcache#util#set_default_dictionary(
+        \'g:neocomplcache_omni_patterns',
         \'html,xhtml,xml,markdown',
         \'<[^>]*')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
-        \'css',
+  call neocomplcache#util#set_default_dictionary(
+        \'g:neocomplcache_omni_patterns',
+        \'css,scss',
         \'^\s\+\w\+\|\w\+[):;]\?\s\+\w*\|[@!]')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  call neocomplcache#util#set_default_dictionary(
+        \'g:neocomplcache_omni_patterns',
         \'javascript',
         \'[^. \t]\.\%(\h\w*\)\?')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  call neocomplcache#util#set_default_dictionary(
+        \'g:neocomplcache_omni_patterns',
         \'actionscript',
         \'[^. \t][.:]\h\w*')
-  "call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  "call neocomplcache#util#set_default_dictionary(
+        "\'g:neocomplcache_omni_patterns',
         "\'php',
         "\'[^. \t]->\h\w*\|\h\w*::')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  call neocomplcache#util#set_default_dictionary(
+        \'g:neocomplcache_omni_patterns',
         \'java',
         \'\%(\h\w*\|)\)\.')
-  "call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  "call neocomplcache#util#set_default_dictionary(
+        "\'g:neocomplcache_omni_patterns',
         "\'perl',
         "\'\h\w*->\h\w*\|\h\w*::')
-  "call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  "call neocomplcache#util#set_default_dictionary(
+        "\'g:neocomplcache_omni_patterns',
         "\'c',
         "\'[^.[:digit:] *\t]\%(\.\|->\)'
-  "call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  "call neocomplcache#util#set_default_dictionary(
+        "\'g:neocomplcache_omni_patterns',
         "\'cpp',
         "\'[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+  call neocomplcache#util#set_default_dictionary(
+        \'g:neocomplcache_omni_patterns',
         \'objc',
-        \'\h\w\+\|[^.[:digit:] *\t]\%(\.\|->\)')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+        \'[^.[:digit:] *\t]\%(\.\|->\)')
+  call neocomplcache#util#set_default_dictionary(
+        \'g:neocomplcache_omni_patterns',
         \'objj',
         \'[\[ \.]\w\+$\|:\w*$')
 
   " External language interface check.
   if has('ruby')
-    " call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
-          "\'ruby',
+    " call neocomplcache#util#set_default_dictionary(
+          "\'g:neocomplcache_omni_patterns', 'ruby',
           "\'[^. *\t]\.\h\w*\|\h\w*::')
   endif
   if has('python/dyn') || has('python3/dyn')
         \ || has('python') || has('python3')
-    call neocomplcache#set_dictionary_helper(g:neocomplcache_omni_patterns,
+    call neocomplcache#util#set_default_dictionary(
+          \'g:neocomplcache_omni_patterns',
           \'python', '[^. \t]\.\w*')
   endif
   "}}}
@@ -94,13 +106,20 @@ function! s:source.initialize()"{{{
   "}}}
 
   " Set rank.
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_source_rank,
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_source_rank',
         \ 'omni_complete', 300)
 endfunction"}}}
 function! s:source.finalize()"{{{
 endfunction"}}}
 
 function! s:source.get_keyword_pos(cur_text)"{{{
+  let syn_name = neocomplcache#get_syn_name(1)
+  if syn_name ==# 'Comment' || syn_name ==# 'String'
+    " Skip omni_complete in string literal.
+    return -1
+  endif
+
   let filetype = neocomplcache#get_context_filetype()
   let s:complete_results = s:set_complete_results_pos(
         \ s:get_omni_funcs(filetype), a:cur_text)
@@ -109,15 +128,6 @@ function! s:source.get_keyword_pos(cur_text)"{{{
 endfunction"}}}
 
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)"{{{
-  if neocomplcache#is_eskk_enabled()
-        \ && exists('g:eskk#start_completion_length')
-    " Check complete length.
-    if neocomplcache#util#mb_strlen(a:cur_keyword_str) <
-          \ g:eskk#start_completion_length
-      return []
-    endif
-  endif
-
   return s:get_complete_words(
         \ s:set_complete_results_words(s:complete_results),
         \ a:cur_keyword_pos, a:cur_keyword_str)
@@ -131,7 +141,6 @@ function! s:get_omni_funcs(filetype)"{{{
   let funcs = []
   for ft in insert(split(a:filetype, '\.'), '_')
     if has_key(g:neocomplcache_omni_functions, ft)
-          \ && !neocomplcache#is_eskk_enabled()
       let omnifuncs =
             \ (type(g:neocomplcache_omni_functions[ft]) == type([])) ?
             \ g:neocomplcache_omni_functions[ft] :
@@ -189,9 +198,8 @@ function! s:set_complete_results_pos(funcs, cur_text)"{{{
   " Try omnifunc completion."{{{
   let complete_results = {}
   for [omnifunc, pattern] in a:funcs
-    if !neocomplcache#is_eskk_enabled()
-          \ && (neocomplcache#is_auto_complete()
-          \     && a:cur_text !~ '\%(' . pattern . '\m\)$')
+    if neocomplcache#is_auto_complete()
+          \ && a:cur_text !~ '\%(' . pattern . '\m\)$'
       continue
     endif
 
@@ -233,22 +241,16 @@ function! s:set_complete_results_words(complete_results)"{{{
   " Try source completion.
   for [omnifunc, result] in items(a:complete_results)
     if neocomplcache#complete_check()
-      return []
+      return a:complete_results
     endif
-
-    let is_wildcard = g:neocomplcache_enable_wildcard
-          \ && result.cur_keyword_str =~ '\*\w\+$'
-          \ && neocomplcache#is_eskk_enabled()
-          \ && neocomplcache#is_auto_complete()
 
     let pos = getpos('.')
-    let cur_keyword_str = result.cur_keyword_str
 
-    if is_wildcard
-      " Check wildcard.
-      let cur_keyword_str = cur_keyword_str[:
-            \ match(cur_keyword_str, '\%(\*\w\+\)\+$') - 1]
-    endif
+    " Note:
+    " let cur_keyword_str = result.cur_keyword_str
+    " causes error in clang_complete(Why?).
+    let cur_keyword_str =
+          \ (result.cur_keyword_str == '') ? '' : result.cur_keyword_str
 
     try
       let list = call(omnifunc, [0, cur_keyword_str])
@@ -264,11 +266,12 @@ function! s:set_complete_results_words(complete_results)"{{{
       endif
     endtry
 
-    let list = s:get_omni_list(list)
-    if is_wildcard
-      let list = neocomplcache#keyword_filter(list,
-            \ result.cur_keyword_str)
+    if type(list) != type([])
+      " Error.
+      return a:complete_results
     endif
+
+    let list = s:get_omni_list(list)
 
     let result.complete_words = list
   endfor

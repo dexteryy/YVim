@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: util.vim
 " AUTHOR: Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 18 Aug 2012.
+" Last Modified: 29 Oct 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -28,6 +28,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let s:V = vital#of('neocomplcache')
+let s:List = vital#of('neocomplcache').import('Data.List')
 
 function! neocomplcache#util#truncate_smart(...)"{{{
   return call(s:V.truncate_smart, a:000)
@@ -84,9 +85,12 @@ endfunction"}}}
 function! neocomplcache#util#escape_pattern(...)"{{{
   return call(s:V.escape_pattern, a:000)
 endfunction"}}}
-function! neocomplcache#util#iconv(...)
+function! neocomplcache#util#iconv(...)"{{{
   return call(s:V.iconv, a:000)
-endfunction
+endfunction"}}}
+function! neocomplcache#util#uniq(...)"{{{
+  return call(s:List.uniq, a:000)
+endfunction"}}}
 
 function! neocomplcache#util#glob(pattern, ...)"{{{
   if a:pattern =~ "'"
@@ -94,12 +98,12 @@ function! neocomplcache#util#glob(pattern, ...)"{{{
     let cwd = getcwd()
     let base = neocomplcache#util#substitute_path_separator(
           \ fnamemodify(a:pattern, ':h'))
-    lcd `=base`
+    execute 'lcd' fnameescape(base)
 
     let files = map(split(neocomplcache#util#substitute_path_separator(
           \ glob('*')), '\n'), "base . '/' . v:val")
 
-    lcd `=cwd`
+    execute 'lcd' fnameescape(cwd)
 
     return files
   endif
@@ -124,17 +128,36 @@ endfunction"}}}
 function! neocomplcache#util#expand(path)"{{{
   return expand(escape(a:path, '*?[]"={}'), 1)
 endfunction"}}}
-function! neocomplcache#util#set_default_dictionary_helper(variable, keys, value)"{{{
-  for key in split(a:keys, '\s*,\s*')
-    if !has_key(a:variable, key)
-      let a:variable[key] = a:value
-    endif
-  endfor
+
+function! neocomplcache#util#set_default(var, val, ...)  "{{{
+  if !exists(a:var) || type({a:var}) != type(a:val)
+    let alternate_var = get(a:000, 0, '')
+
+    let {a:var} = exists(alternate_var) ?
+          \ {alternate_var} : a:val
+  endif
 endfunction"}}}
-function! neocomplcache#util#set_dictionary_helper(variable, keys, value)"{{{
-  for key in split(a:keys, '\s*,\s*')
-    let a:variable[key] = a:value
-  endfor
+function! neocomplcache#util#set_dictionary_helper(...)"{{{
+  return call(s:V.set_dictionary_helper, a:000)
+endfunction"}}}
+
+function! neocomplcache#util#set_default_dictionary(variable, keys, value)"{{{
+  if !exists('s:disable_dictionaries')
+    let s:disable_dictionaries = {}
+  endif
+
+  if has_key(s:disable_dictionaries, a:variable)
+    return
+  endif
+
+  call neocomplcache#util#set_dictionary_helper({a:variable}, a:keys, a:value)
+endfunction"}}}
+function! neocomplcache#util#disable_default_dictionary(variable)"{{{
+  if !exists('s:disable_dictionaries')
+    let s:disable_dictionaries = {}
+  endif
+
+  let s:disable_dictionaries[a:variable] = 1
 endfunction"}}}
 
 let &cpo = s:save_cpo

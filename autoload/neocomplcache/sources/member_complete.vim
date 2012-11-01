@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: member_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 22 Apr 2012.
+" Last Modified: 02 Oct 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -46,7 +46,8 @@ function! s:source.initialize()"{{{
   augroup END"}}}
 
   " Set rank.
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_source_rank,
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_source_rank',
         \ 'member_complete', 5)
 
   " Set completion length.
@@ -56,21 +57,26 @@ function! s:source.initialize()"{{{
   if !exists('g:neocomplcache_member_prefix_patterns')
     let g:neocomplcache_member_prefix_patterns = {}
   endif
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_member_prefix_patterns,
-        \'c,cpp,objc,objcpp', '\.\|->')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_member_prefix_patterns,
-        \'perl,php', '->')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_member_prefix_patterns,
-        \'cs,java,javascript,d,vim,ruby,python,perl6,scala,vb', '\.')
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_member_prefix_patterns,
-        \'lua', '\.\|:')
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_member_prefix_patterns',
+        \ 'c,cpp,objc,objcpp', '\.\|->')
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_member_prefix_patterns',
+        \ 'perl,php', '->')
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_member_prefix_patterns',
+        \ 'cs,java,javascript,d,vim,ruby,python,perl6,scala,vb', '\.')
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_member_prefix_patterns',
+        \ 'lua', '\.\|:')
   "}}}
 
   " Initialize member patterns."{{{
   if !exists('g:neocomplcache_member_patterns')
     let g:neocomplcache_member_patterns = {}
   endif
-  call neocomplcache#set_dictionary_helper(g:neocomplcache_member_patterns,
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_member_patterns',
         \'default', '\h\w*\%(()\|\[\h\w*\]\)\?')
   "}}}
 
@@ -88,9 +94,10 @@ function! s:source.get_keyword_pos(cur_text)"{{{
     return -1
   endif
 
+  let member = s:get_member_pattern(filetype)
+  let prefix = g:neocomplcache_member_prefix_patterns[filetype]
   let cur_keyword_pos = matchend(a:cur_text,
-        \ '\%(' . s:get_member_pattern(filetype) . '\%(' .
-        \ g:neocomplcache_member_prefix_patterns[filetype] . '\m\)\)\+\ze\w*$')
+        \ '\%(' . member . '\%(' . prefix . '\m\)\)\+\ze\w*$')
   return cur_keyword_pos
 endfunction"}}}
 
@@ -116,6 +123,10 @@ endfunction"}}}
 function! neocomplcache#sources#member_complete#caching_current_line()"{{{
   " Current line caching.
   return s:caching_current_buffer(line('.')-1, line('.')+1)
+endfunction"}}}
+function! neocomplcache#sources#member_complete#caching_current_buffer()"{{{
+  " Current line caching.
+  return s:caching_current_buffer(1, line('$'))
 endfunction"}}}
 function! s:caching_current_buffer(start, end)"{{{
   " Current line caching.
@@ -193,6 +204,7 @@ function! s:get_sources_list()"{{{
 
   for [key, source] in items(s:member_sources)
     if has_key(filetypes_dict, source.filetype)
+          \ || has_key(filetypes_dict, '_')
           \ || bufnr('%') == key
           \ || (bufname('%') ==# '[Command Line]' && bufnr('#') == key)
       call add(sources_list, [key, source])

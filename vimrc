@@ -214,34 +214,6 @@ function! SuperRetab(p, n)
     retab
 endfunction
 
-function! GetMySession(spath, ssname)
-	if a:ssname == 0
-		let a:sname = ""
-	else
-		let a:sname = "-".a:ssname
-	endif
-	execute "source $".a:spath."/session".a:sname.".vim"
-	execute "rviminfo $".a:spath."/session".a:sname.".viminfo"
-	execute "echo \"Load Success\: $".a:spath."/session".a:sname.".vim\""
-endfunction
-
-function! SetMySession(spath, ssname)
-	if a:ssname == 0
-		let a:sname = ""
-	else
-		let a:sname = "-".a:ssname
-	endif
-	execute "cd $".a:spath
-	execute "mksession! $".a:spath."/session".a:sname.".vim"
-	execute "wviminfo! $".a:spath."/session".a:sname.".viminfo"
-	execute "echo \"Save Success\: $".a:spath."/session".a:sname.".vim\""
-endfunction
-" load session from path
-command! -nargs=+ LOAD call GetMySession(<f-args>) 
-" save session
-command! -nargs=+ SAVE call SetMySession(<f-args>) 
-
-
 " for make & debug
 
 function! QFSwitch() " toggle quickfix window
@@ -408,6 +380,13 @@ let g:indent_guides_guide_size = 1
 
 let g:ragtag_global_maps = 1
 
+" session
+nnoremap <leader>ss :SaveSession
+nnoremap <leader>so :OpenSession
+nnoremap <leader>sd :DeleteSession
+nnoremap <leader>sc :CloseSession<cr>
+nnoremap <leader>sv :ViewSession<cr>
+
 " bufExplorer setting
 let g:bufExplorerSortBy='mru'
 let g:bufExplorerSplitRight=0        " Split left.
@@ -566,7 +545,7 @@ inoremap <expr><C-e>  neocomplcache#cancel_popup()
 "let g:neocomplcache_enable_auto_select = 1 
 
 " Enable omni completion.
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
@@ -591,36 +570,4 @@ let g:slimv_leader = ",l"
 "let g:slimv_lisp = "ccl"
 let g:slimv_impl = 'ccl'
 let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"ccl --load ~/.vim/slime/start-swank.lisp\""' 
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"function Send_to_Screen(text)
-  "if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
-    "call Screen_Vars()
-  "end
-
-  "echo system("screen -S " . g:screen_sessionname . " -p " . g:screen_windowname . " -X stuff '" . substitute(a:text, "'", "'\\\\''", 'g') . "'")
-"endfunction
-
-"function Screen_Session_Names(A,L,P)
-  "return system("screen -ls | awk '/Attached/ {print $1}'")
-"endfunction
-
-"function Screen_Vars()
-  "if !exists("g:screen_sessionname") || !exists("g:screen_windowname")
-    "let g:screen_sessionname = ""
-    "let g:screen_windowname = "0"
-  "end
-
-  "let g:screen_sessionname = input("session name: ", "", "custom,Screen_Session_Names")
-  "let g:screen_windowname = input("window name: ", g:screen_windowname)
-"endfunction
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"vmap <C-c><C-c> "ry :call Send_to_Screen(@r)<CR>
-"nmap <C-c><C-c> vip<C-c><C-c>
-
-"nmap <C-c>v :call Screen_Vars()<CR>
 
