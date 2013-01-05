@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: omni_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 25 Oct 2012.
+" Last Modified: 07 Nov 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -99,12 +99,6 @@ function! s:source.initialize()"{{{
   endif
   "}}}
 
-  " Initialize omni function list."{{{
-  if !exists('g:neocomplcache_omni_functions')
-    let g:neocomplcache_omni_functions = {}
-  endif
-  "}}}
-
   " Set rank.
   call neocomplcache#util#set_default_dictionary(
         \ 'g:neocomplcache_source_rank',
@@ -150,8 +144,8 @@ function! s:get_omni_funcs(filetype)"{{{
     endif
 
     for omnifunc in omnifuncs
-      if omnifunc == ''
-        " &omnifunc is irregal.
+      if neocomplcache#check_invalid_omnifunc(omnifunc)
+        " omnifunc is irregal.
         continue
       endif
 

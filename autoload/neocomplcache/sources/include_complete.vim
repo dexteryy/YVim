@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: include_complete.vim
 " AUTHOR:  Shougo Matsushita <Shougo.Matsu@gmail.com>
-" Last Modified: 29 Oct 2012.
+" Last Modified: 17 Nov 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -33,35 +33,19 @@ if !exists('s:include_info')
   let s:cache_accessed_time = {}
   let s:async_include_cache = {}
   let s:cached_pattern = {}
-endif
-
-let s:source = {
-      \ 'name' : 'include_complete',
-      \ 'kind' : 'plugin',
-      \}
-
-function! s:source.initialize()"{{{
-  " Set rank.
-  call neocomplcache#util#set_default_dictionary(
-        \ 'g:neocomplcache_source_rank', 'include_complete', 8)
-
-  if neocomplcache#has_vimproc()
-    augroup neocomplcache
-      " Caching events
-      autocmd BufWritePost * call s:check_buffer('', 0)
-      autocmd CursorHold * call s:check_cache()
-    augroup END
-  endif
 
   " Initialize include pattern."{{{
   let g:neocomplcache_include_patterns =
         \ get(g:, 'neocomplcache_include_patterns', {})
   call neocomplcache#util#set_default_dictionary(
         \ 'g:neocomplcache_include_patterns',
-        \ 'java,haskell', '\<import')
+        \ 'java,haskell', '^\s*\<import')
   call neocomplcache#util#set_default_dictionary(
         \ 'g:neocomplcache_include_patterns',
-        \ 'cs', '\<using')
+        \ 'cs', '^\s*\<using')
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_include_patterns',
+        \ 'ruby', '^\s*\<\%(load\|require\|require_relative\)\>')
   "}}}
   " Initialize expr pattern."{{{
   call neocomplcache#util#set_default(
@@ -92,6 +76,25 @@ function! s:source.initialize()"{{{
         \ 'g:neocomplcache_include_functions', 'ruby',
         \ 'neocomplcache#sources#include_complete#analyze_ruby_include_files')
   "}}}
+endif
+
+let s:source = {
+      \ 'name' : 'include_complete',
+      \ 'kind' : 'plugin',
+      \}
+
+function! s:source.initialize()"{{{
+  " Set rank.
+  call neocomplcache#util#set_default_dictionary(
+        \ 'g:neocomplcache_source_rank', 'include_complete', 8)
+
+  if neocomplcache#has_vimproc()
+    augroup neocomplcache
+      " Caching events
+      autocmd BufWritePost * call s:check_buffer('', 0)
+      autocmd CursorHold * call s:check_cache()
+    augroup END
+  endif
 
   call neocomplcache#util#set_default(
         \ 'g:neocomplcache_include_max_processes', 20)
@@ -137,7 +140,8 @@ function! s:source.get_keyword_list(cur_keyword_str)"{{{
     endif
   endfor
 
-  return neocomplcache#keyword_filter(neocomplcache#dup_filter(keyword_list), a:cur_keyword_str)
+  return neocomplcache#keyword_filter(
+        \ neocomplcache#dup_filter(keyword_list), a:cur_keyword_str)
 endfunction"}}}
 
 function! neocomplcache#sources#include_complete#define()"{{{
@@ -148,12 +152,13 @@ function! neocomplcache#sources#include_complete#get_include_files(bufnumber)"{{
   if has_key(s:include_info, a:bufnumber)
     return copy(s:include_info[a:bufnumber].include_files)
   else
-    return []
+    return s:get_buffer_include_files(a:bufnumber)
   endif
 endfunction"}}}
 
 function! neocomplcache#sources#include_complete#get_include_tags(bufnumber)"{{{
-  return filter(map(neocomplcache#sources#include_complete#get_include_files(a:bufnumber),
+  return filter(map(
+        \ neocomplcache#sources#include_complete#get_include_files(a:bufnumber),
         \ "neocomplcache#cache#encode_name('tags_output', v:val)"),
         \ 'filereadable(v:val)')
 endfunction"}}}
@@ -217,6 +222,10 @@ endfunction"}}}
 "}}}
 
 function! s:check_buffer(bufnumber, is_force)"{{{
+  if !neocomplcache#is_enabled_source('include_complete')
+    return
+  endif
+
   let bufnumber = (a:bufnumber == '') ? bufnr('%') : a:bufnumber
   let filename = fnamemodify(bufname(bufnumber), ':p')
 
@@ -385,6 +394,10 @@ function! s:get_include_files(nestlevel, lines, filetype, pattern, path, expr)"{
 endfunction"}}}
 
 function! s:check_cache()"{{{
+  if neocomplcache#is_disabled_source('include_complete')
+    return
+  endif
+
   let release_accessd_time = localtime() - g:neocomplcache_release_cache_time
 
   for key in keys(s:include_cache)
