@@ -44,6 +44,46 @@ if !exists(":DiffOrig")
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Vundle 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+filetype off
+
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+" let Vundle manage Vundle
+" required! 
+Bundle 'gmarik/vundle'
+
+" My Bundles here:
+Bundle 'L9'
+Bundle 'FuzzyFinder'
+Bundle 'bufexplorer.zip'
+Bundle 'mru.vim'
+Bundle 'ctrlp.vim'
+Bundle 'ack.vim'
+Bundle 'The-NERD-tree'
+Bundle 'The-NERD-Commenter'
+Bundle 'xolox/vim-session'
+Bundle 'thinca/vim-quickrun'
+Bundle 'vcscommand.vim'
+Bundle 'fugitive.vim'
+Bundle 'TaskList.vim'
+Bundle 'ShowMarks7'
+Bundle 'matchit.zip'
+Bundle 'surround.vim'
+Bundle 'YankRing.vim'
+Bundle 'scratch.vim'
+Bundle 'cecutil'
+Bundle 'DrawIt'
+Bundle 'mattn/calendar-vim'
+Bundle 'uguu-org/vim-matrix-screensaver'
+
+filetype plugin indent on  
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -139,19 +179,7 @@ if has("gui_macvim")
 	set transparency=9
 	set guioptions-=T "egmrt
 	"set guioptions+=b 
-	
-	macm File.New\ Tab						key=<D-T>
-	macm File.Save<Tab>:w					key=<D-s>
-	macm File.Save\ As\.\.\.<Tab>:sav		key=<D-S>
-	macm Edit.Undo<Tab>u					key=<D-z> action=undo:
-	macm Edit.Redo<Tab>^R					key=<D-Z> action=redo:
-	macm Edit.Cut<Tab>"+x					key=<D-x> action=cut:
-	macm Edit.Copy<Tab>"+y					key=<D-c> action=copy:
-	macm Edit.Paste<Tab>"+gP				key=<D-v> action=paste:
-	macm Edit.Select\ All<Tab>ggVG			key=<D-A> action=selectAll:
-	macm Window.Toggle\ Full\ Screen\ Mode	key=<D-F>
-	macm Window.Select\ Next\ Tab			key=<D-}>
-	macm Window.Select\ Previous\ Tab		key=<D-{>
+
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -381,6 +409,7 @@ let g:indent_guides_guide_size = 1
 let g:ragtag_global_maps = 1
 
 " session
+let g:session_autoload = 'no'
 nnoremap <leader>ss :SaveSession
 nnoremap <leader>so :OpenSession
 nnoremap <leader>sd :DeleteSession
