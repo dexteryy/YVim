@@ -63,6 +63,7 @@ Bundle 'bufexplorer.zip'
 Bundle 'mru.vim'
 Bundle 'ctrlp.vim'
 Bundle 'ack.vim'
+Bundle 'Lokaltog/vim-powerline'
 Bundle 'The-NERD-tree'
 Bundle 'The-NERD-Commenter'
 Bundle 'Valloric/YouCompleteMe'
@@ -74,6 +75,7 @@ Bundle 'fugitive.vim'
 Bundle 'TaskList.vim'
 Bundle 'ShowMarks7'
 Bundle 'matchit.zip'
+Bundle 'delimitMate.vim'
 Bundle 'surround.vim'
 Bundle 'YankRing.vim'
 Bundle 'scratch.vim'
@@ -81,6 +83,7 @@ Bundle 'cecutil'
 Bundle 'DrawIt'
 Bundle 'mattn/calendar-vim'
 Bundle 'uguu-org/vim-matrix-screensaver'
+Bundle 'molokai'
 
 filetype plugin indent on  
 
@@ -116,6 +119,9 @@ set nobackup
 set undodir=~/.vim/undos
 set undofile
 
+set laststatus=2   " Always show the statusline
+set ambiwidth=single
+
 set expandtab
 set shiftwidth=4
 set tabstop=4
@@ -136,8 +142,10 @@ set diffopt+=iwhite,vertical " 忽略缩进的差异
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("gui_running") || has("gui_macvim")
-	colorscheme yytextmate
-	let g:colors_name="yytextmate"
+    colorscheme yytextmate
+    let g:colors_name="yytextmate"
+    "colorscheme molokai 
+    "let g:colors_name="molokai"
 else
 	colorscheme slate
 endif
@@ -529,6 +537,8 @@ vmap <leader>nb <plug>NERDCommenterAlignBoth
 let VCSCommandSVKExec='disabled no such executable'
 nmap <leader>cd :VCSVimDiff
 
+
+let g:Powerline_symbols = 'compatible'
 
 " YouCompleteMe
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
