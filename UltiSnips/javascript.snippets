@@ -1,0 +1,148 @@
+###########################################################################
+#                            TextMate Snippets                            #
+###########################################################################
+snippet get "Get Elements"
+getElement${1/(T)|.*/(?1:s)/}By${1:T}${1/(T)|(I)|.*/(?1:agName)(?2:d)/}('$2')
+endsnippet
+
+snippet '':f "object method string"
+'${1:${2:#thing}:${3:click}}': function(element){
+	$0
+}${10:,}
+endsnippet
+
+snippet :f "Object Method"
+${1:method_name}: function(${3:attribute}){
+	$0
+}${10:,}
+endsnippet
+
+snippet :, "Object Value JS"
+${1:value_name}:${0:value},
+endsnippet
+
+snippet : "Object key key: 'value'"
+${1:key}: ${2:"${3:value}"}${4:, }
+endsnippet
+
+snippet proto "Prototype (proto)"
+${1:class_name}.prototype.${2:method_name} = function(${3:first_argument}) ,,{
+	${0:// body...}
+};
+ 
+endsnippet
+
+snippet for "for (...) {...} (faster)"
+for (var ${2:i} = ${1:Things}.length - 1; $2 >= 0; $2--){
+	${3:$1[$2]}$0
+};
+endsnippet
+
+snippet for "for (...) {...}"
+for (var ${2:i} = 0, l = ${1:Things}.length; $2 < l; $2++) {
+	${3:$1[$2]}$0
+};
+endsnippet
+
+snippet fun "function (fun)"
+function ${1:function_name} (${2:argument}) {
+	${0:// body...}
+}
+endsnippet
+
+snippet f "anonymous function"
+function(${1:argument}) {
+	${2:// body...}
+};
+endsnippet
+
+snippet ff "closure function"
+;(function(${2:argument}) {
+	${3:// body...}
+})($1);
+endsnippet
+
+snippet ife "if ___ else"
+if (${1:true}) {
+    $0
+} else {
+
+}
+endsnippet
+
+snippet if "if"
+if (${1:true}) {
+    $0
+}
+endsnippet
+
+snippet timeout "setTimeout function"
+setTimeout(function(){
+    $0
+}${2:}, ${1:10});
+endsnippet
+
+snippet interval "setInterval function"
+setInterval(function(){
+    $0
+}${2:}, ${1:10});
+endsnippet
+
+snippet switch "switch"
+switch(${1:expression}) {
+    case '${3:case}':
+        ${4:// code}
+        break;
+    ${5}
+    default:
+        ${2:// code}
+}
+endsnippet
+
+snippet try "try-catch"
+try {
+    ${1://code}
+} catch(ex) {${2}}
+endsnippet
+
+snippet c "console"
+console.${1:log}('log:', ${2:1}, ${3}) // debug
+endsnippet
+
+snippet def "define"
+define(${1:[
+    ${2}
+], }function(${3:require, exports, module}){
+    ${4}
+});
+endsnippet
+
+snippet req "require"
+require(${1:[
+    ${2}
+], }function(${3:require, exports, module}){
+    ${4}
+});
+endsnippet
+
+snippet class "class"
+function ${1:ClassName}(${2:opt}){
+    ${3}
+}
+
+$1.prototype = {
+
+    ${7}
+
+};
+
+function exports(${5:$2}){
+    return exports.$4(${6:$5});
+}
+
+exports.${4:$1} = $1;
+
+return exports;
+endsnippet
+
+# vim:ft=snippets:
