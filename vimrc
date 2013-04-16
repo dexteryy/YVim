@@ -144,10 +144,10 @@ set diffopt+=iwhite,vertical " 忽略缩进的差异
 if has("gui_running") || has("gui_macvim")
     colorscheme yytextmate
     let g:colors_name="yytextmate"
-    "colorscheme molokai 
-    "let g:colors_name="molokai"
 else
-	colorscheme slate
+    colorscheme molokai 
+    let g:colors_name="molokai"
+	"colorscheme slate
 endif
 
 if MySys() == "mac"
@@ -357,8 +357,10 @@ noremap <silent> <F9> :call MyRemoveBreakPoint()<CR>
 
 
 nmap <tab> 		v>
+nmap <c-tab>    v>
 nmap <s-tab> 	v<
 vmap <tab> 		>gv 
+vmap <c-tab> 	>gv 
 vmap <s-tab> 	<gv
 
 nnoremap / /\v
@@ -552,6 +554,7 @@ let g:ycm_key_list_previous_completion = ['<S-Enter>', '<Up>']
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsSnippetDirectories=["snippets"]
 
 "" Disable AutoComplPop. 
 "let g:acp_enableAtStartup = 0 
