@@ -10,6 +10,8 @@ Use MacVim as IDE for developing JavaScript/HTML/SCSS/Python/Ruby/CommonLisp/...
 ```
 git clone https://github.com/dexteryy/YVim.git ~/.vim
 cd ~/.vim
+git submodule init
+git submodule update
 ./install.sh
 ```
 
@@ -94,6 +96,9 @@ For snippets:
 * `<tab>`     g:UltiSnipsExpandTrigger
 * `<tab>`     g:UltiSnipsJumpForwardTrigger
 * `<s-tab>`     g:UltiSnipsJumpBackwardTrigge
+
+* `:SuperRetab 2 4`
+* `:Matrix`
 
 More features: 
 
