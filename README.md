@@ -2,6 +2,8 @@
 # YVim
 
 Use MacVim as IDE for developing JavaScript/HTML/SCSS/Python/Ruby/CommonLisp/...
+
+![YVim screenhhost](https://raw.github.com/dexteryy/YVim/master/screenshot.png)
  
 ## Install & Update
 
