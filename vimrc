@@ -554,6 +554,8 @@ cabbrev vl VimpanelLoad
 cabbrev vc VimpanelCreate
 cabbrev ve VimpanelEdit
 cabbrev vr VimpanelRemove
+map <leader>vp :vl default<cr>
+map <leader>vl :vl 
 
 
 let NERDCreateDefaultMappings=0

@@ -72,6 +72,8 @@ git pull origin
 * `,fa` - :FufBookmark<cr>
 * `,fm` - :FufAddBookmark<cr>
 * `,fc` - :FufChangeList<cr>
+* `,vp` - :VimpanelLoad default<cr>
+* `,vl` - :VimpanelLoad
 * `,nt` - :NERDTree<cr>
 * `,nc` - <plug>NERDCommenterComment
 * `,n<space>` - <plug>NERDCommenterToggle
