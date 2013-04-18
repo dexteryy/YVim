@@ -41,8 +41,10 @@ git pull origin
 * `<tab>` - `v>`
 * `<c-tab>` - `v>`
 * `<s-tab>` - `v<`
-* `<F2>` - :call MyLint()
-* `<F3>` - :call MyDebug()
+* `,tab` - :Tabularize
+* `<F1>` - :help
+* `<F2>` - :GundoToggle
+* `<F3>` - :call MyLint()
 * `<F4>` - :call MyMake()
 * `<F5>` - :call QFSwitch()
 * `<F6>` - :call LLSwitch()

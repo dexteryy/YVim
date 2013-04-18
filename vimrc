@@ -58,6 +58,7 @@ Bundle 'gmarik/vundle'
 
 " My Bundles here:
 Bundle 'L9'
+Bundle 'scrooloose/syntastic'
 Bundle 'FuzzyFinder'
 Bundle 'bufexplorer.zip'
 Bundle 'mru.vim'
@@ -65,15 +66,23 @@ Bundle 'ctrlp.vim'
 Bundle 'ack.vim'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'majutsushi/tagbar'
-Bundle 'The-NERD-tree'
+Bundle 'mihaifm/vimpanel'
+Bundle 'scrooloose/nerdtree'
 Bundle 'The-NERD-Commenter'
+Bundle 'Gundo'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'UltiSnips'
+Bundle 'godlygeek/tabular'
+Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'myusuf3/numbers.vim'
 Bundle 'justincampbell/vim-eighties'
 Bundle 'terryma/vim-expand-region'
 Bundle 'teramako/jscomplete-vim'
 Bundle 'myhere/vim-nodejs-complete'
+Bundle 'tpope/vim-bundler'
+Bundle 'tpope/vim-rails'
+Bundle 'b4winckler/vim-objc'
+Bundle 'eraserhd/vim-ios'
 "Bundle 'junegunn/vim-scroll-position'
 Bundle 'xolox/vim-session'
 Bundle 'thinca/vim-quickrun'
@@ -161,7 +170,7 @@ else
 endif
 
 if MySys() == "mac"
-	set guifont=TextMate_Regular:h13
+	set guifont=Monaco:h13
 	set guifontwide=Hei_Regular:h13
 elseif MySys() == "linux"
 	set guifont=Monospace
@@ -357,8 +366,8 @@ nnoremap <leader><tab> :Sscratch<cr>
 
 " for make & debug
 "noremap <silent> <F1> <ESC>:call LLSwitch()<CR>
-noremap <silent> <F2> <ESC>:call MyLint()<CR>
-noremap <silent> <F3> :call MyDebug()<CR>
+noremap <silent> <F2> <ESC>:GundoToggle<CR>
+noremap <silent> <F3> <ESC>:call MyLint()<CR>
 noremap <silent> <F4> :call MyMake()<CR>
 noremap <silent> <F5> <ESC>:call QFSwitch()<CR>
 noremap <silent> <F6> <ESC>:call LLSwitch()<CR>
@@ -435,6 +444,9 @@ let g:ragtag_global_maps = 1
 vmap K <Plug>(expand_region_expand)
 vmap J <Plug>(expand_region_shrink)
 
+" Tabular
+map <leader>tab :Tabularize / = <cr>
+
 " session
 let g:session_autoload = 'no'
 nnoremap <leader>ss :SaveSession
@@ -482,7 +494,14 @@ let g:netrw_winsize = 30
 " NERDTree setting
 "let NERDTreeMinimalUI = 1
 let g:NERDTreeWinSize = 20
-nmap <silent> <leader>nt :NERDTree<cr>
+nmap <silent> <leader>nt :call OpenNERDTree()<cr>
+
+function OpenNERDTree()
+    let tmp = g:eighties_minimum_width
+    let g:eighties_minimum_width = 20
+    :NERDTree
+    let g:eighties_minimum_width = tmp
+endfunction
 
 " Most Recently Used (MRU)
 nmap <silent> <leader>r :MRU<cr>
@@ -527,6 +546,14 @@ endif
 "<Leader>ma   - 清除当前缓冲区中所有的标记
 "<Leader>mm   - 在当前行打一个标记，使用下一个可用的标记名
 
+" vimpanel
+cabbrev ss VimpanelSessionMake
+cabbrev sl VimpanelSessionLoad
+cabbrev vp Vimpanel
+cabbrev vl VimpanelLoad
+cabbrev vc VimpanelCreate
+cabbrev ve VimpanelEdit
+cabbrev vr VimpanelRemove
 
 
 let NERDCreateDefaultMappings=0
@@ -556,6 +583,7 @@ nmap <leader>cd :VCSVimDiff
 
 
 let g:Powerline_symbols = 'compatible'
+"let g:Powerline_symbols = 'fancy'
 
 " YouCompleteMe
 let g:ycm_filetype_blacklist = {
@@ -650,7 +678,7 @@ autocmd BufReadPost fugitive://* set bufhidden=delete
 let g:eighties_enabled = 1
 let g:eighties_minimum_width = 80
 let g:eighties_extra_width = 0 " Increase this if you want some extra room
-"let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
+let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
 
 let g:calendar_diary = '~/.vim/diary'
 
