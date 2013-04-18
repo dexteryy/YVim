@@ -68,6 +68,7 @@ Bundle 'The-NERD-tree'
 Bundle 'The-NERD-Commenter'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'UltiSnips'
+Bundle 'myusuf3/numbers.vim'
 Bundle 'xolox/vim-session'
 Bundle 'thinca/vim-quickrun'
 Bundle 'vcscommand.vim'
@@ -144,6 +145,8 @@ set diffopt+=iwhite,vertical " 忽略缩进的差异
 if has("gui_running") || has("gui_macvim")
     colorscheme yytextmate
     let g:colors_name="yytextmate"
+    "colorscheme molokai 
+    "let g:colors_name="molokai"
 else
     colorscheme molokai 
     let g:colors_name="molokai"

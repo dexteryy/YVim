@@ -14,22 +14,24 @@ if version > 580
 endif
 if has("gui_running")
 	:hi Normal guifg=#f9f9f9 guibg=#080A20
-	:hi Cursor guibg=Yellow
-	:hi Visual guibg=#2D498B gui=none
+	":hi clear Cursor
+    :hi Cursor gui=underline
+	:hi Visual guibg=#26287f gui=none
 	:hi Pmenu guifg=#333333 guibg=#E3E3E3
 	:hi PmenuSel guifg=#ffffff guibg=#0264A2
 	
 	:hi CursorLine guibg=#16182D
-	":hi LineNr guifg=grey20
+	:hi CursorColumn guibg=#16182D
+    :hi CursorLineNr guifg=#000000 guibg=#eeeeee
 	:hi LineNr guifg=#666666 guibg=#eeeeee
-	:hi VertSplit guibg=#E6E6E6 guifg=#666666 gui=none
+	:hi VertSplit guifg=#666666 guibg=#eeeeee gui=none
+	:hi SignColumn guifg=#666666 guibg=#eeeeee
+	:hi FoldColumn guifg=#333333 guibg=#080A20
 	:hi Folded guifg=grey40 guibg=black
-	:hi FoldColumn guifg=grey20 guibg=black
-	:hi SignColumn guibg=#666666 guibg=#E6E6E6
-	:hi IncSearch guibg=black guifg=yellow 
+	:hi IncSearch guifg=#666666 guibg=#eeeeee 
 	:hi ModeMsg guifg=goldenrod
 	:hi MoreMsg guifg=Green guibg=black
-	:hi NonText guifg=RoyalBlue guibg=#151825
+	:hi NonText guifg=#f9f9f9 guibg=#080A20
 	:hi Question guifg=springgreen
 	:hi Search guibg=#0099ff guifg=White
 	:hi SpecialKey guifg=#D3FE36

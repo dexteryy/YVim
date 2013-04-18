@@ -5,7 +5,7 @@ Use MacVim as IDE for developing JavaScript/HTML/SCSS/Python/Ruby/CommonLisp/...
 
 ![YVim screenhhost](https://raw.github.com/dexteryy/YVim/master/screenshot.png)
  
-## Install & Update
+## Install
 
 ```
 git clone https://github.com/dexteryy/YVim.git ~/.vim
@@ -16,6 +16,14 @@ git submodule update
 ```
 
 [How to compile YouCompleteMe](https://github.com/dexteryy/YVim/blob/master/YCM.md)
+
+## Update
+
+```
+cd ~/.vim
+git pull origin
+./install.sh
+```
 
 ## Some features and keybindings
 
