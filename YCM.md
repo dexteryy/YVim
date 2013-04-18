@@ -1,5 +1,7 @@
 # How to compile YouCompleteMe
 
+[Official guide](https://github.com/Valloric/YouCompleteMe#mac-os-x-super-quick-installation)
+
 ### For Mac OS X and Homebrew Python/MacVim
 
 Download [Clang Binaries for MacOS X/x86_64](http://llvm.org/releases/download.html#3.2). Archive file into `~/Downloads/TD/clang+llvm-3.2-x86_64-apple-darwin11/`

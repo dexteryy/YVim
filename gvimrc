@@ -8,6 +8,7 @@ if has("gui_macvim")
     macm File.Close\ Window<Tab>:qa		                key=<nop>
     macm File.Close				                        key=<nop>
     macm File.Save\ All				                    key=<nop>
+	macm File.Save\ As\.\.\.<Tab>:sav		            key=<nop>
     macm File.Print				                        key=<nop>
     macm Edit.Undo<Tab>u				                key=<nop>
     macm Edit.Redo<Tab>^R				                key=<nop>
@@ -36,7 +37,6 @@ if has("gui_macvim")
 	
 	macm File.New\ Tab						key=<D-t>
 	macm File.Save<Tab>:w					key=<D-s>
-	macm File.Save\ As\.\.\.<Tab>:sav		key=<D-S>
 	macm Edit.Undo<Tab>u					key=<D-z> action=undo:
 	macm Edit.Redo<Tab>^R					key=<D-Z> action=redo:
 	macm Edit.Cut<Tab>"+x					key=<D-x> action=cut:

@@ -15,7 +15,10 @@ git submodule update
 ./install.sh
 ```
 
-[How to compile YouCompleteMe](https://github.com/dexteryy/YVim/blob/master/YCM.md)
+### Optional steps
+
+* [Build YouCompleteMe](https://github.com/dexteryy/YVim/blob/master/YCM.md)
+* [Build DoctorJS](https://github.com/mozilla/doctorjs#requirements)
 
 ## Update
 

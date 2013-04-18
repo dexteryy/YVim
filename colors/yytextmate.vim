@@ -15,7 +15,7 @@ endif
 if has("gui_running")
 	:hi Normal guifg=#f9f9f9 guibg=#080A20
 	":hi clear Cursor
-    :hi Cursor gui=underline
+    ":hi Cursor gui=underline
 	:hi Visual guibg=#26287f gui=none
 	:hi Pmenu guifg=#333333 guibg=#E3E3E3
 	:hi PmenuSel guifg=#ffffff guibg=#0264A2
@@ -28,7 +28,7 @@ if has("gui_running")
 	:hi SignColumn guifg=#666666 guibg=#eeeeee
 	:hi FoldColumn guifg=#333333 guibg=#080A20
 	:hi Folded guifg=grey40 guibg=black
-	:hi IncSearch guifg=#666666 guibg=#eeeeee 
+	:hi IncSearch guibg=black guifg=yellow 
 	:hi ModeMsg guifg=goldenrod
 	:hi MoreMsg guifg=Green guibg=black
 	:hi NonText guifg=#f9f9f9 guibg=#080A20

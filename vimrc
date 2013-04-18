@@ -64,15 +64,22 @@ Bundle 'mru.vim'
 Bundle 'ctrlp.vim'
 Bundle 'ack.vim'
 Bundle 'Lokaltog/vim-powerline'
+Bundle 'majutsushi/tagbar'
 Bundle 'The-NERD-tree'
 Bundle 'The-NERD-Commenter'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'UltiSnips'
 Bundle 'myusuf3/numbers.vim'
+Bundle 'justincampbell/vim-eighties'
+Bundle 'terryma/vim-expand-region'
+Bundle 'teramako/jscomplete-vim'
+Bundle 'myhere/vim-nodejs-complete'
+"Bundle 'junegunn/vim-scroll-position'
 Bundle 'xolox/vim-session'
 Bundle 'thinca/vim-quickrun'
 Bundle 'vcscommand.vim'
 Bundle 'fugitive.vim'
+Bundle 'kablamo/vim-git-log'
 Bundle 'TaskList.vim'
 Bundle 'ShowMarks7'
 Bundle 'matchit.zip'
@@ -339,6 +346,7 @@ map <D-K> <C-k>
 map <D-L> <C-l>
 
 nnoremap <D-V> <C-w>v
+nnoremap <D-S> <C-w>s
 
 " for YankRing
 map <D-p> <C-p>
@@ -422,6 +430,10 @@ let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 
 let g:ragtag_global_maps = 1
+
+" vim-expand-region
+vmap K <Plug>(expand_region_expand)
+vmap J <Plug>(expand_region_shrink)
 
 " session
 let g:session_autoload = 'no'
@@ -546,6 +558,11 @@ nmap <leader>cd :VCSVimDiff
 let g:Powerline_symbols = 'compatible'
 
 " YouCompleteMe
+let g:ycm_filetype_blacklist = {
+\    'notes' : 1,
+\    'markdown' : 1,
+\    'text' : 1,
+\}
 let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 let g:ycm_complete_in_comments_and_strings = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
@@ -606,9 +623,18 @@ let g:UltiSnipsSnippetDirectories=["snippets"]
 " Enable omni completion.
 autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType javascript setlocal omnifunc=jscomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+" jscomplete
+let g:jscomplete_use = ['moz', 'es6th']
+
+" vim-nodejs-complete
+let g:nodejs_complete_config = {
+\  'js_compl_fn': 'jscomplete#CompleteJS',
+\  'max_node_compl_len': 15
+\}
 
 " html5
 let g:html5_event_handler_attributes_complete = 0
@@ -620,6 +646,11 @@ let g:aria_attributes_complete = 0
 " fugitive
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
+" eighties
+let g:eighties_enabled = 1
+let g:eighties_minimum_width = 80
+let g:eighties_extra_width = 0 " Increase this if you want some extra room
+"let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
 
 let g:calendar_diary = '~/.vim/diary'
 
