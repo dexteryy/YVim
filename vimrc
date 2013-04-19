@@ -102,6 +102,11 @@ Bundle 'mattn/calendar-vim'
 Bundle 'uguu-org/vim-matrix-screensaver'
 Bundle 'molokai'
 
+Bundle 'hail2u/vim-css3-syntax'
+Bundle 'skammer/vim-css-color'
+Bundle 'mattn/zencoding-vim'
+Bundle 'pangloss/vim-javascript'
+
 filetype plugin indent on  
 
 
@@ -120,9 +125,9 @@ function! MySys()
   	endif
 endfunction
 
-"if MySys() == 'mac' || MySys() == 'linux'
-	"set shell=/bin/bash\ -l
-"endif
+if MySys() == 'mac' || MySys() == 'linux'
+	set shell=/bin/bash\ -l
+endif
 
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
