@@ -58,6 +58,7 @@ Bundle 'gmarik/vundle'
 
 " My Bundles here:
 Bundle 'L9'
+Bundle 'tpope/vim-scriptease'
 Bundle 'scrooloose/syntastic'
 Bundle 'FuzzyFinder'
 Bundle 'bufexplorer.zip'
@@ -67,6 +68,7 @@ Bundle 'ack.vim'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'majutsushi/tagbar'
 Bundle 'mihaifm/vimpanel'
+"Bundle 'jistr/vim-nerdtree-tabs'
 Bundle 'scrooloose/nerdtree'
 Bundle 'The-NERD-Commenter'
 Bundle 'Gundo'
@@ -90,11 +92,13 @@ Bundle 'vcscommand.vim'
 Bundle 'fugitive.vim'
 Bundle 'kablamo/vim-git-log'
 Bundle 'TaskList.vim'
+Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ShowMarks7'
 Bundle 'matchit.zip'
 Bundle 'delimitMate.vim'
 Bundle 'surround.vim'
 Bundle 'YankRing.vim'
+Bundle 'sjl/clam.vim'
 Bundle 'scratch.vim'
 Bundle 'cecutil'
 Bundle 'DrawIt'
@@ -215,8 +219,9 @@ endif
 " autocmd
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-autocmd! bufwritepost .vimrc source ~/.vimrc
-autocmd! bufwritepost vimrc source ~/.vim/vimrc
+"autocmd! bufwritepost .vimrc source ~/.vimrc
+"autocmd! bufwritepost vimrc source ~/.vim/vimrc
+autocmd! bufwritepost vimrc Runtime
 
 "let g:jslint_neverAutoRun=1
 
@@ -447,6 +452,9 @@ vmap J <Plug>(expand_region_shrink)
 " Tabular
 map <leader>tab :Tabularize / = <cr>
 
+" clam.vim
+map <D-C> :Clam 
+
 " session
 let g:session_autoload = 'no'
 nnoremap <leader>ss :SaveSession
@@ -496,7 +504,7 @@ let g:netrw_winsize = 30
 let g:NERDTreeWinSize = 20
 nmap <silent> <leader>nt :call OpenNERDTree()<cr>
 
-function OpenNERDTree()
+function! OpenNERDTree()
     let tmp = g:eighties_minimum_width
     let g:eighties_minimum_width = 20
     :NERDTree
