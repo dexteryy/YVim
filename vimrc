@@ -112,6 +112,9 @@ Bundle 'mattn/zencoding-vim'
 Bundle 'pangloss/vim-javascript'
 Bundle 'othree/html5.vim'
 
+Bundle 'digitaltoad/vim-jade'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'cakebaker/scss-syntax.vim'
 filetype plugin indent on  
 
 
