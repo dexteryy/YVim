@@ -110,6 +110,7 @@ Bundle 'hail2u/vim-css3-syntax'
 Bundle 'skammer/vim-css-color'
 Bundle 'mattn/zencoding-vim'
 Bundle 'pangloss/vim-javascript'
+Bundle 'othree/html5.vim'
 
 filetype plugin indent on  
 
