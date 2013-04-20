@@ -38,6 +38,7 @@ git pull origin
 * `<D-K>` - `<C-w>k`
 * `<D-L>` - `<C-w>l`
 * `<D-V>` - `<C-w>v`
+* `<D-S>` - `<C-w>s`
 * `<tab>` - `v>`
 * `<c-tab>` - `v>`
 * `<s-tab>` - `v<`
@@ -52,6 +53,7 @@ git pull origin
 * `<F8>` - :call MySetLog()
 * `<F9>` - :call MyRemoveBreakPoint()
 * `,/` - :Ack
+* `<D-C>` - :Clam
 * `<c-p>` - 
 * `<D-T>` - :CommandT
 * `,tt` - :CommandT
