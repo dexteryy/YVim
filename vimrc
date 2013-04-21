@@ -116,7 +116,6 @@ Bundle 'digitaltoad/vim-jade'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'cakebaker/scss-syntax.vim'
 Bundle 'wavded/vim-stylus'           
-
 filetype plugin indent on  
 
 
