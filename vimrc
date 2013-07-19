@@ -72,7 +72,8 @@ Bundle 'mihaifm/vimpanel'
 Bundle 'scrooloose/nerdtree'
 Bundle 'The-NERD-Commenter'
 Bundle 'Gundo'
-Bundle 'Valloric/YouCompleteMe'
+Bundle 'Shougo/neocomplcache.vim'
+"Bundle 'Valloric/YouCompleteMe'
 Bundle 'UltiSnips'
 Bundle 'godlygeek/tabular'
 Bundle 'nathanaelkane/vim-indent-guides'
@@ -86,6 +87,7 @@ Bundle 'tpope/vim-rails'
 Bundle 'b4winckler/vim-objc'
 Bundle 'eraserhd/vim-ios'
 "Bundle 'junegunn/vim-scroll-position'
+Bundle 'xolox/vim-misc'
 Bundle 'xolox/vim-session'
 Bundle 'thinca/vim-quickrun'
 Bundle 'vcscommand.vim'
@@ -605,68 +607,47 @@ nmap <leader>cd :VCSVimDiff
 let g:Powerline_symbols = 'compatible'
 "let g:Powerline_symbols = 'fancy'
 
-" YouCompleteMe
-let g:ycm_filetype_blacklist = {
-\    'notes' : 1,
-\    'markdown' : 1,
-\    'text' : 1,
-\}
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-let g:ycm_complete_in_comments_and_strings = 1
-let g:ycm_collect_identifiers_from_comments_and_strings = 1
-let g:ycm_key_invoke_completion = '<C-Space>'
-let g:ycm_key_list_select_completion = ['<Enter>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<S-Enter>', '<Up>']
+"" YouCompleteMe
+"let g:ycm_filetype_blacklist = {
+"\    'notes' : 1,
+"\    'markdown' : 1,
+"\    'text' : 1,
+"\}
+"let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+"let g:ycm_complete_in_comments_and_strings = 1
+"let g:ycm_collect_identifiers_from_comments_and_strings = 1
+"let g:ycm_key_invoke_completion = '<C-Space>'
+"let g:ycm_key_list_select_completion = ['<Enter>', '<Down>']
+"let g:ycm_key_list_previous_completion = ['<S-Enter>', '<Up>']
 
 " UltiSnips
-let g:UltiSnipsExpandTrigger="<tab>"
+"let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetDirectories=["snippets"]
 
-"" Disable AutoComplPop. 
-"let g:acp_enableAtStartup = 0 
-"" Use neocomplcache. 
-"let g:neocomplcache_enable_at_startup = 1 
-"" Use smartcase. 
-"let g:neocomplcache_enable_smart_case = 1 
-"" Use camel case completion. 
-"let g:neocomplcache_enable_camel_case_completion = 1 
-"" Use underbar completion. 
-"let g:neocomplcache_enable_underbar_completion = 1 
-"" Set minimum syntax keyword length. 
-"let g:neocomplcache_min_syntax_length = 3 
-"let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*' 
+" neocomplcache
 
-" yy
-"imap <expr><Esc> pumvisible() ? "<c-y>" : "<Esc>"
-"imap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
-"imap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
-"smap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
-"smap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
+" Disable AutoComplPop. 
+let g:acp_enableAtStartup = 0 
+" Use neocomplcache. 
+let g:neocomplcache_enable_at_startup = 1 
+" Use smartcase. 
+let g:neocomplcache_enable_smart_case = 1 
+" Use camel case completion. 
+let g:neocomplcache_enable_camel_case_completion = 1 
+" Use underbar completion. 
+let g:neocomplcache_enable_underbar_completion = 1 
+" Set minimum syntax keyword length. 
+let g:neocomplcache_min_syntax_length = 3 
+let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*' 
 
-"" Plugin key-mappings. 
-"imap <C-k>     <Plug>(neocomplcache_snippets_expand) 
-"smap <C-k>     <Plug>(neocomplcache_snippets_expand) 
-"inoremap <expr><C-g>     neocomplcache#undo_completion() 
-"inoremap <expr><C-l>     neocomplcache#complete_common_string() 
-
-"" SuperTab like snippets behavior. 
-""imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>" 
-
-"" Recommended key-mappings. 
-"" <CR>: close popup and save indent. 
-""inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
-"" <TAB>: completion. 
-""inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-"" <C-h>, <BS>: close popup and delete backword char. 
-"inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-"inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-"inoremap <expr><C-y>  neocomplcache#close_popup()
-"inoremap <expr><C-e>  neocomplcache#cancel_popup()
-
-"" AutoComplPop like behavior. 
-""let g:neocomplcache_enable_auto_select = 1 
+" key-mappings
+imap <expr><Esc> pumvisible() ? "<c-y>" : "<Esc>"
+imap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
+imap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
+smap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
+smap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
 
 " Enable omni completion.
 autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
@@ -699,6 +680,9 @@ let g:eighties_enabled = 1
 let g:eighties_minimum_width = 80
 let g:eighties_extra_width = 0 " Increase this if you want some extra room
 let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
+
+" easymotion
+let g:EasyMotion_leader_key = '\'
 
 let g:calendar_diary = '~/.vim/diary'
 

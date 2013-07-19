@@ -17,8 +17,8 @@ git submodule update
 
 ### Optional steps
 
-* [Build YouCompleteMe](https://github.com/dexteryy/YVim/blob/master/YCM.md)
 * [Build DoctorJS](https://github.com/mozilla/doctorjs#requirements)
+* [Build YouCompleteMe](https://github.com/dexteryy/YVim/blob/master/YCM.md) (NOTE: neocomplcache is used by default)
 
 ## Update
 
@@ -104,9 +104,8 @@ git pull origin
 
 For auto-completion:
 
-* `<C-Space>`               g:ycm_key_invoke_completion
-* `<Enter>`, `<Down>`     g:ycm_key_list_select_completion 
-* `<S-Enter>`, `<Up>`      g:ycm_key_list_previous_completion 
+* `<Enter>`, `<Down>`     
+* `<S-Enter>`, `<Up>`      
 
 For snippets:
 
