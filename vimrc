@@ -72,16 +72,19 @@ Bundle 'mihaifm/vimpanel'
 Bundle 'scrooloose/nerdtree'
 Bundle 'The-NERD-Commenter'
 Bundle 'Gundo'
+Bundle 'SirVer/ultisnips'
+Bundle 'JazzCore/neocomplcache-ultisnips'
 Bundle 'Shougo/neocomplcache.vim'
 "Bundle 'Valloric/YouCompleteMe'
-Bundle 'UltiSnips'
 Bundle 'godlygeek/tabular'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'myusuf3/numbers.vim'
 Bundle 'justincampbell/vim-eighties'
 Bundle 'terryma/vim-expand-region'
-Bundle 'teramako/jscomplete-vim'
+"Bundle 'teramako/jscomplete-vim'
 Bundle 'myhere/vim-nodejs-complete'
+Bundle 'hail2u/vim-css3-syntax'
+Bundle 'cakebaker/scss-syntax.vim'
 Bundle 'tpope/vim-bundler'
 Bundle 'tpope/vim-rails'
 Bundle 'b4winckler/vim-objc'
@@ -98,6 +101,7 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'ShowMarks7'
 Bundle 'matchit.zip'
 Bundle 'delimitMate.vim'
+"Bundle 'jiangmiao/auto-pairs'
 Bundle 'surround.vim'
 Bundle 'YankRing.vim'
 Bundle 'sjl/clam.vim'
@@ -153,7 +157,7 @@ set nowrap
 set wildmenu
 set wildmode=longest:full,full
 set wildignore+=*.orig,*.pyc
-set matchpairs=(:),{:},[:],<:>
+set matchpairs=(:),{:},[:]
 set whichwrap=b,s,<,>,[,]
 set foldmethod=marker
 set diffopt+=iwhite,vertical " 忽略缩进的差异
@@ -254,13 +258,6 @@ autocmd FileType scss setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-
-" for AutoComplPop
-"autocmd FileType html setlocal omnifunc=htmlcomplete#CompleteTags
-"autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-"autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
-
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " commands
@@ -625,24 +622,35 @@ let g:neocomplcache_enable_at_startup = 1
 " Use smartcase. 
 let g:neocomplcache_enable_smart_case = 1 
 " Use camel case completion. 
-let g:neocomplcache_enable_camel_case_completion = 1 
+"let g:neocomplcache_enable_camel_case_completion = 1 
 " Use underbar completion. 
-let g:neocomplcache_enable_underbar_completion = 1 
+"let g:neocomplcache_enable_underbar_completion = 1 
 " Set minimum syntax keyword length. 
-let g:neocomplcache_min_syntax_length = 3 
-let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*' 
+let g:neocomplcache_min_syntax_length = 1 
+let g:neocomplcache_auto_completion_start_length = 1
+let g:neocomplcache_manual_completion_start_length = 0
+let g:neocomplcache_max_list = 20
 
 " key-mappings
-imap <expr><Esc> pumvisible() ? "<c-y>" : "<Esc>"
-imap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
-imap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
-smap <expr><Enter> pumvisible() ? "<c-n>" : "<Enter>"
-smap <expr><s-Enter> pumvisible() ? "<c-p>" : "<s-Enter>"
+inoremap <expr><C-g> neocomplcache#undo_completion()
+inoremap <expr><C-l> neocomplcache#complete_common_string()
+inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y> neocomplcache#close_popup()
+inoremap <expr><C-e> neocomplcache#cancel_popup()
+
+"inoremap <expr><Space> pumvisible() ? "\<c-y>" : "\<Space>"
+inoremap <expr><Esc> pumvisible() ? "\<c-y>" : "\<Esc>"
+inoremap <expr><Enter> pumvisible() ? "\<c-n>" : "\<Enter>"
+inoremap <expr><s-Enter> pumvisible() ? "\<c-p>" : "\<s-Enter>"
+"imap <expr><tab>  pumvisible() ? "\<c-n>" : "\<TAB>"
+"imap <expr><s-tab>  pumvisible() ? "\<c-p>" : "\<s-TAB>"
+
 
 " Enable omni completion.
 autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=jscomplete#CompleteJS
+"autocmd FileType javascript setlocal omnifunc=jscomplete#CompleteJS
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
@@ -651,7 +659,7 @@ let g:jscomplete_use = ['moz', 'es6th']
 
 " vim-nodejs-complete
 let g:nodejs_complete_config = {
-\  'js_compl_fn': 'jscomplete#CompleteJS',
+\  'js_compl_fn': 'javascriptcomplete#CompleteJS',
 \  'max_node_compl_len': 15
 \}
 
