@@ -431,12 +431,15 @@ nnoremap <leader>/ :Ack
 let g:flake8_ignore = 'E401,E501'
 
 " Syntastic
-let g:syntastic_python_checker = 'flake8'
-let g:syntastic_python_checker_args = '--ignore="E401,E501"'
-let g:syntastic_javascript_checker = 'jshint'
-let g:loaded_html_syntax_checker = 1
-let g:syntastic_auto_loc_list=0
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_python_flake8_args = '--ignore="E401,E501"'
+let g:syntastic_javascript_checkers = ['jshint']
+"let g:syntastic_css_checkers = ['csslint']
+"let g:syntastic_csslint_options = '--warnings=none --errors=box-model'
+let g:syntastic_lisp_checkers = ['clisp']
+let g:syntastic_always_populate_loc_list = 1
 
+" Indent Guides
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_start_level = 2
