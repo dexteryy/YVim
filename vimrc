@@ -258,6 +258,7 @@ autocmd FileType scss setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType text setlocal wrap
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " commands
@@ -437,6 +438,7 @@ let g:syntastic_javascript_checkers = ['jshint']
 "let g:syntastic_css_checkers = ['csslint']
 "let g:syntastic_csslint_options = '--warnings=none --errors=box-model'
 let g:syntastic_lisp_checkers = ['clisp']
+let g:syntastic_html_tidy_blocklevel_tags=['x-card', 'x-part', 'ck-card', 'ck-part']
 let g:syntastic_always_populate_loc_list = 1
 
 " Indent Guides
