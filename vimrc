@@ -362,9 +362,6 @@ map <D-L> <C-l>
 nnoremap <D-V> <C-w>v
 nnoremap <D-S> <C-w>s
 
-" for YankRing
-map <D-p> <C-p>
-
 nnoremap <leader><tab> :Sscratch<cr>
 
 
@@ -529,7 +526,6 @@ nmap <leader>fc :FufChangeList<cr>
 
 " yankring
 let g:yankring_history_dir = '~/.vim/yankring'
-let g:yankring_replace_n_pkey = 'P'
 "inoremap } <c-r>=ClosePair('}')<cr>
 nnoremap <silent> <leader>yr :YRShow<cr>
 inoremap <silent> <leader>yr <ESC>:YRShow<cr>
@@ -537,14 +533,14 @@ inoremap <silent> <leader>yr <ESC>:YRShow<cr>
 
 " ctrl-p
 let g:ctrlp_working_path_mode = 2 " .git/ .hg/ .svn/ .bzr/ _darcs/ or your own marker_dir/ marker_file
-let g:ctrlp_map = '<c-p>'
+let g:ctrlp_map = '<d-p>'
 
 
 " command-T
-nmap <leader>tt :CommandT<cr>
-if has("gui_macvim")
-	map <D-T> :CommandT<CR>
-endif
+"nmap <leader>tt :CommandT<cr>
+"if has("gui_macvim")
+	"map <D-T> :CommandT<CR>
+"endif
 
 " showmarks
 if has("gui_running") || has("gui_macvim")

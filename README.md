@@ -54,9 +54,7 @@ git pull origin
 * `<F9>` - :call MyRemoveBreakPoint()
 * `,/` - :Ack
 * `<D-C>` - :Clam
-* `<c-p>` - 
-* `<D-T>` - :CommandT
-* `,tt` - :CommandT
+* `<D-p>` - :CtrlP
 * `,be` - (normal open)  
 * `,bs` - (force horizontal split open)  
 * `,bv` - (force vertical split open)
