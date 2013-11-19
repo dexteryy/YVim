@@ -268,6 +268,7 @@ autocmd FileType scss setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType text setlocal wrap
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " commands
@@ -371,9 +372,6 @@ map <D-L> <C-l>
 nnoremap <D-V> <C-w>v
 nnoremap <D-S> <C-w>s
 
-" for YankRing
-map <D-p> <C-p>
-
 nnoremap <leader><tab> :Sscratch<cr>
 
 
@@ -447,6 +445,7 @@ let g:syntastic_javascript_checkers = ['jshint']
 "let g:syntastic_css_checkers = ['csslint']
 "let g:syntastic_csslint_options = '--warnings=none --errors=box-model'
 let g:syntastic_lisp_checkers = ['clisp']
+let g:syntastic_html_tidy_blocklevel_tags=['x-card', 'x-part', 'ck-card', 'ck-part']
 let g:syntastic_always_populate_loc_list = 1
 
 " Indent Guides
@@ -537,7 +536,6 @@ nmap <leader>fc :FufChangeList<cr>
 
 " yankring
 let g:yankring_history_dir = '~/.vim/yankring'
-let g:yankring_replace_n_pkey = 'P'
 "inoremap } <c-r>=ClosePair('}')<cr>
 nnoremap <silent> <leader>yr :YRShow<cr>
 inoremap <silent> <leader>yr <ESC>:YRShow<cr>
@@ -545,14 +543,14 @@ inoremap <silent> <leader>yr <ESC>:YRShow<cr>
 
 " ctrl-p
 let g:ctrlp_working_path_mode = 2 " .git/ .hg/ .svn/ .bzr/ _darcs/ or your own marker_dir/ marker_file
-let g:ctrlp_map = '<c-p>'
+let g:ctrlp_map = '<d-p>'
 
 
 " command-T
-nmap <leader>tt :CommandT<cr>
-if has("gui_macvim")
-	map <D-T> :CommandT<CR>
-endif
+"nmap <leader>tt :CommandT<cr>
+"if has("gui_macvim")
+	"map <D-T> :CommandT<CR>
+"endif
 
 " showmarks
 if has("gui_running") || has("gui_macvim")
