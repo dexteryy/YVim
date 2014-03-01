@@ -52,7 +52,7 @@ git pull origin
 * `<F7>` - :call MySetBreakPoint()
 * `<F8>` - :call MySetLog()
 * `<F9>` - :call MyRemoveBreakPoint()
-* `,/` - :Ack
+* `,/` - :Ag
 * `<D-C>` - :Clam
 * `<D-p>` - :CtrlP
 * `,be` - (normal open)  
@@ -110,6 +110,10 @@ For snippets:
 * `<tab>`     g:UltiSnipsExpandTrigger
 * `<tab>`     g:UltiSnipsJumpForwardTrigger
 * `<s-tab>`     g:UltiSnipsJumpBackwardTrigge
+
+For Emmet:
+* `<C-z>,`
+* `<C-z>d`
 
 * `:SuperRetab 2 4`
 * `:Matrix`
