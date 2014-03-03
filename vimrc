@@ -122,6 +122,9 @@ Bundle 'digitaltoad/vim-jade'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'cakebaker/scss-syntax.vim'
 Bundle 'wavded/vim-stylus'           
+Bundle 'rizzatti/funcoo.vim'
+Bundle 'rizzatti/dash.vim'
+Bundle 'othree/javascript-libraries-syntax.vim'
 filetype plugin indent on  
 
 
@@ -702,3 +705,12 @@ let g:slimv_leader = ",l"
 let g:slimv_impl = 'ccl'
 let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"ccl --load ~/.vim/slime/start-swank.lisp\""' 
 
+
+"javascript-libraries-syntax
+let g:used_javascript_libs = 'underscore,backbone,angularjs,angularui,requirejs'
+autocmd BufReadPre *.js let b:javascript_lib_use_jquery = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_underscore = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_backbone = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_prelude = 0
+autocmd BufReadPre *.js let b:javascript_lib_use_angularjs = 1
+autocmd BufReadPre *.js let b:javascript_lib_use_angularui= 0
