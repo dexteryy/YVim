@@ -20,6 +20,7 @@ if has("gui_running")
 	:hi Pmenu guifg=#333333 guibg=#E3E3E3
 	:hi PmenuSel guifg=#ffffff guibg=#0264A2
 	
+    :hi ColorColumn guibg=#16182D
 	:hi CursorLine guibg=#16182D
 	:hi CursorColumn guibg=#16182D
     :hi CursorLineNr guifg=#000000 guibg=#eeeeee
@@ -79,4 +80,5 @@ if has("gui_running")
 
     :hi IndentGuidesOdd  guibg=#1e1e3D ctermbg=1
     :hi IndentGuidesEven guibg=#1e1e3D ctermbg=1
+
 end

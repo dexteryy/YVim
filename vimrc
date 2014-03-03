@@ -64,7 +64,8 @@ Bundle 'FuzzyFinder'
 Bundle 'bufexplorer.zip'
 Bundle 'mru.vim'
 Bundle 'ctrlp.vim'
-Bundle 'ack.vim'
+"Bundle 'ack.vim'
+Bundle 'rking/ag.vim'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'majutsushi/tagbar'
 Bundle 'mihaifm/vimpanel'
@@ -73,7 +74,7 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'The-NERD-Commenter'
 Bundle 'Gundo'
 Bundle 'SirVer/ultisnips'
-Bundle 'JazzCore/neocomplcache-ultisnips'
+"Bundle 'JazzCore/neocomplcache-ultisnips'
 Bundle 'Shougo/neocomplcache.vim'
 "Bundle 'Valloric/YouCompleteMe'
 Bundle 'godlygeek/tabular'
@@ -89,6 +90,10 @@ Bundle 'tpope/vim-bundler'
 Bundle 'tpope/vim-rails'
 Bundle 'b4winckler/vim-objc'
 Bundle 'eraserhd/vim-ios'
+Bundle 'mustache/vim-mustache-handlebars'
+Bundle 'digitaltoad/vim-jade'
+Bundle 'slim-template/vim-slim'
+Bundle "mattn/emmet-vim"
 "Bundle 'junegunn/vim-scroll-position'
 Bundle 'xolox/vim-misc'
 Bundle 'xolox/vim-session'
@@ -167,6 +172,7 @@ set shiftwidth=4
 set tabstop=4
 set softtabstop=4
 set nowrap
+set colorcolumn=+1
 set wildmenu
 set wildmode=longest:full,full
 set wildignore+=*.orig,*.pyc
@@ -202,8 +208,7 @@ endif
 set anti
 set linespace=2 
 set cursorline
-"set number
-set rnu
+set nu
 set numberwidth=4
 set equalalways
 set guitablabel=%t
@@ -265,10 +270,10 @@ autocmd BufNewFile,BufRead *.scss set ft=scss
 
 
 " language support
-autocmd FileType javascript setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
+autocmd FileType javascript setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=80
 autocmd FileType css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType scss setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=79
+autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=80
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType text setlocal wrap
@@ -437,7 +442,13 @@ endif
 " plugin setting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-nnoremap <leader>/ :Ack 
+" ag.vim
+nnoremap <leader>/ :Ag
+let g:agprg="ag --column"
+
+" ack.vim
+"nnoremap <leader>/ :Ack 
+"let g:ackprg = 'ag --nogroup --nocolor --column'
 
 let g:flake8_ignore = 'E401,E501'
 
@@ -625,7 +636,7 @@ let g:Powerline_symbols = 'compatible'
 "let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetDirectories=["snippets"]
+let g:UltiSnipsSnippetDirectories=["ultisnips"]
 
 " neocomplcache
 
@@ -668,6 +679,9 @@ autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
+" emmet
+let g:user_emmet_leader_key='<c-z>'
+
 " jscomplete
 let g:jscomplete_use = ['moz', 'es6th']
 
@@ -676,6 +690,9 @@ let g:nodejs_complete_config = {
 \  'js_compl_fn': 'javascriptcomplete#CompleteJS',
 \  'max_node_compl_len': 15
 \}
+
+" mustache
+"let g:mustache_abbreviations = 1
 
 " html5
 let g:html5_event_handler_attributes_complete = 0
