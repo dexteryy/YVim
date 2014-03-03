@@ -1,5 +1,6 @@
 .VimballRecord
 .netrwhist
 .pluginsref
+.DS_Store
 nouse/
 bundle/
