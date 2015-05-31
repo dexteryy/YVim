@@ -22,4 +22,4 @@ else
     echo "Create ~/.gvimrc"
 fi
 
-vim -c ':BundleInstall'
+vim +PluginInstall +qall
