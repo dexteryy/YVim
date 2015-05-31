@@ -49,76 +49,82 @@ endif
 
 filetype off
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
 
-" let Vundle manage Vundle
-" required! 
-Bundle 'gmarik/vundle'
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
 
-" My Bundles here:
-Bundle 'L9'
-Bundle 'tpope/vim-scriptease'
-Bundle 'scrooloose/syntastic'
-Bundle 'FuzzyFinder'
-Bundle 'bufexplorer.zip'
-Bundle 'mru.vim'
-Bundle 'ctrlp.vim'
-"Bundle 'ack.vim'
-Bundle 'rking/ag.vim'
-Bundle 'Lokaltog/vim-powerline'
-Bundle 'majutsushi/tagbar'
-Bundle 'mihaifm/vimpanel'
-"Bundle 'jistr/vim-nerdtree-tabs'
-Bundle 'scrooloose/nerdtree'
-Bundle 'The-NERD-Commenter'
-Bundle 'Gundo'
-Bundle 'SirVer/ultisnips'
-"Bundle 'JazzCore/neocomplcache-ultisnips'
-Bundle 'Shougo/neocomplcache.vim'
-"Bundle 'Valloric/YouCompleteMe'
-Bundle 'godlygeek/tabular'
-Bundle 'nathanaelkane/vim-indent-guides'
-Bundle 'myusuf3/numbers.vim'
-Bundle 'justincampbell/vim-eighties'
-Bundle 'terryma/vim-expand-region'
-"Bundle 'teramako/jscomplete-vim'
-Bundle 'myhere/vim-nodejs-complete'
-Bundle 'hail2u/vim-css3-syntax'
-Bundle 'cakebaker/scss-syntax.vim'
-Bundle 'tpope/vim-bundler'
-Bundle 'tpope/vim-rails'
-Bundle 'b4winckler/vim-objc'
-Bundle 'eraserhd/vim-ios'
-Bundle 'mustache/vim-mustache-handlebars'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'slim-template/vim-slim'
-Bundle "mattn/emmet-vim"
-"Bundle 'junegunn/vim-scroll-position'
-Bundle 'xolox/vim-misc'
-Bundle 'xolox/vim-session'
-Bundle 'thinca/vim-quickrun'
-Bundle 'vcscommand.vim'
-Bundle 'fugitive.vim'
-Bundle 'kablamo/vim-git-log'
-Bundle 'TaskList.vim'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'ShowMarks7'
-Bundle 'matchit.zip'
-Bundle 'delimitMate.vim'
-"Bundle 'jiangmiao/auto-pairs'
-Bundle 'surround.vim'
-Bundle 'YankRing.vim'
-Bundle 'sjl/clam.vim'
-Bundle 'scratch.vim'
-Bundle 'cecutil'
-Bundle 'DrawIt'
-Bundle 'mattn/calendar-vim'
-Bundle 'uguu-org/vim-matrix-screensaver'
-Bundle 'molokai'
+" My Plugins here:
+Plugin 'L9'
+Plugin 'tpope/vim-scriptease'
+Plugin 'scrooloose/syntastic'
+Plugin 'FuzzyFinder'
+Plugin 'bufexplorer.zip'
+Plugin 'mru.vim'
+Plugin 'ctrlp.vim'
+"Plugin 'ack.vim'
+Plugin 'rking/ag.vim'
+Plugin 'Lokaltog/vim-powerline'
+Plugin 'majutsushi/tagbar'
+Plugin 'mihaifm/vimpanel'
+"Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'scrooloose/nerdtree'
+Plugin 'The-NERD-Commenter'
+Plugin 'Gundo'
+Plugin 'SirVer/ultisnips'
+"Plugin 'JazzCore/neocomplcache-ultisnips'
+Plugin 'Shougo/neocomplcache.vim'
+"Plugin 'marijnh/tern_for_vim'
+"Plugin 'Valloric/YouCompleteMe'
+Plugin 'godlygeek/tabular'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'myusuf3/numbers.vim'
+Plugin 'justincampbell/vim-eighties'
+Plugin 'terryma/vim-expand-region'
+"Plugin 'teramako/jscomplete-vim'
+Plugin 'myhere/vim-nodejs-complete'
+Plugin 'hail2u/vim-css3-syntax'
+Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'tpope/vim-bundler'
+Plugin 'tpope/vim-rails'
+Plugin 'b4winckler/vim-objc'
+Plugin 'eraserhd/vim-ios'
+Plugin 'mustache/vim-mustache-handlebars'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'slim-template/vim-slim'
+Plugin 'mattn/emmet-vim'
+Plugin 'rust-lang/rust.vim'
+Plugin 'cespare/vim-toml'
+"Plugin 'junegunn/vim-scroll-position'
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-session'
+Plugin 'thinca/vim-quickrun'
+Plugin 'vcscommand.vim'
+Plugin 'fugitive.vim'
+Plugin 'kablamo/vim-git-log'
+Plugin 'TaskList.vim'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'ShowMarks7'
+Plugin 'matchit.zip'
+Plugin 'delimitMate.vim'
+"Plugin 'jiangmiao/auto-pairs'
+Plugin 'surround.vim'
+Plugin 'YankRing.vim'
+Plugin 'sjl/clam.vim'
+Plugin 'scratch.vim'
+Plugin 'cecutil'
+Plugin 'DrawIt'
+Plugin 'mattn/calendar-vim'
+Plugin 'uguu-org/vim-matrix-screensaver'
+"Plugin 'molokai'
 
-filetype plugin indent on  
-
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
@@ -186,8 +192,10 @@ else
 endif
 
 if MySys() == "mac"
-	set guifont=Monaco:h13
-	set guifontwide=Hei_Regular:h13
+	"set guifont=Monaco:h13
+    set guifont=Consolas:h13
+    "set guifont=M+\ 1m:h13
+	"set guifontwide=Hei_Regular:h13
 elseif MySys() == "linux"
 	set guifont=Monospace
 endif
@@ -220,7 +228,7 @@ if has("gui_macvim")
 	let macvim_skip_cmd_opt_movement = 1
 	let macvim_hig_shift_movement = 1
 
-	set transparency=9
+	set transparency=10
 	set guioptions-=T "egmrt
 	"set guioptions+=b 
 
@@ -270,7 +278,7 @@ autocmd FileType text setlocal wrap
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " sudo save
-command W :w ! sudo tee %
+command! W :w ! sudo tee %
 
 :command! -nargs=+ SuperRetab call SuperRetab(<f-args>)
 
@@ -662,7 +670,8 @@ inoremap <expr><s-Enter> pumvisible() ? "\<c-p>" : "\<s-Enter>"
 autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
 autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
 "autocmd FileType javascript setlocal omnifunc=jscomplete#CompleteJS
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+"autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType javascript setlocal omnifunc=nodejscomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
@@ -687,6 +696,10 @@ let g:html5_rdfa_attributes_complete = 0
 let g:html5_microdata_attributes_complete = 0
 let g:html5_aria_attributes_complete = 0
 let g:aria_attributes_complete = 0
+
+" tern
+"nnoremap <leader>td :TernDef<cr>
+"nnoremap <leader>tr :TernRefs<cr>
 
 " fugitive
 autocmd BufReadPost fugitive://* set bufhidden=delete
