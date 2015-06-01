@@ -1,5 +1,10 @@
+backups/
+diary/
+record/
+sessions/
+undos/
+bundle/
+plugged/
 .VimballRecord
 .netrwhist
 .pluginsref
-nouse/
-bundle/

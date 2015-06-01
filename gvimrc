@@ -34,11 +34,11 @@ if has("gui_macvim")
     macm Window.Zoom\ All		                        key=<nop>
     macm Window.Bring\ All\ To\ Front	                key=<nop>
     macm Help.MacVim\ Website			                key=<nop>
+	macm Edit.Undo<Tab>u					            key=<nop>
+	macm Edit.Redo<Tab>^R					            key=<nop>
 	
 	macm File.New\ Tab						key=<D-t>
 	macm File.Save<Tab>:w					key=<D-s>
-	macm Edit.Undo<Tab>u					key=<D-z> action=undo:
-	macm Edit.Redo<Tab>^R					key=<D-Z> action=redo:
 	macm Edit.Cut<Tab>"+x					key=<D-x> action=cut:
 	macm Edit.Copy<Tab>"+y					key=<D-c> action=copy:
 	macm Edit.Paste<Tab>"+gP				key=<D-v> action=paste:

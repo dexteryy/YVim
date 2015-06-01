@@ -22,4 +22,10 @@ else
     echo "Create ~/.gvimrc"
 fi
 
-vim +PluginInstall +qall
+mkdir ./backups
+mkdir ./diary
+mkdir ./record
+mkdir ./sessions
+mkdir ./undos
+
+vim +PlugInstall +qall

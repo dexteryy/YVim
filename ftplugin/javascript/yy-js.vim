@@ -1,11 +1,4 @@
-" javascript compile & debug tools 
-" Maintainer: Dexter.Yy
-" Mail:   dexter.yy@gmail.com
-" Web:    http://www.limboy.com
-" Version: 0.1
-"
-" Usage:
-"
+" Maintainer: Dexter.Yy <dexter.yy@gmail.com>
 
 python << EOF
 import os, vim
@@ -55,16 +48,16 @@ def jsRemoveAllDebug():
 
 EOF
 
-function! s:SetMyMake()
-	let s:cpo_save = &cpo
-	set cpo-=C
-	"setlocal makeprg=jshint\ %\ --config\ '$HOME/.jshintrc'\
-    setlocal makeprg=jshint\ %
-    setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
-	let &cpo = s:cpo_save
-	unlet s:cpo_save
-	let g:current_compiler = "jshint"
-endfunction
+"function! s:SetMyMake()
+	"let s:cpo_save = &cpo
+	"set cpo-=C
+	""setlocal makeprg=jshint\ %\ --config\ '$HOME/.jshintrc'\
+    "setlocal makeprg=jshint\ %
+    "setlocal errorformat=%f:\ line\ %l\\,\ col\ %c\\,\ %m
+	"let &cpo = s:cpo_save
+	"unlet s:cpo_save
+	"let g:current_compiler = "jshint"
+"endfunction
 
 "function! s:SetMyMake()
 	"let s:cpo_save = &cpo
@@ -78,17 +71,12 @@ endfunction
 
 function! MyJsMake()
 	call MyJsLint()
-	!tuicompiler % -s -q
+	"!tuicompiler % -s -q
+    ozma %
 endfunction
 
 function! MyJsLint()
-	call s:SetMyMake()
-	make
-endfunction
-
-function! MyJsBuild()
-	call MyJsLint()
-	!tuicompiler % -s -z
+    :JSHint
 endfunction
 
 function! MyJsSetBreakPoint()
@@ -105,7 +93,6 @@ endfunction
 
 let b:myMake='MyJsMake'
 let b:myLint='MyJsLint'
-let b:myDebug='MyJsBuild'
 let b:mySetBreakPoint='MyJsSetBreakPoint'
 let b:mySetLog='MyJsSetLog'
 let b:myRemoveBreakPoint='MyJsRemoveBreakPoint'

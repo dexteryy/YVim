@@ -1,10 +1,9 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: Dexter.Yy <dexter.yy at gmail.com>
-" Last Change: $LastChangedDate$ $Rev$
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" YVim
+" Maintainer: dexteryy <dexter.yy at gmail.com>
+" URL:        https://github.com/dexteryy/YVim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" default
+" Default
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 set history=400
@@ -12,119 +11,127 @@ if has('mouse')
   set mouse=a
 endif
 set backspace=indent,eol,start
-set ruler		" show the cursor position all the time
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
-
-map Q gq
-inoremap <C-U> <C-G>u<C-U>
-
-if &t_Co > 2 || has("gui_running")
-  syntax on
-  set hlsearch
-endif
-
-if has("autocmd")
-  filetype plugin indent on
-  augroup vimrcEx
-  au!
-  autocmd FileType text setlocal textwidth=78
-  autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
-  augroup END
-else
-  set autoindent		" always set autoindenting on
-endif " has("autocmd")
-
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
-endif
+set ruler
+set showcmd
+set incsearch
+set hlsearch
+syntax on
+filetype plugin indent on
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vundle 
+" Plugins
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-filetype off
+" for Vundle
+"filetype off
+"set rtp+=~/.vim/plugged/Vundle.vim
+"call vundle#begin('~/.vim/plugged')
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" for vim-plug
+call plug#begin()
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+" ==============================================================
+"Plug 'gmarik/Vundle.vim'
+" ==============================================================
+Plug 'L9'
+Plug 'cecutil'
+Plug 'tpope/vim-scriptease'
+Plug 'xolox/vim-misc'
+" ==============================================================
+Plug 'flazz/vim-colorschemes'
+" ==============================================================
+Plug 'pangloss/vim-javascript'
+"Plug 'othree/yajs.vim'
+Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'elzr/vim-json'
+Plug 'othree/html5.vim'
+Plug 'JulesWang/css.vim'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'cakebaker/scss-syntax.vim'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'digitaltoad/vim-jade'
+Plug 'slim-template/vim-slim'
+Plug 'rust-lang/rust.vim'
+Plug 'cespare/vim-toml'
+Plug 'fatih/vim-go'
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'tpope/vim-bundler'
+"Plug 'b4winckler/vim-objc'
+Plug 'plasticboy/vim-markdown'
+Plug 'chrisbra/csv.vim'
+" ==============================================================
+Plug 'scrooloose/syntastic'
+Plug 'Shutnik/jshint2.vim'
+Plug 'suan/vim-instant-markdown'
+Plug 'mattn/emmet-vim'
+Plug 'tpope/vim-rails'
+"Plug 'eraserhd/vim-ios'
+Plug 'paredit.vim'
+Plug 'jmcantrell/vim-virtualenv'
+" ==============================================================
+Plug 'IndentAnything'
+Plug 'matchit.zip'
+Plug 'delimitMate.vim'
+Plug 'ShowMarks7'
+Plug 'tpope/vim-repeat'
+" ==============================================================
+Plug 'Lokaltog/vim-easymotion'
+Plug 'terryma/vim-expand-region'
+" ==============================================================
+Plug 'godlygeek/tabular'
+Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-surround'
+" ==============================================================
+"Plug 'powerline/powerline'
+Plug 'bling/vim-airline'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'myusuf3/numbers.vim'
+Plug 'justincampbell/vim-eighties'
+" ==============================================================
+Plug 'scrooloose/nerdtree'
+Plug 'FuzzyFinder'
+Plug 'ctrlp.vim'
+Plug 'mru.vim'
+Plug 'Shougo/unite.vim'
+Plug 'jlanzarotta/bufexplorer'
+Plug 'rking/ag.vim'
+Plug 'majutsushi/tagbar'
+" ==============================================================
+"Plug 'Shougo/neosnippet'
+"Plug 'Shougo/neosnippet-snippets'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+"Plug 'Shougo/neocomplcache.vim'
+"Plug 'Shougo/neocomplete'
+Plug 'Valloric/YouCompleteMe'
+Plug 'SyntaxComplete'
+"Plug 'SQLComplete.vim'
+Plug 'https://bitbucket.org/teramako/jscomplete-vim.git'
+Plug 'myhere/vim-nodejs-complete'
+Plug 'marijnh/tern_for_vim'
+" ==============================================================
+Plug 'xolox/vim-session'
+Plug 'thinca/vim-quickrun'
+Plug 'Gundo'
+" ==============================================================
+Plug 'airblade/vim-gitgutter'
+Plug 'vcscommand.vim'
+Plug 'fugitive.vim'
+Plug 'kablamo/vim-git-log'
+" ==============================================================
+Plug 'TaskList.vim'
+Plug 'scratch.vim'
+Plug 'DrawIt'
+Plug 'mattn/calendar-vim'
+Plug 'uguu-org/vim-matrix-screensaver'
+" ==============================================================
 
-" My Plugins here:
-Plugin 'L9'
-Plugin 'tpope/vim-scriptease'
-Plugin 'scrooloose/syntastic'
-Plugin 'FuzzyFinder'
-Plugin 'bufexplorer.zip'
-Plugin 'mru.vim'
-Plugin 'ctrlp.vim'
-"Plugin 'ack.vim'
-Plugin 'rking/ag.vim'
-Plugin 'Lokaltog/vim-powerline'
-Plugin 'majutsushi/tagbar'
-Plugin 'mihaifm/vimpanel'
-"Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'scrooloose/nerdtree'
-Plugin 'The-NERD-Commenter'
-Plugin 'Gundo'
-Plugin 'SirVer/ultisnips'
-"Plugin 'JazzCore/neocomplcache-ultisnips'
-Plugin 'Shougo/neocomplcache.vim'
-"Plugin 'marijnh/tern_for_vim'
-"Plugin 'Valloric/YouCompleteMe'
-Plugin 'godlygeek/tabular'
-Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'myusuf3/numbers.vim'
-Plugin 'justincampbell/vim-eighties'
-Plugin 'terryma/vim-expand-region'
-"Plugin 'teramako/jscomplete-vim'
-Plugin 'myhere/vim-nodejs-complete'
-Plugin 'hail2u/vim-css3-syntax'
-Plugin 'cakebaker/scss-syntax.vim'
-Plugin 'tpope/vim-bundler'
-Plugin 'tpope/vim-rails'
-Plugin 'b4winckler/vim-objc'
-Plugin 'eraserhd/vim-ios'
-Plugin 'mustache/vim-mustache-handlebars'
-Plugin 'digitaltoad/vim-jade'
-Plugin 'slim-template/vim-slim'
-Plugin 'mattn/emmet-vim'
-Plugin 'rust-lang/rust.vim'
-Plugin 'cespare/vim-toml'
-"Plugin 'junegunn/vim-scroll-position'
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-session'
-Plugin 'thinca/vim-quickrun'
-Plugin 'vcscommand.vim'
-Plugin 'fugitive.vim'
-Plugin 'kablamo/vim-git-log'
-Plugin 'TaskList.vim'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'ShowMarks7'
-Plugin 'matchit.zip'
-Plugin 'delimitMate.vim'
-"Plugin 'jiangmiao/auto-pairs'
-Plugin 'surround.vim'
-Plugin 'YankRing.vim'
-Plugin 'sjl/clam.vim'
-Plugin 'scratch.vim'
-Plugin 'cecutil'
-Plugin 'DrawIt'
-Plugin 'mattn/calendar-vim'
-Plugin 'uguu-org/vim-matrix-screensaver'
-"Plugin 'molokai'
+" for Vundle
+"call vundle#end()
+"filetype plugin indent on
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+" for vim-plug
+call plug#end()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " General
@@ -148,11 +155,10 @@ endfunction
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 
-" Move Backup Files to ~/.vim/backups/
 set backupdir=~/.vim/backups
 set dir=~/.vim/backups
-set nobackup 
-"set nowritebackup 
+set nobackup
+"set nowritebackup
 
 set undodir=~/.vim/undos
 set undofile
@@ -177,23 +183,25 @@ set diffopt+=iwhite,vertical " 忽略缩进的差异
 "set gdefault
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" interface
+" Interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("gui_running") || has("gui_macvim")
-    colorscheme yytextmate
-    let g:colors_name="yytextmate"
-    "colorscheme molokai 
-    "let g:colors_name="molokai"
+    "colorscheme blackboard
+    "colorscheme badwolf
+    "colorscheme molokai
+    "colorscheme yyblackboard
+    colorscheme yymolokai
+    let g:colors_name="yymolokai"
 else
-    colorscheme molokai 
+    colorscheme molokai
     let g:colors_name="molokai"
 	"colorscheme slate
 endif
 
 if MySys() == "mac"
 	"set guifont=Monaco:h13
-    set guifont=Consolas:h13
+    set guifont=Consolas:h14
     "set guifont=M+\ 1m:h13
 	"set guifontwide=Hei_Regular:h13
 elseif MySys() == "linux"
@@ -201,19 +209,12 @@ elseif MySys() == "linux"
 endif
 
 set anti
-set linespace=2 
+set linespace=2
 set cursorline
 set nu
 set numberwidth=4
 set equalalways
 set guitablabel=%t
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" filetype and syntax
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:javascript_enable_domhtmlcss=1
-let g:xml_use_xhtml = 1 "for xml.vim
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MacVim
@@ -223,58 +224,76 @@ if has("gui_macvim")
 
 	"set columns=171
 	"set lines=58
-	"winpos 52 42 
+	"winpos 52 42
 
 	let macvim_skip_cmd_opt_movement = 1
 	let macvim_hig_shift_movement = 1
 
-	set transparency=10
+	set transparency=5
 	set guioptions-=T "egmrt
-	"set guioptions+=b 
+	"set guioptions+=b
 
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" autocmd
+" Autocmd
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-"autocmd! bufwritepost .vimrc source ~/.vimrc
-"autocmd! bufwritepost vimrc source ~/.vim/vimrc
-autocmd! bufwritepost vimrc Runtime
+" Jumping to last cursor position
+augroup vimrcEx
+    au!
+    au BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+augroup END
+
+au! BufWritePost vimrc source ~/.vimrc
 
 "let g:jslint_neverAutoRun=1
-
 
 if exists('+autochdir')
 	set autochdir
 else
-	autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+	au BufEnter * silent! lcd %:p:h:gs/ /\\ /
 endif
 
-
 " filetype
-autocmd BufNewFile,BufRead *.vm setlocal ft=html
-autocmd BufNewFile,BufRead *.xul setlocal ft=xml
-autocmd BufNewFile,BufRead *.as	setlocal ft=actionscript
-autocmd BufNewFile,BufRead jquery.*.js set ft=javascript syntax=jquery
-autocmd BufNewFile,BufRead *.pac setlocal ft=javascript
-autocmd BufNewFile,BufRead *.ypac setlocal ft=yaml
-autocmd BufNewFile,BufRead *.md setlocal ft=markdown
-"autocmd BufNewFile,BufRead *.json setlocal ft=javascript
-autocmd BufNewFile,BufRead *.scss set ft=scss
+au BufNewFile,BufRead *.js setf javascript
+au BufNewFile,BufRead *.json setf json
+au BufNewFile,BufRead *.scss setf scss.css
+au BufNewFile,BufRead *.as	setf actionscript
+au BufNewFile,BufRead *.xul setf xml
+au BufNewFile,BufRead *.vm setf html
+au BufNewFile,BufRead *.md setf markdown
+au BufNewFile,BufRead *.csv,*.dat setf csv
+au BufNewFile,BufRead *.ypac setf yaml
+"au BufNewFile,BufRead *.json setf javascript
+au BufNewFile,BufRead *.pac setf javascript
 
 
 " language support
-autocmd FileType javascript setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=80
-autocmd FileType css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType scss setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=80
-autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType text setlocal wrap
+au FileType text setlocal wrap textwidth=80
+au FileType javascript setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=80
+au FileType css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+au FileType scss setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+au FileType vim setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+au FileType python setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=80
+au FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+au FileType rust setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 textwidth=80
+au FileType yaml setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+
+" Enable omni completion.
+au FileType css,scss,sass,less setlocal omnifunc=csscomplete#CompleteCSS
+au FileType html setlocal omnifunc=htmlcomplete#CompleteTags
+au FileType javascript setlocal omnifunc=nodejscomplete#CompleteJS
+"au FileType javascript setlocal omnifunc=tern#CompleteJS
+au FileType python setlocal omnifunc=pythoncomplete#Complete
+au FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+au Filetype * if &omnifunc == "" |	setlocal omnifunc=syntaxcomplete#Complete |	endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" commands
+" Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " sudo save
@@ -318,15 +337,19 @@ function! LLSwitch() " toggle location list window
 endfunction
 
 function! MyMake()
-	exe 'call ' . b:myMake . '()'
+    if &buftype == 'quickfix'
+        :q
+    else
+        exe 'call ' . b:myMake . '()'
+	endif
 endfunction
 
 function! MyLint()
-	exe 'call ' . b:myLint . '()'
-endfunction
-
-function! MyDebug()
-	exe 'call ' . b:myDebug . '()'
+    if &buftype == 'quickfix'
+        :q
+    else
+        exe 'call ' . b:myLint . '()'
+	endif
 endfunction
 
 function! MySetBreakPoint()
@@ -342,21 +365,16 @@ function! MyRemoveBreakPoint()
 endfunction
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" macro
+" Macro
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" $static.getURL to uidev.tudou.com
-let @u = "0y$opk,n j0f$df'ihttp://uidev.tudou.comf'xx"
-" copy current file to uidev.tudou.com
-let @p = ":!cp % /Volumes/ui.tudou.com/%:p:h:h:t/%:p:h:t/"
+"let @u = ""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" map
+" Key mapping
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let mapleader=","
 let g:mapleader=","
-
-"map <leader>, ,
 
 map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
 map <leader>q :q<cr>
@@ -367,21 +385,11 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-map <D-H> <C-h>
-map <D-J> <C-j>
-map <D-K> <C-k>
-map <D-L> <C-l>
-
-nnoremap <D-V> <C-w>v
-nnoremap <D-S> <C-w>s
-
-nnoremap <leader><tab> :Sscratch<cr>
-
-
+nnoremap <C-V> <C-w>v
+nnoremap <C-S> <C-w>s
 
 " for make & debug
 "noremap <silent> <F1> <ESC>:call LLSwitch()<CR>
-noremap <silent> <F2> <ESC>:GundoToggle<CR>
 noremap <silent> <F3> <ESC>:call MyLint()<CR>
 noremap <silent> <F4> :call MyMake()<CR>
 noremap <silent> <F5> <ESC>:call QFSwitch()<CR>
@@ -390,31 +398,24 @@ noremap <silent> <F7> :call MySetBreakPoint()<CR>
 noremap <silent> <F8> :call MySetLog()<CR>
 noremap <silent> <F9> :call MyRemoveBreakPoint()<CR>
 
-
 nmap <tab> 		v>
-nmap <c-tab>    v>
+nmap <c-tab>  v>
 nmap <s-tab> 	v<
-vmap <tab> 		>gv 
-vmap <c-tab> 	>gv 
+vmap <tab> 		>gv
+vmap <c-tab> 	>gv
 vmap <s-tab> 	<gv
 
 nnoremap / /\v
 vnoremap / /\v
 
-"inoremap ( ()<ESC>i
-"inoremap { {}<ESC>i
-"inoremap [ []<ESC>i
-"inoremap " ""<ESC>i
-"inoremap < <><esc>i
-"inoremap ) <c-r>=ClosePair(')')<cr>
-"inoremap } <c-r>=ClosePair('}')<cr>
-"inoremap ] <c-r>=ClosePair(']')<cr>
-"inoremap > <c-r>=ClosePair('>')<cr>
-
-"inoremap <expr><CR> StructStart() ? '<CR><ESC>kA<CR>' : '<CR>'
-
 " map cmd to ctrl
 if has("gui_macvim")
+    map <D-H> <C-h>
+    map <D-J> <C-j>
+    map <D-K> <C-k>
+    map <D-L> <C-l>
+    map <D-V> <C-V>
+    map <D-S> <C-S>
 	imap <D-c> <C-c>	"快速结束插入模式
 	map <D-y> <C-y>
 	map <D-e> <C-e>
@@ -428,92 +429,362 @@ if has("gui_macvim")
 	map <D-i> <C-i>
 	map <D-g> <C-g>
 	map <D-]> <C-]>
+    map <D-p> <C-p>
 	cmap <D-d> <C-d>
 	imap <D-e> <C-e>
 	imap <D-y> <C-y>
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" plugin setting
+" Plug settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" ag.vim
-nnoremap <leader>/ :Ag
-let g:agprg="ag --column"
+" -------------------------------------------------------------
+" Plug 'flazz/vim-colorschemes'
+" https://github.com/flazz/vim-colorschemes
+" -------------------------------------------------------------
 
-" ack.vim
-"nnoremap <leader>/ :Ack 
-"let g:ackprg = 'ag --nogroup --nocolor --column'
+" ==============================================================
 
-let g:flake8_ignore = 'E401,E501'
+" -------------------------------------------------------------
+" Plug 'pangloss/vim-javascript'
+" https://github.com/pangloss/vim-javascript
+" alternative:
+" * https://github.com/jelera/vim-javascript-syntax
+" * https://github.com/othree/yajs.vim
+" -------------------------------------------------------------
+let g:javascript_enable_domhtmlcss = 0
+let b:javascript_fold = 0
 
-" Syntastic
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_python_flake8_args = '--ignore="E401,E501"'
-let g:syntastic_javascript_checkers = ['jshint']
+" -------------------------------------------------------------
+" Plug 'othree/javascript-libraries-syntax.vim'
+" https://github.com/othree/javascript-libraries-syntax.vim
+" -------------------------------------------------------------
+let g:used_javascript_libs = 'jquery,underscore,react,flux,jasmine,chai'
+
+" -------------------------------------------------------------
+" Plug 'elzr/vim-json'
+" https://github.com/elzr/vim-json
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'othree/html5.vim'
+" https://github.com/othree/html5.vim
+" omnicomplete function, indent and syntax
+" all new elements and attribute + all SVG elements 
+"   + microdata + RDFa + WAI-ARIA
+" -------------------------------------------------------------
+let g:html5_event_handler_attributes_complete = 1
+let g:html5_rdfa_attributes_complete = 1
+let g:html5_microdata_attributes_complete = 1
+let g:html5_aria_attributes_complete = 0
+
+" -------------------------------------------------------------
+" Plug 'JulesWang/css.vim'
+" https://github.com/JulesWang/css.vim
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'hail2u/vim-css3-syntax'
+" https://github.com/hail2u/vim-css3-syntax
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'cakebaker/scss-syntax.vim'
+" https://github.com/cakebaker/scss-syntax.vim
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'mustache/vim-mustache-handlebars'
+" https://github.com/mustache/vim-mustache-handlebars
+" -------------------------------------------------------------
+"let g:mustache_abbreviations = 1
+
+" -------------------------------------------------------------
+" Plug 'digitaltoad/vim-jade'
+" https://github.com/digitaltoad/vim-jade
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'slim-template/vim-slim'
+" https://github.com/slim-template/vim-slim
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'rust-lang/rust.vim'
+" https://github.com/rust-lang/rust.vim
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'cespare/vim-toml'
+" https://github.com/cespare/vim-toml
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'fatih/vim-go'
+" https://github.com/fatih/vim-go
+" TODO
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'dart-lang/dart-vim-plugin'
+" https://github.com/dart-lang/dart-vim-plugin
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'tpope/vim-bundler'
+" https://github.com/tpope/vim-bundler
+" * :Bundle
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'plasticboy/vim-markdown'
+" https://github.com/plasticboy/vim-markdown
+" * gx - open link
+" * ]] - go to next header
+" * [[ - go to previous header 
+" * :Toc - create a quickfix window navigable table of contents
+" -------------------------------------------------------------
+let g:vim_markdown_folding_disabled = 1
+
+" -------------------------------------------------------------
+" Plug 'chrisbra/csv.vim'
+" https://github.com/chrisbra/csv.vim
+" * :CSVHiColumn
+" * :CSVTabulariz
+" -------------------------------------------------------------
+let g:csv_highlight_column = 'y'
+
+" ==============================================================
+
+" -------------------------------------------------------------
+" Plug 'scrooloose/syntastic'
+" https://github.com/scrooloose/syntastic
+" -------------------------------------------------------------
+"let g:syntastic_html_tidy_blocklevel_tags=['x-card', 'x-part', 'ck-card', 'ck-part']
 "let g:syntastic_css_checkers = ['csslint']
 "let g:syntastic_csslint_options = '--warnings=none --errors=box-model'
+let g:syntastic_javascript_checkers = ['jshint']
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_python_flake8_args = '--ignore="E401,E501"'
 let g:syntastic_lisp_checkers = ['clisp']
-let g:syntastic_html_tidy_blocklevel_tags=['x-card', 'x-part', 'ck-card', 'ck-part']
 let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
 
-" Indent Guides
+" -------------------------------------------------------------
+" Plug 'Shutnik/jshint2.vim'
+" https://github.com/Shutnik/jshint2.vim
+" * :JSHint
+" * <F3>
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'suan/vim-instant-markdown'
+" https://github.com/suan/vim-instant-markdown
+" npm -g install instant-markdown-d
+" -------------------------------------------------------------
+let g:instant_markdown_slow = 1
+let g:instant_markdown_autostart = 0
+
+" -------------------------------------------------------------
+" Plug 'mattn/emmet-vim'
+" https://github.com/mattn/emmet-vim
+" https://raw.githubusercontent.com/mattn/emmet-vim/master/TUTORIAL
+" in insert mode
+" * <C-e>, - expand
+" * <C-e>n - next edit point
+" * <C-e>p - previous edit point
+" * <C-e>k - remove a tag
+" * <C-e>/ - toggle comment
+" -------------------------------------------------------------
+let g:user_emmet_leader_key='<C-e>'
+
+" -------------------------------------------------------------
+" Plug 'tpope/vim-rails'
+" https://github.com/tpope/vim-rails
+" TODO
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'paredit.vim'
+" http://www.vim.org/scripts/script.php?script_id=3998
+" https://github.com/vim-scripts/paredit.vim
+" Paredit Mode - Structured Editing of Lisp S-expressions 
+" TODO
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'kovisoft/slimv'
+" https://github.com/kovisoft/slimv
+" http://www.vim.org/scripts/script.php?script_id=2531
+" Superior Lisp Interaction Mode for Vim
+" TODO
+" -------------------------------------------------------------
+"let g:slimv_leader = ",l"
+""let g:slimv_lisp = "ccl"
+"let g:slimv_impl = 'ccl'
+"let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"ccl --load ~/.vim/slime/start-swank.lisp\""'
+
+" -------------------------------------------------------------
+" Plug 'jmcantrell/vim-virtualenv'
+" https://github.com/jmcantrell/vim-virtualenv
+" -------------------------------------------------------------
+
+" ==============================================================
+
+" -------------------------------------------------------------
+" Plug 'IndentAnything'
+" http://www.vim.org/scripts/script.php?script_id=1839
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'matchit.zip'
+" http://www.vim.org/scripts/script.php?script_id=39
+" configure % to match more than just single characters
+" -------------------------------------------------------------
+  
+" -------------------------------------------------------------
+" Plug 'delimitMate.vim'
+" https://github.com/Raimondi/delimitMate
+" automatic closing of quotes, parenthesis, brackets, etc.
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'ShowMarks7'
+" http://www.vim.org/scripts/script.php?script_id=152
+" http://www.vim.org/scripts/script.php?script_id=3615
+" https://github.com/vim-scripts/ShowMarks7
+" * <Leader>mt - Toggles ShowMarks on and off
+" * <Leader>mh - Hides an individual mark
+" * <Leader>ma - Hides all marks in the current buffer
+" * <Leader>mm - Mark with the next available name
+" -------------------------------------------------------------
+if has("gui_running") || has("gui_macvim")
+	let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	let g:showmarks_enable = 1
+	let showmarks_ignore_type = "hqm"
+endif
+
+" -------------------------------------------------------------
+" Plug 'tpope/vim-repeat'
+" https://github.com/tpope/vim-repeat
+" Repeat.vim remaps . in a way that plugins can tap into it
+" -------------------------------------------------------------
+
+" ==============================================================
+
+" -------------------------------------------------------------
+" Plug 'Lokaltog/vim-easymotion'
+" https://github.com/Lokaltog/vim-easymotion
+" https://github.com/Lokaltog/vim-easymotion/blob/master/doc/easymotion.txt
+" * <trigger>f/F - Find {char} to the right/left
+" * <trigger>s - Find {char} forward and backward
+" * <trigger>w/W
+" * <trigger>b/B
+" * <trigger>e/E
+" * <trigger>j - line motion
+" * <trigger>k - line motion
+" -------------------------------------------------------------
+nmap ; <Plug>(easymotion-prefix)
+vmap ; <Plug>(easymotion-prefix)
+let g:EasyMotion_smartcase = 1
+
+" -------------------------------------------------------------
+" Plug 'terryma/vim-expand-region'
+" https://github.com/terryma/vim-expand-region
+" -------------------------------------------------------------
+vmap K <Plug>(expand_region_expand)
+vmap J <Plug>(expand_region_shrink)
+
+" ==============================================================
+
+" -------------------------------------------------------------
+" Plug 'godlygeek/tabular'
+" https://github.com/godlygeek/tabular
+" * :Tabularize /, - left align, left align
+" * :Tabularize /,/r0  - right align, right align
+" * :Tabularize /,/r1c1l0  - right align, left align
+" -------------------------------------------------------------
+map <leader>tab :Tabularize / = <cr>
+
+" -------------------------------------------------------------
+" Plug 'scrooloose/nerdcommenter'
+" https://github.com/scrooloose/nerdcommenter
+" http://www.vim.org/scripts/script.php?script_id=1218
+" * <leader>nc
+" * <leader>nl
+" * <leader>nm
+" * <leader>ns
+" * <leader>nu
+" -------------------------------------------------------------
+let NERDCreateDefaultMappings=0
+nmap <leader>n<space> <plug>NERDCommenterToggle
+vmap <leader>n<space> <plug>NERDCommenterToggle
+nmap <leader>nc <plug>NERDCommenterComment
+vmap <leader>nc <plug>NERDCommenterComment
+nmap <leader>nm <plug>NERDCommenterMinimal
+vmap <leader>nm <plug>NERDCommenterMinimal
+nmap <leader>ns <plug>NERDCommenterSexy
+vmap <leader>ns <plug>NERDCommenterSexy
+nmap <leader>nu <plug>NERDCommenterUncomment
+vmap <leader>nu <plug>NERDCommenterUncomment
+nmap <leader>nl <plug>NERDCommenterAlignLeft
+vmap <leader>nl <plug>NERDCommenterAlignLeft
+nmap <leader>nb <plug>NERDCommenterAlignBoth
+vmap <leader>nb <plug>NERDCommenterAlignBoth
+nmap <leader>nn <plug>NERDCommenterNest 
+vmap <leader>nn <plug>NERDCommenterNest
+nmap <leader>ni <plug>NERDCommenterInvert
+vmap <leader>ni <plug>NERDCommenterInvert
+
+" -------------------------------------------------------------
+" Plug 'tpope/vim-surround'
+" https://github.com/tpope/vim-surround
+" * cs<old><new> - change
+" * ds<old> - remove 
+" * ysiw<new> - text object
+" * yss<new> - entire line
+" -------------------------------------------------------------
+
+" ==============================================================
+
+" -------------------------------------------------------------
+" Plug 'bling/vim-airline'
+" https://github.com/bling/vim-airline
+" Plug 'powerline/powerline'
+" https://github.com/powerline/powerline
+" TODO
+" -------------------------------------------------------------
+let g:airline#extensions#tabline#enabled = 0
+"let g:Powerline_symbols = 'compatible'
+"let g:Powerline_symbols = 'fancy'
+
+" -------------------------------------------------------------
+" Plug 'nathanaelkane/vim-indent-guides'
+" https://github.com/nathanaelkane/vim-indent-guides
+" visually displaying indent levels
+" -------------------------------------------------------------
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_enable_on_vim_startup = 1
 let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 
-let g:ragtag_global_maps = 1
+" -------------------------------------------------------------
+" Plug 'myusuf3/numbers.vim'
+" https://github.com/myusuf3/numbers.vim
+" intelligently toggling line numbers
+" -------------------------------------------------------------
 
-" vim-expand-region
-vmap K <Plug>(expand_region_expand)
-vmap J <Plug>(expand_region_shrink)
+" -------------------------------------------------------------
+" Plug 'justincampbell/vim-eighties'
+" https://github.com/justincampbell/vim-eighties
+" -------------------------------------------------------------
+let g:eighties_enabled = 1
+let g:eighties_minimum_width = 80
+let g:eighties_extra_width = 0 " Increase this if you want some extra room
+let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
 
-" Tabular
-map <leader>tab :Tabularize / = <cr>
-
-" clam.vim
-map <D-C> :Clam 
-
-" session
-let g:session_autoload = 'no'
-nnoremap <leader>ss :SaveSession
-nnoremap <leader>so :OpenSession
-nnoremap <leader>sd :DeleteSession
-nnoremap <leader>sc :CloseSession<cr>
-nnoremap <leader>sv :ViewSession<cr>
-
-" bufExplorer setting
-let g:bufExplorerSortBy='mru'
-let g:bufExplorerSplitRight=0        " Split left.
-let g:bufExplorerSplitVertical=1     " Split vertically.
-let g:bufExplorerSplitVertSize = 30  " Split width
-let g:bufExplorerUseCurrentWindow=1  " Open in new window.
-let g:bufExplorerMaxHeight=25
-let g:bufExplorerResize=1
-"autocmd BufWinEnter \[Buf\ List\] setl nonumber
-
-" 默认键映射 <leader>bv :VSBufExplorer
-"
-
-let g:quickrun_no_default_key_mappings = 1
-silent! map <unique> <Leader>R <Plug>(quickrun)
-
-" tasklist
-nmap <silent> <leader>tl <Plug>TaskList
-
-" tagbar
-let g:tagbar_width = 20
-let g:tagbar_singleclick = 1
-let g:tagbar_iconchars = ['▾', '▸']
-nnoremap <leader>tb :TagbarToggle<CR>
-"autocmd FileType * nested :call tagbar#autoopen(0)
-
-" winManager setting
-"let g:winManagerWindowLayout="BufExplorer,FileExplorer|taglist" 
-"let g:winManagerWidth = 30
-"let g:defaultExplorer = 0
-"nmap <silent> <leader>wm :WMToggle<cr> 
+" ==============================================================
 
 " netrw setting
 let g:netrw_winsize = 30
@@ -531,9 +802,6 @@ function! OpenNERDTree()
     let g:eighties_minimum_width = tmp
 endfunction
 
-" Most Recently Used (MRU)
-nmap <silent> <leader>r :MRU<cr>
-
 " FuzzyFinder setting
 nmap <leader>fb :FufBuffer<cr>
 nmap <leader>ff :FufFile<cr>
@@ -543,17 +811,9 @@ nmap <leader>fm :FufAddBookmark<cr>
 nmap <leader>fc :FufChangeList<cr>
 "noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
-" yankring
-let g:yankring_history_dir = '~/.vim/yankring'
-"inoremap } <c-r>=ClosePair('}')<cr>
-nnoremap <silent> <leader>yr :YRShow<cr>
-inoremap <silent> <leader>yr <ESC>:YRShow<cr>
-
-
 " ctrl-p
 let g:ctrlp_working_path_mode = 2 " .git/ .hg/ .svn/ .bzr/ _darcs/ or your own marker_dir/ marker_file
-let g:ctrlp_map = '<d-p>'
-
+let g:ctrlp_map = '<C-p>'
 
 " command-T
 "nmap <leader>tt :CommandT<cr>
@@ -561,164 +821,202 @@ let g:ctrlp_map = '<d-p>'
 	"map <D-T> :CommandT<CR>
 "endif
 
-" showmarks
-if has("gui_running") || has("gui_macvim")
-	let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	let g:showmarks_enable = 1
-	let showmarks_ignore_type = "hqm"
-endif
-"<Leader>mt   - 打开/关闭ShowMarks插件
-"<Leader>mo   - 强制打开ShowMarks插件
-"<Leader>mh   - 清除当前行的标记
-"<Leader>ma   - 清除当前缓冲区中所有的标记
-"<Leader>mm   - 在当前行打一个标记，使用下一个可用的标记名
+" Most Recently Used (MRU)
+nmap <silent> <leader>r :MRU<cr>
 
-" vimpanel
-cabbrev ss VimpanelSessionMake
-cabbrev sl VimpanelSessionLoad
-cabbrev vp Vimpanel
-cabbrev vl VimpanelLoad
-cabbrev vc VimpanelCreate
-cabbrev ve VimpanelEdit
-cabbrev vr VimpanelRemove
-map <leader>vp :vl default<cr>
-map <leader>vl :vl 
+" -------------------------------------------------------------
+" Plug 'Shougo/unite.vim'
+" https://github.com/Shougo/unite.vim
+" * :Unite
+" -------------------------------------------------------------
+nmap <leader>u :Unite 
 
+" bufExplorer setting
+let g:bufExplorerSortBy='mru'
+let g:bufExplorerSplitRight=0        " Split left.
+let g:bufExplorerSplitVertical=1     " Split vertically.
+let g:bufExplorerSplitVertSize = 30  " Split width
+let g:bufExplorerUseCurrentWindow=1  " Open in new window.
+let g:bufExplorerMaxHeight=25
+let g:bufExplorerResize=1
+"autocmd BufWinEnter \[Buf\ List\] setl nonumber
+" 默认键映射 <leader>bv :VSBufExplorer
 
-let NERDCreateDefaultMappings=0
-"let NERDShutUp=1
-"let g:NERDCommenterLeader="<leader>n" " change NERD_commenter.vim
-nmap <leader>nc <plug>NERDCommenterComment
-vmap <leader>nc <plug>NERDCommenterComment
-nmap <leader>n<space> <plug>NERDCommenterToggle
-vmap <leader>n<space> <plug>NERDCommenterToggle
-nmap <leader>nm <plug>NERDCommenterMinimal
-vmap <leader>nm <plug>NERDCommenterMinimal
-nmap <leader>ns <plug>NERDCommenterSexy
-vmap <leader>ns <plug>NERDCommenterSexy
-nmap <leader>ni <plug>NERDCommenterInvert
-vmap <leader>ni <plug>NERDCommenterInvert
-nmap <leader>nn <plug>NERDCommenterNest
-vmap <leader>nn <plug>NERDCommenterNest
-nmap <leader>nu <plug>NERDCommenterUncomment
-vmap <leader>nu <plug>NERDCommenterUncomment
-nmap <leader>nl <plug>NERDCommenterAlignLeft
-vmap <leader>nl <plug>NERDCommenterAlignLeft
-nmap <leader>nb <plug>NERDCommenterAlignBoth
-vmap <leader>nb <plug>NERDCommenterAlignBoth
+" ag.vim
+nnoremap <leader>/ :Ag
+let g:agprg="ag --column"
 
-let VCSCommandSVKExec='disabled no such executable'
-nmap <leader>cd :VCSVimDiff
+" ack.vim
+"nnoremap <leader>/ :Ack
+"let g:ackprg = 'ag --nogroup --nocolor --column'
 
+" tagbar
+let g:tagbar_width = 20
+let g:tagbar_singleclick = 1
+let g:tagbar_iconchars = ['▾', '▸']
+nnoremap <leader>tb :TagbarToggle<CR>
+"autocmd FileType * nested :call tagbar#autoopen(0)
 
-let g:Powerline_symbols = 'compatible'
-"let g:Powerline_symbols = 'fancy'
+" ==============================================================
 
-"" YouCompleteMe
-"let g:ycm_filetype_blacklist = {
-"\    'notes' : 1,
-"\    'markdown' : 1,
-"\    'text' : 1,
-"\}
-"let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-"let g:ycm_complete_in_comments_and_strings = 1
-"let g:ycm_collect_identifiers_from_comments_and_strings = 1
-"let g:ycm_key_invoke_completion = '<C-Space>'
-"let g:ycm_key_list_select_completion = ['<Enter>', '<Down>']
-"let g:ycm_key_list_previous_completion = ['<S-Enter>', '<Up>']
-
-" UltiSnips
+" -------------------------------------------------------------
+" Plug 'SirVer/ultisnips'
+" https://github.com/SirVer/ultisnips
+" -------------------------------------------------------------
 "let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 let g:UltiSnipsSnippetDirectories=["ultisnips"]
 
-" neocomplcache
+" -------------------------------------------------------------
+" Plug 'honza/vim-snippets'
+" https://github.com/honza/vim-snippets
+" ./ultisnips/
+" -------------------------------------------------------------
 
-" Disable AutoComplPop. 
-let g:acp_enableAtStartup = 0 
-" Use neocomplcache. 
-let g:neocomplcache_enable_at_startup = 1 
-" Use smartcase. 
-let g:neocomplcache_enable_smart_case = 1 
-" Use camel case completion. 
-"let g:neocomplcache_enable_camel_case_completion = 1 
-" Use underbar completion. 
-"let g:neocomplcache_enable_underbar_completion = 1 
-" Set minimum syntax keyword length. 
-let g:neocomplcache_min_syntax_length = 1 
-let g:neocomplcache_auto_completion_start_length = 1
-let g:neocomplcache_manual_completion_start_length = 0
-let g:neocomplcache_max_list = 20
+" -------------------------------------------------------------
+" Plug 'Valloric/YouCompleteMe'
+" https://github.com/Valloric/YouCompleteMe
+" trigger:
+" * identifier completer - before g:ycm_semantic_triggers
+" * semantic engine (omnifunc for js) - after g:ycm_semantic_triggers
+" -------------------------------------------------------------
+let g:ycm_filetype_blacklist = {
+    \ 'tagbar' : 1,
+    \ 'qf' : 1,
+    \ 'notes' : 1,
+    \ 'markdown' : 1,
+    \ 'mkd' : 1,
+    \ 'unite' : 1,
+    \ 'text' : 1,
+    \ 'vimwiki' : 1,
+    \ 'pandoc' : 1,
+    \ 'infolog' : 1,
+    \ 'mail' : 1
+\}
+let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_min_num_identifier_candidate_chars = 0
+let g:ycm_complete_in_comments = 1
+let g:ycm_complete_in_strings = 1
+let g:ycm_collect_identifiers_from_comments_and_strings = 0
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+"let g:ycm_cache_omnifunc = 1
+let g:ycm_key_invoke_completion = '<C-Space>'
+let g:ycm_key_list_select_completion = ['<Enter>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<S-Enter>', '<Up>']
+let g:ycm_key_detailed_diagnostics = '<leader>yd'
 
-" key-mappings
-inoremap <expr><C-g> neocomplcache#undo_completion()
-inoremap <expr><C-l> neocomplcache#complete_common_string()
-inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y> neocomplcache#close_popup()
-inoremap <expr><C-e> neocomplcache#cancel_popup()
+" -------------------------------------------------------------
+" Plug 'Shougo/neocomplcache.vim'
+" https://github.com/Shougo/neocomplcache.vim
+" https://github.com/Shougo/neocomplete.vim
+" https://github.com/Shougo/neosnippet.vim
+" https://github.com/Shougo/neosnippet-snippets
+" -------------------------------------------------------------
+"let g:acp_enableAtStartup = 0
+"let g:neocomplcache_enable_at_startup = 1
+"let g:neocomplcache_enable_smart_case = 1
+"let g:neocomplcache_min_syntax_length = 1
+"let g:neocomplcache_auto_completion_start_length = 1
+"let g:neocomplcache_manual_completion_start_length = 0
+"let g:neocomplcache_max_list = 20
 
-"inoremap <expr><Space> pumvisible() ? "\<c-y>" : "\<Space>"
-inoremap <expr><Esc> pumvisible() ? "\<c-y>" : "\<Esc>"
-inoremap <expr><Enter> pumvisible() ? "\<c-n>" : "\<Enter>"
-inoremap <expr><s-Enter> pumvisible() ? "\<c-p>" : "\<s-Enter>"
-"imap <expr><tab>  pumvisible() ? "\<c-n>" : "\<TAB>"
-"imap <expr><s-tab>  pumvisible() ? "\<c-p>" : "\<s-TAB>"
+"" key-mappings
+"inoremap <expr><C-g> neocomplcache#undo_completion()
+"inoremap <expr><C-l> neocomplcache#complete_common_string()
+"inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
+"inoremap <expr><C-y> neocomplcache#close_popup()
+"inoremap <expr><C-e> neocomplcache#cancel_popup()
 
+""inoremap <expr><Space> pumvisible() ? "\<c-y>" : "\<Space>"
+"inoremap <expr><Esc> pumvisible() ? "\<c-y>" : "\<Esc>"
+"inoremap <expr><Enter> pumvisible() ? "\<c-n>" : "\<Enter>"
+"inoremap <expr><s-Enter> pumvisible() ? "\<c-p>" : "\<s-Enter>"
+""imap <expr><tab>  pumvisible() ? "\<c-n>" : "\<TAB>"
+""imap <expr><s-tab>  pumvisible() ? "\<c-p>" : "\<s-TAB>"
 
-" Enable omni completion.
-autocmd FileType css,scss setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-"autocmd FileType javascript setlocal omnifunc=jscomplete#CompleteJS
-"autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType javascript setlocal omnifunc=nodejscomplete#CompleteJS
-autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+" -------------------------------------------------------------
+" Plug 'SyntaxComplete'
+" http://www.vim.org/scripts/script.php?script_id=3172
+" https://github.com/vim-scripts/SyntaxComplete
+" -------------------------------------------------------------
 
-" emmet
-let g:user_emmet_leader_key='<c-z>'
+" -------------------------------------------------------------
+" Plug 'SQLComplete.vim'
+" http://www.vim.org/scripts/script.php?script_id=1572
+" https://github.com/vim-scripts/SQLComplete.vim
+" -------------------------------------------------------------
+"let g:sql_type_default = 'mysql'
+"let g:ftplugin_sql_omni_key = '<C-C>'
 
-" jscomplete
-let g:jscomplete_use = ['moz', 'es6th']
+" -------------------------------------------------------------
+" Plug 'https://bitbucket.org/teramako/jscomplete-vim.git'
+" https://bitbucket.org/teramako/jscomplete-vim
+" -------------------------------------------------------------
+let g:jscomplete_use = ['dom', 'es6th']
 
-" vim-nodejs-complete
+" -------------------------------------------------------------
+" Plug 'myhere/vim-nodejs-complete'
+" https://github.com/myhere/vim-nodejs-complete
+" js_compl_fn:
+" * javascriptcomplete#CompleteJS
+" * syntaxcomplete#Complete
+" * jscomplete#CompleteJS
+" -------------------------------------------------------------
 let g:nodejs_complete_config = {
-\  'js_compl_fn': 'javascriptcomplete#CompleteJS',
+\  'js_compl_fn': 'jscomplete#CompleteJS',
 \  'max_node_compl_len': 15
 \}
 
-" mustache
-"let g:mustache_abbreviations = 1
+" -------------------------------------------------------------
+" Plug 'marijnh/tern_for_vim'
+" https://github.com/marijnh/tern_for_vim
+" -------------------------------------------------------------
+nnoremap <leader>td :TernDef<cr>
+nnoremap <leader>tr :TernRefs<cr>
 
-" html5
-let g:html5_event_handler_attributes_complete = 0
-let g:html5_rdfa_attributes_complete = 0
-let g:html5_microdata_attributes_complete = 0
-let g:html5_aria_attributes_complete = 0
-let g:aria_attributes_complete = 0
+" ==============================================================
 
-" tern
-"nnoremap <leader>td :TernDef<cr>
-"nnoremap <leader>tr :TernRefs<cr>
+" session
+let g:session_autoload = 'no'
+nnoremap <leader>ss :SaveSession
+nnoremap <leader>so :OpenSession
+nnoremap <leader>sd :DeleteSession
+nnoremap <leader>sc :CloseSession<cr>
+nnoremap <leader>sv :ViewSession<cr>
+
+" QuickRun
+let g:quickrun_no_default_key_mappings = 1
+silent! map <unique> <Leader>R <Plug>(quickrun)
+
+" Gundo
+noremap <silent> <F2> <ESC>:GundoToggle<CR>
+
+" ==============================================================
+
+" -------------------------------------------------------------
+" Plug 'airblade/vim-gitgutter'
+" https://github.com/airblade/vim-gitgutter
+" -------------------------------------------------------------
+let g:gitgutter_max_signs = 5000
+let g:gitgutter_realtime = 0
+"let g:gitgutter_eager = 0
+
+" VCSCommand
+let VCSCommandSVKExec='disabled no such executable'
+nmap <leader>cd :VCSVimDiff
 
 " fugitive
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
-" eighties
-let g:eighties_enabled = 1
-let g:eighties_minimum_width = 80
-let g:eighties_extra_width = 0 " Increase this if you want some extra room
-let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
+" ==============================================================
 
-" easymotion
-let g:EasyMotion_leader_key = '\'
+" tasklist
+nmap <silent> <leader>tl <Plug>TaskList
 
+"
+nnoremap <leader><tab> :Sscratch<cr>
+
+"
 let g:calendar_diary = '~/.vim/diary'
-
-
-"Slimv
-let g:slimv_leader = ",l"
-"let g:slimv_lisp = "ccl"
-let g:slimv_impl = 'ccl'
-let g:slimv_swank_cmd = '!osascript -e "tell application \"Terminal\" to do script \"ccl --load ~/.vim/slime/start-swank.lisp\""' 
-

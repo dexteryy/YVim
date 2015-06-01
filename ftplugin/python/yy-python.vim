@@ -1,11 +1,4 @@
-" Python compile & debug tools 
 " Maintainer: Dexter.Yy
-" Mail:   dexter.yy@gmail.com
-" Web:    http://www.limboy.com
-" Version: 0.1
-"
-" Usage:
-"
 
 python << EOF
 import time
@@ -98,7 +91,7 @@ function! MyPyMake()
 endfunction
 
 function! MyPyLint()
-    :call Flake8()
+    ":call Flake8()
 endfunction
 
 function! MyPyDebug()
