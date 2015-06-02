@@ -23,7 +23,6 @@ else
 fi
 
 mkdir ./backups
-mkdir ./diary
 mkdir ./record
 mkdir ./sessions
 mkdir ./undos
