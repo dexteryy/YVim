@@ -141,7 +141,7 @@ hi EasyMotionShade  guifg=#0033FF
 hi EasyMotionTarget2First guifg=red guibg=#000000
 hi EasyMotionTarget2Second guifg=orange guibg=#000000
 
-"hi ExtraWhitespace guibg=red
+hi ExtraWhitespace guibg=#ff9999
 
 " end
 

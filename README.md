@@ -8,10 +8,10 @@ Out-of-the-box ~/.vim directory for MacVim
 
 ## Prepare
 
-* brew install macvim && brew linkapps macvim
+* `brew install macvim && brew linkapps macvim`
 * latest Xcode with the latest Command Line Tools
-* brew install cmake
-* brew install go
+* `brew install cmake`
+* `brew install go`
 
 ## Install
 

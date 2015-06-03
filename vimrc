@@ -63,6 +63,7 @@ Plug 'chrisbra/csv.vim'
 " ==============================================================
 Plug 'scrooloose/syntastic'
 Plug 'Shutnik/jshint2.vim'
+Plug 'thinca/vim-quickrun'
 Plug 'suan/vim-instant-markdown', { 'do': 'npm -g install instant-markdown-d' }
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-rails'
@@ -83,14 +84,13 @@ Plug 'godlygeek/tabular'
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-surround'
 " ==============================================================
-"Plug 'powerline/powerline'
 Plug 'bling/vim-airline'
-"Plug 'nathanaelkane/vim-indent-guides'
 Plug 'Yggdroot/indentLine'
 Plug 'myusuf3/numbers.vim'
 "Plug 'justincampbell/vim-eighties'
 Plug 'ntpeters/vim-better-whitespace'
 " ==============================================================
+Plug 'airblade/vim-rooter'
 Plug 'scrooloose/nerdtree'
 "Plug 'FuzzyFinder'
 Plug 'Shougo/unite.vim'
@@ -116,17 +116,16 @@ Plug 'myhere/vim-nodejs-complete'
 Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
 " ==============================================================
 Plug 'xolox/vim-session'
-Plug 'thinca/vim-quickrun'
 Plug 'sjl/gundo.vim'
-Plug 'netrw.vim'
 " ==============================================================
 Plug 'airblade/vim-gitgutter'
 Plug 'fugitive.vim'
-"Plug 'vcscommand.vim'
+Plug 'vcscommand.vim'
 " ==============================================================
 Plug 'TaskList.vim'
+Plug 'junegunn/vim-github-dashboard'
 Plug 'DrawIt'
-Plug 'scratch.vim'
+Plug 'mtth/scratch.vim'
 " ==============================================================
 
 " for Vundle
@@ -190,7 +189,6 @@ set diffopt+=iwhite,vertical " 忽略缩进的差异
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 if has("gui_running") || has("gui_macvim")
-  "colorscheme blackboard
   "colorscheme badwolf
   "colorscheme molokai
   "colorscheme yyblackboard
@@ -204,7 +202,7 @@ endif
 
 if MySys() == "mac"
   "set guifont=Monaco:h13
-  set guifont=Consolas:h14
+  set guifont=Consolas:h13
   "set guifont=M+\ 1m:h13
   "set guifontwide=Hei_Regular:h13
 elseif MySys() == "linux"
@@ -247,29 +245,27 @@ augroup vimrcEx
   \ endif
 augroup END
 
+" alternative - :R / :RestartVim
 "au! BufWritePost vimrc so ~/.vim/vimrc
 
-if exists('+autochdir')
-  set autochdir
-else
-  au BufEnter * silent! lcd %:p:h:gs/ /\\ /
-endif
+" alternative - vim-rooter
+"if exists('+autochdir')
+  "set autochdir
+"else
+  "au BufEnter * silent! lcd %:p:h:gs/ /\\ /
+"endif
 
-" filetype
 au BufNewFile,BufRead *.js setf javascript
 au BufNewFile,BufRead *.json setf json
 au BufNewFile,BufRead *.scss setf scss.css
 au BufNewFile,BufRead *.as  setf actionscript
 au BufNewFile,BufRead *.xul setf xml
 au BufNewFile,BufRead *.vm setf html
-au BufNewFile,BufRead *.md setf markdown
+au BufNewFile,BufRead *.md setf mkd
 au BufNewFile,BufRead *.csv,*.dat setf csv
 au BufNewFile,BufRead *.ypac setf yaml
-"au BufNewFile,BufRead *.json setf javascript
 au BufNewFile,BufRead *.pac setf javascript
 
-
-" language support
 " vim: et:ts=2:sw=2:sts=2
 au FileType text setlocal wrap tw=80
 au FileType javascript setlocal et ts=2 sw=2 sts=2 tw=80
@@ -282,7 +278,6 @@ au FileType ruby setlocal et ts=2 sw=2 sts=2 tw=80
 au FileType rust setlocal et ts=4 sw=4 sts=4 tw=80
 au FileType yaml setlocal et ts=2 sw=2 sts=2
 
-" Enable omni completion.
 au FileType css,scss,sass,less setlocal omnifunc=csscomplete#CompleteCSS
 au FileType html setlocal omnifunc=htmlcomplete#CompleteTags
 au FileType javascript setlocal omnifunc=nodejscomplete#CompleteJS
@@ -311,7 +306,7 @@ function! SuperRetab(p, n)
   retab
 endfunction
 
-" for make & debug
+" for filetype-based debug&make
 
 function! QFSwitch() " toggle quickfix window
   redir => ls_output
@@ -391,7 +386,7 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-V> <C-w>v
 nnoremap <C-S> <C-w>s
 
-" for make & debug
+" for filetype-based debug&make
 noremap <silent> <F3> :call MyLint()<CR>
 noremap <silent> <F4> :call MyMake()<CR>
 noremap <silent> <F5> :call QFSwitch()<CR>
@@ -581,6 +576,21 @@ let g:syntastic_auto_loc_list = 1
 " -------------------------------------------------------------
 
 " -------------------------------------------------------------
+" Plug 'thinca/vim-quickrun'
+" :h quickrun
+" http://www.vim.org/scripts/script.php?script_id=3146
+" https://github.com/thinca/vim-quickrun
+" TODO
+" -------------------------------------------------------------
+map <Leader>R <Plug>(quickrun)
+let g:quickrun_no_default_key_mappings = 1
+"let g:quickrun_config.markdown = {
+      "\ 'type': 'markdown/pandoc',
+      "\ 'cmdopt': '-s',
+      "\ 'outputter': 'browser'
+      "\ }
+
+" -------------------------------------------------------------
 " Plug 'suan/vim-instant-markdown'
 " https://github.com/suan/vim-instant-markdown
 " npm -g install instant-markdown-d
@@ -615,13 +625,13 @@ let g:user_emmet_leader_key='<C-e>'
 " TODO
 " -------------------------------------------------------------
 
-" -------------------------------------------------------------
-" Plug 'kovisoft/slimv'
-" https://github.com/kovisoft/slimv
-" http://www.vim.org/scripts/script.php?script_id=2531
-" Superior Lisp Interaction Mode for Vim
-" TODO
-" -------------------------------------------------------------
+"" -------------------------------------------------------------
+"" Plug 'kovisoft/slimv'
+"" https://github.com/kovisoft/slimv
+"" http://www.vim.org/scripts/script.php?script_id=2531
+"" Superior Lisp Interaction Mode for Vim
+"" TODO
+"" -------------------------------------------------------------
 "let g:slimv_leader = ",l"
 ""let g:slimv_lisp = "ccl"
 "let g:slimv_impl = 'ccl'
@@ -827,6 +837,19 @@ let g:indentLine_fileTypeExclude = ['json', 'csv'] " conflict with concealing fe
 " ==============================================================
 
 " -------------------------------------------------------------
+" Plug 'airblade/vim-rooter'
+" https://github.com/airblade/vim-rooter
+" :h rooter
+" -------------------------------------------------------------
+map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
+let g:rooter_use_lcd = 1
+let g:rooter_silent_chdir = 1
+let g:rooter_patterns = ['.git', '.git/', '.hg/', '.bzr/', '.svn/',
+      \ 'package.json', 'bower.json', 'Cargo.toml', 'Podfile', 'Dockerfile',
+      \ 'Rakefile', 'Gemfile', 'setup.py', 'app.yaml', 'Makefile',
+      \ 'Vagrantfile', 'README.md']
+
+" -------------------------------------------------------------
 " Plug 'scrooloose/nerdtree'
 " https://github.com/scrooloose/nerdtree
 " * double-click / <CR> / o - open in prev window / open&close node / open bookmark
@@ -879,11 +902,11 @@ let g:NERDTreeShowBookmarks = 1
 " * :Unite grep<cr>
 " * :Unite find<cr>
 " -------------------------------------------------------------
-nmap <leader>fu :<C-u>Unite -start-insert -ignorecase -smartcase<cr>
-nmap <leader>ff :<C-u>Unite -start-insert -ignorecase -smartcase file<cr>
+nmap <leader>fu :<C-u>Unite -ignorecase -smartcase<cr>
+nmap <leader>ff :<C-u>Unite -ignorecase -smartcase file<cr>
 nmap <leader>fr :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/async<cr>
 nmap <leader>fg :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/git<cr>
-nmap <leader>fd :<C-u>Unite -start-insert -ignorecase -smartcase directory<cr>
+nmap <leader>fd :<C-u>Unite -ignorecase -smartcase directory<cr>
 nmap <leader>fb :<C-u>Unite -ignorecase -smartcase buffer tab<cr>
 nmap <leader>ft :<C-u>Unite -ignorecase -smartcase tab buffer<cr>
 nmap <leader>fm :<C-u>Unite -ignorecase -smartcase bookmark<cr>
@@ -910,7 +933,8 @@ nmap <leader>r :MRU<cr>
 " command-T
 " -------------------------------------------------------------
 " the nearest ancestor that contains one of these directories or files: .git .hg .svn .bzr _darcs
-let g:ctrlp_working_path_mode = 'r'
+"let g:ctrlp_working_path_mode = 'r'
+let g:ctrlp_working_path_mode = 0 " disabled, for vim-rooter
 let g:ctrlp_map = '<C-p>'
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
@@ -939,6 +963,13 @@ let g:ctrlp_custom_ignore = {
 " * -S - Smart case
 " * -w - Only match whole words
 " * --html --js --css --scss --vim --ruby --objc --markdown
+" quickfix window
+" * e - to open file and close the quickfix window
+" * go - to preview file (open but maintain focus on ag.vim results)
+" * t - to open in new tab
+" * T - to open in new tab silently
+" * v - to open in vertical split
+" * gv - to open in vertical split silently
 " -------------------------------------------------------------
 nnoremap <leader>/ :Ag -S
 let g:agprg="ag --column"
@@ -950,6 +981,8 @@ let g:agprg="ag --column"
 " Plug 'jlanzarotta/bufexplorer'
 " https://github.com/jlanzarotta/bufexplorer
 " :help bufexplorer
+" * <leader>bt - :ToggleBufExplorer - toggle bufexplorer on or off in the current window
+" * <leader>bv - :VSBufExplorer - start exploring in a newly split vertical window
 " -------------------------------------------------------------
 let g:bufExplorerSortBy='mru'
 let g:bufExplorerSplitRight=0    " Split left.
@@ -959,7 +992,6 @@ let g:bufExplorerUseCurrentWindow=1  " Open in new window.
 let g:bufExplorerMaxHeight=25
 let g:bufExplorerResize=1
 "autocmd BufWinEnter \[Buf\ List\] setl nonumber
-" 默认键映射 <leader>bv :VSBufExplorer
 
 " -------------------------------------------------------------
 " Plug 'majutsushi/tagbar'
@@ -1107,21 +1139,6 @@ let g:session_autosave = 'no'
 let g:session_persist_colors = 0
 
 " -------------------------------------------------------------
-" Plug 'thinca/vim-quickrun'
-" :h quickrun
-" http://www.vim.org/scripts/script.php?script_id=3146
-" https://github.com/thinca/vim-quickrun
-" TODO
-" -------------------------------------------------------------
-map <Leader>R <Plug>(quickrun)
-let g:quickrun_no_default_key_mappings = 1
-"let g:quickrun_config.markdown = {
-      "\ 'type': 'markdown/pandoc',
-      "\ 'cmdopt': '-s',
-      "\ 'outputter': 'browser'
-      "\ }
-
-" -------------------------------------------------------------
 " Plug 'sjl/gundo.vim'
 " http://sjl.bitbucket.org/gundo.vim/
 " http://www.vim.org/scripts/script.php?script_id=3304
@@ -1168,21 +1185,23 @@ let g:gitgutter_realtime = 0
 " * :Gstatus - <cr>, D, S
 " -------------------------------------------------------------
 nmap <leader>gs :Gstatus<cr>
-nmap <leader>gd :Gdiff<cr>
+nmap <leader>gv :Gdiff<cr>
+nmap <leader>gd :Gdiff 
 nmap <leader>gb :Gblame<cr>
 nmap <leader>gl :Gvsplit! log --stat --name-status<cr>
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
-"" -------------------------------------------------------------
-"" Plug 'vcscommand.vim'
-"" :h vcscommand
-"" http://www.vim.org/scripts/script.php?script_id=90
-"" * :VCSVimDiff
-"" * :VCSStat
-"" * :VCSLog
-"" -------------------------------------------------------------
-"let VCSCommandSVKExec='disabled no such executable'
-"nmap <leader>cd :VCSVimDiff
+" -------------------------------------------------------------
+" Plug 'vcscommand.vim'
+" :h vcscommand
+" http://www.vim.org/scripts/script.php?script_id=90
+" * :VCSVimDiff
+" * :VCSStat
+" * :VCSLog
+" -------------------------------------------------------------
+let VCSCommandSVKExec='disabled no such executable'
+"nmap <leader>cd :VCSVimDiff<cr>
+"nmap <leader>cl :VCSLog<cr>
 
 " ==============================================================
 
@@ -1196,12 +1215,18 @@ nmap <silent> <leader>tl <Plug>TaskList
 " -------------------------------------------------------------
 " Plug 'DrawIt'
 " http://www.vim.org/scripts/script.php?script_id=40
+" :h DrawIt
+" * <leader>di - start drawit
+" * <leader>ds - stop drawit
 " -------------------------------------------------------------
 
 " -------------------------------------------------------------
-" Plug 'scratch.vim'
+" Plug 'mtth/scratch.vim'
+" :h scratch
 " https://github.com/mtth/scratch.vim
 " -------------------------------------------------------------
-nnoremap <leader><tab> :Sscratch<cr>
+nnoremap <leader><tab> :Scratch<cr>
+let g:scratch_autohide = 1
+let g:scratch_filetype = 'mkd'
 
 
