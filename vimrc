@@ -42,6 +42,7 @@ Plug 'xolox/vim-misc'
 Plug 'flazz/vim-colorschemes'
 " ==============================================================
 Plug 'pangloss/vim-javascript'
+"Plug 'jelera/vim-javascript-syntax'
 "Plug 'othree/yajs.vim'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'elzr/vim-json'
@@ -76,9 +77,11 @@ Plug 'matchit.zip'
 Plug 'delimitMate.vim'
 Plug 'ShowMarks7'
 Plug 'tpope/vim-repeat'
+Plug 'yonchu/accelerated-smooth-scroll'
 " ==============================================================
 Plug 'Lokaltog/vim-easymotion'
 Plug 'terryma/vim-expand-region'
+Plug 'terryma/vim-multiple-cursors'
 " ==============================================================
 Plug 'godlygeek/tabular'
 Plug 'scrooloose/nerdcommenter'
@@ -92,12 +95,12 @@ Plug 'ntpeters/vim-better-whitespace'
 " ==============================================================
 Plug 'airblade/vim-rooter'
 Plug 'scrooloose/nerdtree'
-"Plug 'FuzzyFinder'
+Plug 'kien/ctrlp.vim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+"Plug 'FuzzyFinder'
 "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
-Plug 'yegappan/mru'
-Plug 'kien/ctrlp.vim'
+"Plug 'yegappan/mru'
 Plug 'rking/ag.vim'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'majutsushi/tagbar'
@@ -106,9 +109,8 @@ Plug 'majutsushi/tagbar'
 "Plug 'Shougo/neosnippet-snippets'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-"Plug 'Shougo/neocomplcache.vim'
 "Plug 'Shougo/neocomplete'
-Plug 'Valloric/YouCompleteMe', { 'do': 'git submodule update --init --recursive && ./install.sh' }
+Plug 'Valloric/YouCompleteMe', { 'do': 'git submodule update --init --recursive && ./install.sh --clang-completer --gocode-completer' }
 Plug 'SyntaxComplete'
 "Plug 'SQLComplete.vim'
 Plug 'https://bitbucket.org/teramako/jscomplete-vim.git'
@@ -124,7 +126,7 @@ Plug 'vcscommand.vim'
 " ==============================================================
 Plug 'TaskList.vim'
 Plug 'junegunn/vim-github-dashboard'
-Plug 'DrawIt'
+"Plug 'DrawIt'
 Plug 'mtth/scratch.vim'
 " ==============================================================
 
@@ -183,6 +185,7 @@ set foldmethod=marker
 set diffopt+=iwhite,vertical " 忽略缩进的差异
 "set cursorbind
 "set gdefault
+"set lazyredraw
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Interface
@@ -386,7 +389,18 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-V> <C-w>v
 nnoremap <C-S> <C-w>s
 
+"if has("gui_macvim")
+  "map <D-H> <C-h>
+  "map <D-J> <C-j>
+  "map <D-K> <C-k>
+  "map <D-L> <C-l>
+  "map <D-V> <C-V>
+  "map <D-S> <C-S>
+  "map <D-R> <C-r>
+"endif
+
 " for filetype-based debug&make
+noremap <silent> <F2> <Plug>(quickrun)
 noremap <silent> <F3> :call MyLint()<CR>
 noremap <silent> <F4> :call MyMake()<CR>
 noremap <silent> <F5> :call QFSwitch()<CR>
@@ -394,6 +408,7 @@ noremap <silent> <F6> :call LLSwitch()<CR>
 noremap <silent> <F7> :call MySetBreakPoint()<CR>
 noremap <silent> <F8> :call MySetLog()<CR>
 noremap <silent> <F9> :call MyRemoveBreakPoint()<CR>
+noremap <silent> <F10> :GundoToggle<CR>
 
 nmap <tab>    v>
 nmap <c-tab>  v>
@@ -404,33 +419,6 @@ vmap <s-tab>  <gv
 
 nnoremap / /\v
 vnoremap / /\v
-
-" map cmd to ctrl
-if has("gui_macvim")
-  map <D-H> <C-h>
-  map <D-J> <C-j>
-  map <D-K> <C-k>
-  map <D-L> <C-l>
-  map <D-V> <C-V>
-  map <D-S> <C-S>
-  imap <D-c> <C-c>  "快速结束插入模式
-  map <D-y> <C-y>
-  map <D-e> <C-e>
-  map <D-f> <C-f>
-  map <D-b> <C-b>
-  map <D-u> <C-u>
-  map <D-d> <C-d>
-  map <D-w> <C-w>
-  map <D-r> <C-r>
-  map <D-o> <C-o>
-  map <D-i> <C-i>
-  map <D-g> <C-g>
-  map <D-]> <C-]>
-  map <D-p> <C-p>
-  cmap <D-d> <C-d>
-  imap <D-e> <C-e>
-  imap <D-y> <C-y>
-endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
@@ -452,12 +440,14 @@ endif
 " -------------------------------------------------------------
 let g:javascript_enable_domhtmlcss = 0
 let b:javascript_fold = 0
+"let g:javascript_conceal_function   = "ƒ"
+"let g:javascript_conceal_this       = "@"
 
 " -------------------------------------------------------------
 " Plug 'othree/javascript-libraries-syntax.vim'
 " https://github.com/othree/javascript-libraries-syntax.vim
 " -------------------------------------------------------------
-let g:used_javascript_libs = 'jquery,underscore,react,flux,jasmine,chai'
+let g:used_javascript_libs = 'jquery,requirejs,underscore,backbone,react,flux,jasmine,chai,handlebars'
 
 " -------------------------------------------------------------
 " Plug 'elzr/vim-json'
@@ -580,9 +570,9 @@ let g:syntastic_auto_loc_list = 1
 " :h quickrun
 " http://www.vim.org/scripts/script.php?script_id=3146
 " https://github.com/thinca/vim-quickrun
+" <F2>
 " TODO
 " -------------------------------------------------------------
-map <Leader>R <Plug>(quickrun)
 let g:quickrun_no_default_key_mappings = 1
 "let g:quickrun_config.markdown = {
       "\ 'type': 'markdown/pandoc',
@@ -683,6 +673,19 @@ endif
 " Repeat.vim remaps . in a way that plugins can tap into it
 " -------------------------------------------------------------
 
+" -------------------------------------------------------------
+" Plug 'yonchu/accelerated-smooth-scroll'
+" https://github.com/yonchu/accelerated-smooth-scroll
+" smooth scroll (mapping to <C-D>/<C-U>, <C-F>/<C-B>)
+" -------------------------------------------------------------
+augroup AcSmoothScrollAndNumbers
+    autocmd!
+    " Turn off myusuf3/numbers.vim while smooth scroll running.
+    autocmd User AcSmoothScrollEnter NumbersToggle
+    autocmd User AcSmoothScrollLeave NumbersToggle
+augroup END
+
+
 " ==============================================================
 
 " -------------------------------------------------------------
@@ -707,6 +710,31 @@ let g:EasyMotion_smartcase = 1
 " -------------------------------------------------------------
 vmap K <Plug>(expand_region_expand)
 vmap J <Plug>(expand_region_shrink)
+
+" -------------------------------------------------------------
+" Plug 'terryma/vim-multiple-cursors'
+" https://github.com/terryma/vim-multiple-cursors
+" * v -
+" -------------------------------------------------------------
+let g:multi_cursor_use_default_mapping = 0
+let g:multi_cursor_next_key='<C-A>'
+let g:multi_cursor_prev_key='<C-D>'
+let g:multi_cursor_skip_key='<C-X>'
+let g:multi_cursor_quit_key='<Esc>'
+
+" Called once right before you start selecting multiple cursors
+function! Multiple_cursors_before()
+  if exists(':NeoCompleteLock')==2
+    exe 'NeoCompleteLock'
+  endif
+endfunction
+
+" Called once only when the multiple selection is canceled (default <Esc>)
+function! Multiple_cursors_after()
+  if exists(':NeoCompleteUnlock')==2
+    exe 'NeoCompleteUnlock'
+  endif
+endfunction
 
 " ==============================================================
 
@@ -880,6 +908,72 @@ let g:NERDTreeShowBookmarks = 1
   "let g:eighties_minimum_width = tmp
 "endfunction
 
+" -------------------------------------------------------------
+" Plug 'kien/ctrlp.vim'
+" https://github.com/kien/ctrlp.vim
+" * :CtrlP [starting-directory]
+" * <F5> - to purge the cache for the current directory to get new files
+" * <c-j> / <c-k> / arrow keys - navigate the result list
+" Directory mode:
+" Search for a directory and change the working directory to it.
+" * <cr> change the local working directory for CtrlP and keep it open.
+" * <c-t> change the global working directory (exit).
+" * <c-v> change the local working directory for the current window (exit).
+" * <c-x> change the global working directory to CtrlP's current local working directory (exit).
+" alternative:
+" command-T
+" -------------------------------------------------------------
+" the nearest ancestor that contains one of these directories or files: .git .hg .svn .bzr _darcs
+"let g:ctrlp_working_path_mode = 'r'
+let g:ctrlp_working_path_mode = 0 " disabled, for vim-rooter
+let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
+                          \ 'line', 'changes', 'mixed', 'bookmarkdir']
+let g:ctrlp_map = '<C-p>'
+nmap <leader>ff :<C-u>:CtrlPMixed<cr>
+nmap <leader>fd :<C-u>:CtrlPDir<cr>
+nmap <leader>fr :<C-u>:CtrlPMRU<cr>
+nmap <leader>fv :<C-u>:CtrlPRTS<cr>
+nmap <leader>fl :<C-u>:CtrlPLine<cr>
+nmap <leader>fc :<C-u>:CtrlPChange<cr>
+"nmap <leader>fb :<C-u>:CtrlPBookmarkDir<cr>
+"let g:ctrlp_prompt_mappings = {
+      "\ 'PrtSelectMove("j")': ['<s-Enter>', '<down>'],
+      "\ 'PrtSelectMove("k")': ['<Enter>', '<up>'],
+      "\ 'AcceptSelection("e")': ['<c-Enter>', '<2-LeftMouse>'],
+      "\ }
+let g:ctrlp_custom_ignore = {
+      \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+      \ 'file': '\v\.(so|swp)$',
+      \ }
+
+"nmap <leader>tt :CommandT<cr>
+"if has("gui_macvim")
+  "map <D-T> :CommandT<CR>
+"endif
+
+" -------------------------------------------------------------
+" Plug 'Shougo/unite.vim'
+" https://github.com/Shougo/unite.vim
+" https://github.com/Shougo/vimproc.vim
+" :h unite
+" * :Unite
+" * :Unite grep<cr>
+" * :Unite find<cr>
+" -------------------------------------------------------------
+nmap <leader>fu :<C-u>Unite -ignorecase -smartcase<cr>
+nmap <leader>df :<C-u>Unite -ignorecase -smartcase file<cr>
+"nmap <leader>fr :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/async<cr>
+nmap <leader>fg :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/git<cr>
+nmap <leader>fb :<C-u>Unite -ignorecase -smartcase buffer tab<cr>
+nmap <leader>ft :<C-u>Unite -ignorecase -smartcase tab buffer<cr>
+nmap <leader>dd :<C-u>Unite -ignorecase -smartcase directory<cr>
+nmap <leader>fm :<C-u>Unite -ignorecase -smartcase bookmark<cr>
+"nmap <leader>fc :<C-u>Unite -start-insert -ignorecase -smartcase change<cr>
+"nmap <leader>fl :<C-u>Unite -start-insert -ignorecase -smartcase line<cr>
+nmap <leader>fj :<C-u>Unite -start-insert -ignorecase -smartcase jump<cr>
+nmap <leader>f: :<C-u>Unite -start-insert -ignorecase -smartcase command<cr>
+nmap <leader>fp :<C-u>Unite -start-insert -ignorecase -smartcase process<cr>
+
 "" -------------------------------------------------------------
 "" Plug 'FuzzyFinder'
 "" http://www.vim.org/scripts/script.php?script_id=1984
@@ -893,58 +987,12 @@ let g:NERDTreeShowBookmarks = 1
 "nmap <leader>fl :FufLine<cr>
 ""noremap <silent> <C-]> :FufTagWithCursorWord!<CR>
 
-" -------------------------------------------------------------
-" Plug 'Shougo/unite.vim'
-" https://github.com/Shougo/unite.vim
-" https://github.com/Shougo/vimproc.vim
-" :h unite
-" * :Unite
-" * :Unite grep<cr>
-" * :Unite find<cr>
-" -------------------------------------------------------------
-nmap <leader>fu :<C-u>Unite -ignorecase -smartcase<cr>
-nmap <leader>ff :<C-u>Unite -ignorecase -smartcase file<cr>
-nmap <leader>fr :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/async<cr>
-nmap <leader>fg :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/git<cr>
-nmap <leader>fd :<C-u>Unite -ignorecase -smartcase directory<cr>
-nmap <leader>fb :<C-u>Unite -ignorecase -smartcase buffer tab<cr>
-nmap <leader>ft :<C-u>Unite -ignorecase -smartcase tab buffer<cr>
-nmap <leader>fm :<C-u>Unite -ignorecase -smartcase bookmark<cr>
-nmap <leader>fc :<C-u>Unite -start-insert -ignorecase -smartcase change<cr>
-nmap <leader>fl :<C-u>Unite -start-insert -ignorecase -smartcase line<cr>
-nmap <leader>fj :<C-u>Unite -start-insert -ignorecase -smartcase jump<cr>
-nmap <leader>fc :<C-u>Unite -start-insert -ignorecase -smartcase command<cr>
-nmap <leader>fp :<C-u>Unite -start-insert -ignorecase -smartcase process<cr>
-
-" -------------------------------------------------------------
-" Plug 'yegappan/mru'
-" https://github.com/yegappan/mru
-" http://www.vim.org/scripts/script.php?script_id=521
-" -------------------------------------------------------------
-nmap <leader>r :MRU<cr>
-
-" -------------------------------------------------------------
-" Plug 'kien/ctrlp.vim'
-" https://github.com/kien/ctrlp.vim
-" * :CtrlP [starting-directory]
-" * <F5> - to purge the cache for the current directory to get new files
-" * <c-j> / <c-k> / arrow keys - navigate the result list
-" alternative:
-" command-T
-" -------------------------------------------------------------
-" the nearest ancestor that contains one of these directories or files: .git .hg .svn .bzr _darcs
-"let g:ctrlp_working_path_mode = 'r'
-let g:ctrlp_working_path_mode = 0 " disabled, for vim-rooter
-let g:ctrlp_map = '<C-p>'
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(so|swp)$',
-  \ }
-
-"nmap <leader>tt :CommandT<cr>
-"if has("gui_macvim")
-  "map <D-T> :CommandT<CR>
-"endif
+"" -------------------------------------------------------------
+"" Plug 'yegappan/mru'
+"" https://github.com/yegappan/mru
+"" http://www.vim.org/scripts/script.php?script_id=521
+"" -------------------------------------------------------------
+"nmap <leader>r :MRU<cr>
 
 " -------------------------------------------------------------
 " Plug 'rking/ag.vim'
@@ -971,7 +1019,8 @@ let g:ctrlp_custom_ignore = {
 " * v - to open in vertical split
 " * gv - to open in vertical split silently
 " -------------------------------------------------------------
-nnoremap <leader>/ :Ag -S
+nmap <leader>/ :Ag -S 
+nmap <D-f> <leader>/
 let g:agprg="ag --column"
 
 "nnoremap <leader>/ :Ack
@@ -1040,8 +1089,8 @@ let g:ycm_filetype_blacklist = {
   \ 'infolog' : 1,
   \ 'mail' : 1
 \}
-let g:ycm_min_num_of_chars_for_completion = 1
-let g:ycm_min_num_identifier_candidate_chars = 0
+let g:ycm_min_num_of_chars_for_completion = 2
+let g:ycm_min_num_identifier_candidate_chars = 2
 let g:ycm_complete_in_comments = 1
 let g:ycm_complete_in_strings = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 0
@@ -1054,33 +1103,26 @@ let g:ycm_key_list_previous_completion = ['<S-Enter>', '<Up>']
 let g:ycm_key_detailed_diagnostics = '<leader>yd'
 
 "" -------------------------------------------------------------
-"" Plug 'Shougo/neocomplcache.vim'
-"" https://github.com/Shougo/neocomplcache.vim
+"" Plug 'Shougo/neocomplete'
 "" https://github.com/Shougo/neocomplete.vim
+"" https://github.com/Shougo/neocomplcache.vim
 "" https://github.com/Shougo/neosnippet.vim
 "" https://github.com/Shougo/neosnippet-snippets
 "" -------------------------------------------------------------
-"let g:acp_enableAtStartup = 0
-"let g:neocomplcache_enable_at_startup = 1
-"let g:neocomplcache_enable_smart_case = 1
-"let g:neocomplcache_min_syntax_length = 1
-"let g:neocomplcache_auto_completion_start_length = 1
-"let g:neocomplcache_manual_completion_start_length = 0
-"let g:neocomplcache_max_list = 20
-
-"" key-mappings
-"inoremap <expr><C-g> neocomplcache#undo_completion()
-"inoremap <expr><C-l> neocomplcache#complete_common_string()
-"inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
-"inoremap <expr><C-y> neocomplcache#close_popup()
-"inoremap <expr><C-e> neocomplcache#cancel_popup()
-
-""inoremap <expr><Space> pumvisible() ? "\<c-y>" : "\<Space>"
-"inoremap <expr><Esc> pumvisible() ? "\<c-y>" : "\<Esc>"
-"inoremap <expr><Enter> pumvisible() ? "\<c-n>" : "\<Enter>"
-"inoremap <expr><s-Enter> pumvisible() ? "\<c-p>" : "\<s-Enter>"
-""imap <expr><tab>  pumvisible() ? "\<c-n>" : "\<TAB>"
-""imap <expr><s-tab>  pumvisible() ? "\<c-p>" : "\<s-TAB>"
+"let g:neocomplete#enable_at_startup = 1
+"let g:neocomplete#enable_smart_case = 1
+"let g:neocomplete#enable_fuzzy_completion = 0
+"let g:neocomplete#auto_completion_start_length = 0
+""let g:neocomplete#delimiter_patterns.javascript = ['.']
+"let g:neocomplete#min_keyword_length = 2
+"let g:neocomplete#sources#syntax#min_keyword_length = 2
+"let g:neocomplete#use_vimproc = 1
+"let g:neocomplete#enable_auto_close_preview = 1
+"inoremap <expr><Enter>  pumvisible() ? "\<C-n>" : "\<Enter>"
+"inoremap <expr><s-Enter>  pumvisible() ? "\<C-p>" : "\<s-Enter>"
+"inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
+"inoremap <expr><Esc> pumvisible() ? neocomplete#cancel_popup() : "\<Esc>"
+""inoremap <expr><BS> pumvisible() ? neocomplete#smart_close_popup() : "\<BS>"
 
 " -------------------------------------------------------------
 " Plug 'SyntaxComplete'
@@ -1143,10 +1185,10 @@ let g:session_persist_colors = 0
 " http://sjl.bitbucket.org/gundo.vim/
 " http://www.vim.org/scripts/script.php?script_id=3304
 " https://github.com/sjl/gundo.vim
+" <F10>
 " return / double click - revert
 " P - replay
 " -------------------------------------------------------------
-noremap <F2> :GundoToggle<CR>
 let g:gundo_width = 40
 let g:gundo_preview_height = 40
 let g:gundo_right = 0
@@ -1164,14 +1206,14 @@ let g:gundo_right = 0
 " -------------------------------------------------------------
 " Plug 'airblade/vim-gitgutter'
 " https://github.com/airblade/vim-gitgutter
-" * <Leader>hr - revert an individual hunk
-" * <Leader>hs - stage an individual hunk
-" * <Leader>hp - preview a hunk' changes
 " -------------------------------------------------------------
 let g:gitgutter_map_keys = 0
-nmap <Leader>hr <Plug>GitGutterRevertHunk
-nmap <Leader>hs <Plug>GitGutterStageHunk
-nmap <Leader>hp <Plug>GitGutterPreviewHunk
+" revert an individual hunk
+nmap <Leader>gr <Plug>GitGutterRevertHunk
+" stage an individual hunk
+nmap <Leader>gs <Plug>GitGutterStageHunk
+" preview a hunk' changes
+nmap <Leader>gp <Plug>GitGutterPreviewHunk
 let g:gitgutter_max_signs = 5000
 let g:gitgutter_realtime = 0
 "let g:gitgutter_eager = 0
@@ -1212,13 +1254,13 @@ let VCSCommandSVKExec='disabled no such executable'
 " -------------------------------------------------------------
 nmap <silent> <leader>tl <Plug>TaskList
 
-" -------------------------------------------------------------
-" Plug 'DrawIt'
-" http://www.vim.org/scripts/script.php?script_id=40
-" :h DrawIt
-" * <leader>di - start drawit
-" * <leader>ds - stop drawit
-" -------------------------------------------------------------
+"" -------------------------------------------------------------
+"" Plug 'DrawIt'
+"" http://www.vim.org/scripts/script.php?script_id=40
+"" :h DrawIt
+"" * <leader>di - start drawit
+"" * <leader>ds - stop drawit
+"" -------------------------------------------------------------
 
 " -------------------------------------------------------------
 " Plug 'mtth/scratch.vim'
