@@ -267,7 +267,7 @@ au BufNewFile,BufRead *.ypac setf yaml
 au BufNewFile,BufRead *.pac setf javascript
 
 " vim: et:ts=2:sw=2:sts=2
-au FileType text,markdown,mkd setlocal wrap
+au FileType text setlocal wrap
 au FileType text,javascript,python,ruby,rust setlocal tw=80
 au FileType css,scss,sass,less,html,javascript,vim,ruby,json,yaml setlocal et ts=2 sw=2 sts=2
 au FileType python,rust setlocal et ts=4 sw=4 sts=4
@@ -378,26 +378,18 @@ if has("gui_macvim")
 
   noremap <D-M-,> :tabe ~/.vim/vimrc<cr>
 
+  noremap <D-M-.> :map 
+
   nmap <D-M-f> :%s/
 
 endif
 
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-nnoremap <C-V> <C-w>v
-nnoremap <C-S> <C-w>s
-
-"if has("gui_macvim")
-  "map <D-H> <C-h>
-  "map <D-J> <C-j>
-  "map <D-K> <C-k>
-  "map <D-L> <C-l>
-  "map <D-V> <C-V>
-  "map <D-S> <C-S>
-  "map <D-R> <C-r>
-"endif
+"nnoremap <C-h> <C-w>h
+"nnoremap <C-j> <C-w>j
+"nnoremap <C-k> <C-w>k
+"nnoremap <C-l> <C-w>l
+"nnoremap <C-V> <C-w>v
+"nnoremap <C-S> <C-w>s
 
 " for filetype-based debug&make
 noremap <silent> <F2> <Plug>(quickrun)
@@ -1041,6 +1033,9 @@ let g:ctrlp_map = '<D-p>'
 nmap <leader>ff :<C-u>:CtrlPMixed<cr>
 nmap <leader>fd :<C-u>:CtrlPDir<cr>
 nmap <leader>fr :<C-u>:CtrlPMRU<cr>
+if has("gui_macvim")
+  nmap <D-T> <leader>fr
+endif
 nmap <leader>fv :<C-u>:CtrlPRTS<cr>
 if has("gui_macvim")
   nmap <D-M-i> <leader>fv

@@ -27,7 +27,8 @@ Atom-style:
 * `<D-n>` - New tab
 * `<D-N>` - New window
 * `<D-o>` - Unite file
-* `<D-O>` - Unite directory -> vimfiler
+* `<D-O>` - Unite directory -> Vimfiler
+* `<D-T>` - CtrlP MRU
 * `<D-w>` - Quit current buffer window
 * `<D-W>` - Close MacVim window
 * `<D-z>` - Undo
@@ -36,16 +37,17 @@ Atom-style:
 * `<D-/>` - Toggle comments
 * `<D-M-[>` / `<D-M-]>` - Fold / Unfold
 * `<D-M-{>` / `<D-M-}>` - Fold All / Unfold All
-* `<D-M-,>` - Open .vimrc in new tab
+* `<D-M-,>` - Open .vimrc in new tab (Setting View)
+* `<D-M-.>` - :map (Keybinding Resolver)
 * `<D-M-i>` - Search for files (vimscripts, docs, snippets...) in runtimepath
 * `<D-\>` - Toggle NerdTree
 * `<D-f>` - CtrlP: Search for a line in all listed buffers
 * `<D-F>` - ag.vim
 * `<D-M-f>` - replace
-* `<D-p>` - CtrlP
+* `<D-p>` - CtrlP (fuzzy file finder)
 * `<D-b>` - Unite tab buffer
-* `<D-P>` - Unite
-* `<C-H>` / `<C-M-h>` - look up in Dash
+* `<D-P>` - Unite (Command Palette)
+* `<C-h>` / `<C-M-h>` - Look up in Dash
 * `<D-E>` - Emmet expand
 
 Vi-style:
@@ -59,8 +61,6 @@ Vi-style:
 * `.g` sequences - fugitive + gitgutter
 * `.t` sequences - Tagbar, Tasklist, Tern
 * `<C-A/D/X>` - multiple cursors
-* `<C-j/k/h/l>` - `<C-w>j/k/h/l`
-* `<C-v/s>` - `<C-w>v/s`
 * `,q`
 * `<F2>` - QuickRun
 * `<F3>` - lint
