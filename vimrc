@@ -39,7 +39,9 @@ Plug 'cecutil'
 Plug 'tpope/vim-scriptease'
 Plug 'xolox/vim-misc'
 " ==============================================================
+Plug 'reedes/vim-thematic'
 Plug 'flazz/vim-colorschemes'
+Plug 'NLKNguyen/papercolor-theme'
 " ==============================================================
 Plug 'pangloss/vim-javascript'
 "Plug 'jelera/vim-javascript-syntax'
@@ -57,6 +59,7 @@ Plug 'rust-lang/rust.vim'
 Plug 'cespare/vim-toml'
 Plug 'fatih/vim-go'
 Plug 'dart-lang/dart-vim-plugin'
+Plug 'raichoo/haskell-vim'
 Plug 'tpope/vim-bundler'
 "Plug 'b4winckler/vim-objc'
 Plug 'plasticboy/vim-markdown'
@@ -73,6 +76,7 @@ Plug 'paredit.vim'
 Plug 'jmcantrell/vim-virtualenv'
 " ==============================================================
 Plug 'IndentAnything'
+Plug 'tpope/vim-sleuth'
 Plug 'matchit.zip'
 Plug 'delimitMate.vim'
 Plug 'ShowMarks7'
@@ -86,6 +90,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'godlygeek/tabular'
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-surround'
+"Plug 'tpope/vim-endwise'
 " ==============================================================
 Plug 'bling/vim-airline'
 Plug 'Yggdroot/indentLine'
@@ -95,6 +100,7 @@ Plug 'ntpeters/vim-better-whitespace'
 " ==============================================================
 Plug 'airblade/vim-rooter'
 Plug 'scrooloose/nerdtree'
+Plug 'Shougo/vimfiler.vim'
 Plug 'kien/ctrlp.vim'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
@@ -109,13 +115,15 @@ Plug 'majutsushi/tagbar'
 "Plug 'Shougo/neosnippet-snippets'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-"Plug 'Shougo/neocomplete'
-Plug 'Valloric/YouCompleteMe', { 'do': 'git submodule update --init --recursive && ./install.sh --clang-completer --gocode-completer' }
+Plug 'Shougo/neocomplete'
+"Plug 'Valloric/YouCompleteMe' ", { 'do': 'git submodule update --init --recursive && ./install.sh --clang-completer --gocode-completer' }
 Plug 'SyntaxComplete'
 "Plug 'SQLComplete.vim'
 Plug 'https://bitbucket.org/teramako/jscomplete-vim.git'
 Plug 'myhere/vim-nodejs-complete'
 Plug 'marijnh/tern_for_vim', { 'do': 'npm install' }
+"Plug 'Quramy/vison' " :VisonSetup
+Plug 'rizzatti/dash.vim'
 " ==============================================================
 Plug 'xolox/vim-session'
 Plug 'sjl/gundo.vim'
@@ -156,6 +164,11 @@ endfunction
   "set shell=/bin/bash\ -l
 "endif
 
+if has("gui_macvim")
+  let macvim_skip_cmd_opt_movement = 1
+  let macvim_hig_shift_movement = 1
+endif
+
 set encoding=utf-8
 set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
 
@@ -186,31 +199,11 @@ set diffopt+=iwhite,vertical " 忽略缩进的差异
 "set cursorbind
 "set gdefault
 "set lazyredraw
+set macmeta
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-if has("gui_running") || has("gui_macvim")
-  "colorscheme badwolf
-  "colorscheme molokai
-  "colorscheme yyblackboard
-  colorscheme yymolokai
-  let g:colors_name="yymolokai"
-else
-  colorscheme molokai
-  let g:colors_name="molokai"
-  "colorscheme slate
-endif
-
-if MySys() == "mac"
-  "set guifont=Monaco:h13
-  set guifont=Consolas:h13
-  "set guifont=M+\ 1m:h13
-  "set guifontwide=Hei_Regular:h13
-elseif MySys() == "linux"
-  set guifont=Monospace
-endif
 
 set anti
 set linespace=2
@@ -221,19 +214,23 @@ set equalalways
 set guitablabel=%t
 
 if has("gui_macvim")
-
+  set guioptions-=T "egmrt
+  "set guioptions+=b
   "set columns=171
   "set lines=58
   "winpos 52 42
-
-  let macvim_skip_cmd_opt_movement = 1
-  let macvim_hig_shift_movement = 1
-
-  set transparency=7
-  set guioptions-=T "egmrt
-  "set guioptions+=b
-
 endif
+
+if has("gui_running") || has("gui_macvim")
+  colorscheme yymolokai
+  let g:colors_name="yymolokai"
+  set transparency=7
+else
+  colorscheme molokai
+  let g:colors_name="molokai"
+endif
+"set guifont=Monaco:h13
+set guifont=Consolas:h13
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Autocmd
@@ -270,16 +267,10 @@ au BufNewFile,BufRead *.ypac setf yaml
 au BufNewFile,BufRead *.pac setf javascript
 
 " vim: et:ts=2:sw=2:sts=2
-au FileType text setlocal wrap tw=80
-au FileType javascript setlocal et ts=2 sw=2 sts=2 tw=80
-au FileType css setlocal et ts=2 sw=2 sts=2
-au FileType scss setlocal et ts=2 sw=2 sts=2
-au FileType html setlocal et ts=2 sw=2 sts=2
-au FileType vim setlocal et ts=2 sw=2 sts=2
-au FileType python setlocal et ts=4 sw=4 sts=4 tw=80
-au FileType ruby setlocal et ts=2 sw=2 sts=2 tw=80
-au FileType rust setlocal et ts=4 sw=4 sts=4 tw=80
-au FileType yaml setlocal et ts=2 sw=2 sts=2
+au FileType text,markdown,mkd setlocal wrap
+au FileType text,javascript,python,ruby,rust setlocal tw=80
+au FileType css,scss,sass,less,html,javascript,vim,ruby,json,yaml setlocal et ts=2 sw=2 sts=2
+au FileType python,rust setlocal et ts=4 sw=4 sts=4
 
 au FileType css,scss,sass,less setlocal omnifunc=csscomplete#CompleteCSS
 au FileType html setlocal omnifunc=htmlcomplete#CompleteTags
@@ -377,10 +368,19 @@ endfunction
 let mapleader=","
 let g:mapleader=","
 
-map <silent> <leader>rc :tabe ~/.vim/vimrc<cr>
-map <leader>q :q<cr>
-
 nnoremap <leader><space> :noh<cr>:set nocrb<cr>
+
+noremap <leader>q :q<cr>
+
+if has("gui_macvim")
+
+  nmap <D-w> <leader>q
+
+  noremap <D-M-,> :tabe ~/.vim/vimrc<cr>
+
+  nmap <D-M-f> :%s/
+
+endif
 
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
@@ -410,12 +410,31 @@ noremap <silent> <F8> :call MySetLog()<CR>
 noremap <silent> <F9> :call MyRemoveBreakPoint()<CR>
 noremap <silent> <F10> :GundoToggle<CR>
 
-nmap <tab>    v>
-nmap <c-tab>  v>
-nmap <s-tab>  v<
-vmap <tab>    >gv
-vmap <c-tab>  >gv
-vmap <s-tab>  <gv
+" indent
+nnoremap <tab>    v>
+nnoremap <c-tab>  v>
+vnoremap <tab>    >gv
+vnoremap <c-tab>  >gv
+
+" outindent
+nnoremap <S-tab>  v<
+vnoremap <S-tab>  <gv
+
+if has("gui_macvim")
+
+  nnoremap <D-]>   v>
+  vnoremap <D-]>   >gv
+  nnoremap <D-[>   v<
+  vnoremap <D-[>   <gv
+
+  nnoremap <D-M-[> zc
+  nnoremap <D-M-]> zo
+  vnoremap <D-M-[> zf
+  vnoremap <D-M-]> zd
+  nnoremap <D-M-{> zM
+  nnoremap <D-M-}> zR
+
+endif
 
 nnoremap / /\v
 vnoremap / /\v
@@ -425,8 +444,45 @@ vnoremap / /\v
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " -------------------------------------------------------------
+" Plug 'reedes/vim-thematic'
+" https://github.com/reedes/vim-thematic
+" :Thematic {theme_name}
+" :ThematicFirst
+" :ThematicNext
+" :ThematicPrevious
+" -------------------------------------------------------------
+let g:thematic#themes = {
+      \ 'yymolokai': {
+        \ 'colorscheme': 'yymolokai',
+        \ 'transparency': 7,
+        \ 'typeface': 'Consolas',
+        \ 'font-size': 13,
+      \ },
+      \ 'yyblackboard': {
+        \ 'colorscheme': 'yyblackboard',
+        \ 'airline-theme': 'badwolf',
+        \ 'transparency': 7,
+        \ 'typeface': 'Consolas',
+        \ 'font-size': 13,
+      \ },
+      \ 'papercolor': {
+        \ 'colorscheme': 'PaperColor',
+        \ 'airline-theme': 'papercolor',
+        \ 'transparency': 0,
+        \ 'typeface': 'Consolas',
+        \ 'font-size': 16,
+      \ },
+\ }
+"let g:thematic#theme_name = 'yymolokai'
+
+" -------------------------------------------------------------
 " Plug 'flazz/vim-colorschemes'
 " https://github.com/flazz/vim-colorschemes
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'NLKNguyen/papercolor-theme'
+" https://github.com/NLKNguyen/papercolor-theme
 " -------------------------------------------------------------
 
 " ==============================================================
@@ -439,7 +495,7 @@ vnoremap / /\v
 " * https://github.com/othree/yajs.vim
 " -------------------------------------------------------------
 let g:javascript_enable_domhtmlcss = 0
-let b:javascript_fold = 0
+"let b:javascript_fold = 0
 "let g:javascript_conceal_function   = "ƒ"
 "let g:javascript_conceal_this       = "@"
 
@@ -516,6 +572,17 @@ let g:html5_aria_attributes_complete = 0
 " -------------------------------------------------------------
 " Plug 'dart-lang/dart-vim-plugin'
 " https://github.com/dart-lang/dart-vim-plugin
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'raichoo/haskell-vim'
+" https://github.com/raichoo/haskell-vim
+" more:
+" https://github.com/begriffs/haskell-vim-now
+" https://github.com/enomsg/vim-haskellConcealPlus
+" https://github.com/eagletmt/ghcmod-vim
+" https://github.com/eagletmt/neco-ghc
+" https://github.com/Twinside/vim-hoogle
 " -------------------------------------------------------------
 
 " -------------------------------------------------------------
@@ -600,6 +667,9 @@ let g:instant_markdown_autostart = 0
 " * <C-e>/ - toggle comment
 " -------------------------------------------------------------
 let g:user_emmet_leader_key='<C-e>'
+if has("gui_macvim")
+  imap <D-E> <plug>(emmet-expand-abbr)
+endif
 
 " -------------------------------------------------------------
 " Plug 'tpope/vim-rails'
@@ -637,6 +707,11 @@ let g:user_emmet_leader_key='<C-e>'
 " -------------------------------------------------------------
 " Plug 'IndentAnything'
 " http://www.vim.org/scripts/script.php?script_id=1839
+" -------------------------------------------------------------
+
+" -------------------------------------------------------------
+" Plug 'tpope/vim-sleuth'
+" https://github.com/tpope/vim-sleuth
 " -------------------------------------------------------------
 
 " -------------------------------------------------------------
@@ -760,6 +835,10 @@ map <leader>tab :Tabularize / = <cr>
 let NERDCreateDefaultMappings=0
 nmap <leader>n<space> <plug>NERDCommenterToggle
 vmap <leader>n<space> <plug>NERDCommenterToggle
+if has("gui_macvim")
+  nmap <D-/> <plug>NERDCommenterToggle
+  vmap <D-/> <plug>NERDCommenterToggle
+endif
 nmap <leader>nc <plug>NERDCommenterComment
 vmap <leader>nc <plug>NERDCommenterComment
 nmap <leader>nm <plug>NERDCommenterMinimal
@@ -785,6 +864,11 @@ vmap <leader>ni <plug>NERDCommenterInvert
 " * ysiw<new> - text object
 " * yss<new> - entire line
 " -------------------------------------------------------------
+
+"" -------------------------------------------------------------
+"" Plug 'tpope/vim-endwise'
+"" https://github.com/tpope/vim-endwise/issues/22#issuecomment-46373393
+"" -------------------------------------------------------------
 
 " ==============================================================
 
@@ -826,6 +910,8 @@ let g:airline#extensions#virtualenv#enabled = 1
 " -------------------------------------------------------------
 let g:indentLine_enabled = 1
 "let g:indentLine_showFirstIndentLevel = 1
+"let g:indentLine_char = '│' " | ¦ ┆ │
+"let g:indentLine_color_gui = '#666666'
 "let g:indentLine_leadingSpaceChar = '·'
 "let g:indentLine_leadingSpaceEnabled = 1
 let g:indentLine_fileTypeExclude = ['json', 'csv'] " conflict with concealing feature
@@ -859,7 +945,7 @@ let g:indentLine_fileTypeExclude = ['json', 'csv'] " conflict with concealing fe
 " * :StripWhitespace - entire file / range
 " * :ToggleStripWhitespaceOnSave
 " -------------------------------------------------------------
-"let g:better_whitespace_filetypes_blacklist=['<filetype1>']
+let g:better_whitespace_filetypes_blacklist=['unite']
 "autocmd FileType <filetypes> autocmd BufWritePre <buffer> StripWhitespace
 
 " ==============================================================
@@ -872,10 +958,11 @@ let g:indentLine_fileTypeExclude = ['json', 'csv'] " conflict with concealing fe
 map <silent> <unique> <Leader>cd <Plug>RooterChangeToRootDirectory
 let g:rooter_use_lcd = 1
 let g:rooter_silent_chdir = 1
-let g:rooter_patterns = ['.git', '.git/', '.hg/', '.bzr/', '.svn/',
-      \ 'package.json', 'bower.json', 'Cargo.toml', 'Podfile', 'Dockerfile',
-      \ 'Rakefile', 'Gemfile', 'setup.py', 'app.yaml', 'Makefile',
-      \ 'Vagrantfile', 'README.md']
+let g:rooter_patterns = ['package.json', 'bower.json',
+      \ 'Cargo.toml', 'Podfile', 'Gemfile', 'setup.py', 'Info.plist',
+      \ 'Rakefile', 'Makefile',
+      \ '.git', '.git/', '.hg/', '.bzr/', '.svn/',
+      \ 'Dockerfile', 'Vagrantfile', 'README.md']
 
 " -------------------------------------------------------------
 " Plug 'scrooloose/nerdtree'
@@ -895,8 +982,11 @@ let g:rooter_patterns = ['.git', '.git/', '.hg/', '.bzr/', '.svn/',
 " * :ClearBookmarks <name>
 " * :ClearAllBookmarks
 " -------------------------------------------------------------
-nmap <leader>nt :NERDTreeToggle<cr>
 "nmap <leader>nt :call OpenNERDTree()<cr>
+nmap <leader>nt :NERDTreeToggle<cr>
+if has("gui_macvim")
+  nmap <D-\> <leader>nt
+endif
 "let NERDTreeMinimalUI = 1
 let g:NERDTreeWinSize = 20
 let g:NERDTreeShowBookmarks = 1
@@ -907,6 +997,24 @@ let g:NERDTreeShowBookmarks = 1
   ":NERDTree
   "let g:eighties_minimum_width = tmp
 "endfunction
+
+" -------------------------------------------------------------
+" Plug 'Shougo/vimfiler.vim'
+" https://github.com/Shougo/vimfiler.vim
+" -------------------------------------------------------------
+let g:vimfiler_as_default_explorer = 1
+let g:vimfiler_no_default_key_mappings = 1
+autocmd FileType vimfiler nmap <buffer> q <Plug>(vimfiler_close)
+autocmd FileType vimfiler nmap <buffer> <Enter> <Plug>(vimfiler_cd_or_edit)
+autocmd FileType vimfiler nmap <buffer> o <Plug>(vimfiler_expand_or_edit)
+autocmd FileType vimfiler nmap <buffer> e <Plug>(vimfiler_edit_file)
+autocmd FileType vimfiler nmap <buffer> E <Plug>(vimfiler_split_edit_file)
+autocmd FileType vimfiler nmap <buffer> r <Plug>(vimfiler_rename_file)
+autocmd FileType vimfiler nmap <buffer> a <Plug>(vimfiler_choose_action)
+autocmd FileType vimfiler nmap <buffer> ~ <Plug>(vimfiler_switch_to_home_directory)
+autocmd FileType vimfiler nmap <buffer> <BS>	<Plug>(vimfiler_switch_to_parent_directory)
+autocmd FileType vimfiler nmap <buffer> . <Plug>(vimfiler_toggle_visible_ignore_files)
+autocmd FileType vimfiler nmap <buffer> <Tab> <Plug>(vimfiler_switch_to_another_vimfiler)
 
 " -------------------------------------------------------------
 " Plug 'kien/ctrlp.vim'
@@ -923,33 +1031,33 @@ let g:NERDTreeShowBookmarks = 1
 " alternative:
 " command-T
 " -------------------------------------------------------------
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:15,results:15'
 " the nearest ancestor that contains one of these directories or files: .git .hg .svn .bzr _darcs
 "let g:ctrlp_working_path_mode = 'r'
 let g:ctrlp_working_path_mode = 0 " disabled, for vim-rooter
 let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
                           \ 'line', 'changes', 'mixed', 'bookmarkdir']
-let g:ctrlp_map = '<C-p>'
+let g:ctrlp_map = '<D-p>'
 nmap <leader>ff :<C-u>:CtrlPMixed<cr>
 nmap <leader>fd :<C-u>:CtrlPDir<cr>
 nmap <leader>fr :<C-u>:CtrlPMRU<cr>
 nmap <leader>fv :<C-u>:CtrlPRTS<cr>
+if has("gui_macvim")
+  nmap <D-M-i> <leader>fv
+endif
 nmap <leader>fl :<C-u>:CtrlPLine<cr>
+if has("gui_macvim")
+  nmap <D-f> <leader>fl
+endif
 nmap <leader>fc :<C-u>:CtrlPChange<cr>
 "nmap <leader>fb :<C-u>:CtrlPBookmarkDir<cr>
-"let g:ctrlp_prompt_mappings = {
-      "\ 'PrtSelectMove("j")': ['<s-Enter>', '<down>'],
-      "\ 'PrtSelectMove("k")': ['<Enter>', '<up>'],
-      "\ 'AcceptSelection("e")': ['<c-Enter>', '<2-LeftMouse>'],
-      "\ }
+let g:ctrlp_prompt_mappings = {
+\ 'PrtExit()': ['<esc>', '<c-q>'],
+\ }
 let g:ctrlp_custom_ignore = {
-      \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-      \ 'file': '\v\.(so|swp)$',
-      \ }
-
-"nmap <leader>tt :CommandT<cr>
-"if has("gui_macvim")
-  "map <D-T> :CommandT<CR>
-"endif
+\ 'dir':  '\v[\/]\.(git|hg|svn)$',
+\ 'file': '\v\.(so|swp)$',
+\ }
 
 " -------------------------------------------------------------
 " Plug 'Shougo/unite.vim'
@@ -960,13 +1068,36 @@ let g:ctrlp_custom_ignore = {
 " * :Unite grep<cr>
 " * :Unite find<cr>
 " -------------------------------------------------------------
+call unite#custom#profile('default', 'context', {
+\   'winheight': 15,
+\   'direction': 'botright',
+\ })
+autocmd FileType unite call s:unite_my_settings()
+function! s:unite_my_settings()
+  " Overwrite settings.
+  nmap <C-q> <Plug>(unite_all_exit)
+  imap <C-j> <Plug>(unite_select_next_line)
+  imap <C-k> <Plug>(unite_select_previous_line)
+endfunction
 nmap <leader>fu :<C-u>Unite -ignorecase -smartcase<cr>
-nmap <leader>df :<C-u>Unite -ignorecase -smartcase file<cr>
+if has("gui_macvim")
+  nmap <D-P> <leader>fu
+endif
+nmap <leader>fe :<C-u>Unite -ignorecase -smartcase file<cr>
+if has("gui_macvim")
+  nmap <D-o> <leader>fe
+endif
 "nmap <leader>fr :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/async<cr>
 nmap <leader>fg :<C-u>Unite -start-insert -ignorecase -smartcase file_rec/git<cr>
 nmap <leader>fb :<C-u>Unite -ignorecase -smartcase buffer tab<cr>
 nmap <leader>ft :<C-u>Unite -ignorecase -smartcase tab buffer<cr>
-nmap <leader>dd :<C-u>Unite -ignorecase -smartcase directory<cr>
+if has("gui_macvim")
+  nmap <D-b> <leader>fb
+endif
+nmap <leader>fw :<C-u>Unite -ignorecase -smartcase directory<cr>
+if has("gui_macvim")
+  nmap <D-O> <leader>fw
+endif
 nmap <leader>fm :<C-u>Unite -ignorecase -smartcase bookmark<cr>
 "nmap <leader>fc :<C-u>Unite -start-insert -ignorecase -smartcase change<cr>
 "nmap <leader>fl :<C-u>Unite -start-insert -ignorecase -smartcase line<cr>
@@ -1020,7 +1151,9 @@ nmap <leader>fp :<C-u>Unite -start-insert -ignorecase -smartcase process<cr>
 " * gv - to open in vertical split silently
 " -------------------------------------------------------------
 nmap <leader>/ :Ag -S 
-nmap <D-f> <leader>/
+if has("gui_macvim")
+  nmap <D-F> <leader>/
+endif
 let g:agprg="ag --column"
 
 "nnoremap <leader>/ :Ack
@@ -1102,27 +1235,27 @@ let g:ycm_key_list_select_completion = ['<Enter>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<S-Enter>', '<Up>']
 let g:ycm_key_detailed_diagnostics = '<leader>yd'
 
-"" -------------------------------------------------------------
-"" Plug 'Shougo/neocomplete'
-"" https://github.com/Shougo/neocomplete.vim
-"" https://github.com/Shougo/neocomplcache.vim
-"" https://github.com/Shougo/neosnippet.vim
-"" https://github.com/Shougo/neosnippet-snippets
-"" -------------------------------------------------------------
-"let g:neocomplete#enable_at_startup = 1
-"let g:neocomplete#enable_smart_case = 1
-"let g:neocomplete#enable_fuzzy_completion = 0
-"let g:neocomplete#auto_completion_start_length = 0
-""let g:neocomplete#delimiter_patterns.javascript = ['.']
-"let g:neocomplete#min_keyword_length = 2
-"let g:neocomplete#sources#syntax#min_keyword_length = 2
-"let g:neocomplete#use_vimproc = 1
-"let g:neocomplete#enable_auto_close_preview = 1
-"inoremap <expr><Enter>  pumvisible() ? "\<C-n>" : "\<Enter>"
-"inoremap <expr><s-Enter>  pumvisible() ? "\<C-p>" : "\<s-Enter>"
-"inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
-"inoremap <expr><Esc> pumvisible() ? neocomplete#cancel_popup() : "\<Esc>"
-""inoremap <expr><BS> pumvisible() ? neocomplete#smart_close_popup() : "\<BS>"
+" -------------------------------------------------------------
+" Plug 'Shougo/neocomplete'
+" https://github.com/Shougo/neocomplete.vim
+" https://github.com/Shougo/neocomplcache.vim
+" https://github.com/Shougo/neosnippet.vim
+" https://github.com/Shougo/neosnippet-snippets
+" -------------------------------------------------------------
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#enable_fuzzy_completion = 0
+let g:neocomplete#auto_completion_start_length = 0
+"let g:neocomplete#delimiter_patterns.javascript = ['.']
+let g:neocomplete#min_keyword_length = 2
+let g:neocomplete#sources#syntax#min_keyword_length = 2
+let g:neocomplete#use_vimproc = 1
+let g:neocomplete#enable_auto_close_preview = 1
+inoremap <expr><Enter>  pumvisible() ? "\<C-n>" : "\<Enter>"
+inoremap <expr><s-Enter>  pumvisible() ? "\<C-p>" : "\<s-Enter>"
+inoremap <expr><Space> pumvisible() ? neocomplete#close_popup() : "\<Space>"
+inoremap <expr><Esc> pumvisible() ? neocomplete#cancel_popup() : "\<Esc>"
+"inoremap <expr><BS> pumvisible() ? neocomplete#smart_close_popup() : "\<BS>"
 
 " -------------------------------------------------------------
 " Plug 'SyntaxComplete'
@@ -1164,6 +1297,32 @@ let g:nodejs_complete_config = {
 " -------------------------------------------------------------
 nnoremap <leader>td :TernDef<cr>
 nnoremap <leader>tr :TernRefs<cr>
+
+"" -------------------------------------------------------------
+"" Plug 'Quramy/vison' " :VisonSetup
+"" https://github.com/Quramy/vison
+"" -------------------------------------------------------------
+ "au BufRead,BufNewFile package.json, bower.json, jshintrc.json,
+       "\ grunt-cssmin-task.json, grunt-watch-task.json, grunt-clean-task.json,
+       "\ grunt-task.json, grunt-jshint-task.json,
+       "\ chrome-manifest.json Vison
+
+" -------------------------------------------------------------
+" Plug 'rizzatti/dash.vim'
+" :h dash
+" https://github.com/rizzatti/dash.vim
+" -------------------------------------------------------------
+nmap <silent> <leader>df <Plug>DashSearch
+nmap <silent> <leader>dg <Plug>DashGlobalSearch
+if has("gui_macvim")
+  nmap <C-H> <leader>df
+  nmap <C-M-h> <leader>dg
+endif
+let g:dash_map = {
+  \ 'javascript': ['js', 'dom', 'node', 'npm', 'coffee', 'chrome', 'backbone', 'express', 'lodash', 'underscore', 'jq', 'zepto', 'd3', 'cordova', 'phonegap', 'chai', 'grunt', 'mongoose', 'sinon', 'jasmine', 'moment', 'awsjs', 'jsdoc', 'mori', 'angularjs', 'iojs', 'react', 'threejs', 'atom', 'ionic', 'reactnative', 'pouchdb'],
+  \ 'css': ['css', 'scss', 'less', 'compass', 'bootstrap', 'foundation', 'bourbon', 'neat', 'color', 'atom', 'ionic', 'susy', 'media'],
+  \ 'html': ['html', 'svg', 'emmet', 'jade', 'htmle', 'awesome', 'emoji', 'angularjs'],
+\ }
 
 " ==============================================================
 
