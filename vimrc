@@ -38,6 +38,8 @@ Plug 'L9'
 Plug 'cecutil'
 Plug 'tpope/vim-scriptease'
 Plug 'xolox/vim-misc'
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'mattn/webapi-vim'
 " ==============================================================
 Plug 'reedes/vim-thematic'
 Plug 'flazz/vim-colorschemes'
@@ -68,7 +70,7 @@ Plug 'chrisbra/csv.vim'
 Plug 'scrooloose/syntastic'
 Plug 'Shutnik/jshint2.vim'
 Plug 'thinca/vim-quickrun'
-Plug 'suan/vim-instant-markdown', { 'do': 'npm -g install instant-markdown-d' }
+Plug 'suan/vim-instant-markdown' " npm -g install instant-markdown-d
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-rails'
 "Plug 'eraserhd/vim-ios'
@@ -87,7 +89,8 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'terryma/vim-expand-region'
 Plug 'terryma/vim-multiple-cursors'
 " ==============================================================
-Plug 'godlygeek/tabular'
+Plug 'junegunn/vim-easy-align'
+"Plug 'godlygeek/tabular'
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-surround'
 "Plug 'tpope/vim-endwise'
@@ -103,7 +106,6 @@ Plug 'scrooloose/nerdtree'
 Plug 'Shougo/vimfiler.vim'
 Plug 'kien/ctrlp.vim'
 Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 "Plug 'FuzzyFinder'
 "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 "Plug 'yegappan/mru'
@@ -129,13 +131,16 @@ Plug 'xolox/vim-session'
 Plug 'sjl/gundo.vim'
 " ==============================================================
 Plug 'airblade/vim-gitgutter'
-Plug 'fugitive.vim'
-Plug 'vcscommand.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'int3/vim-extradite'
+"Plug 'vcscommand.vim'
 " ==============================================================
 Plug 'TaskList.vim'
-Plug 'junegunn/vim-github-dashboard'
-"Plug 'DrawIt'
+Plug 'junegunn/vim-github-dashboard' " sudo gem install json_pure
+Plug 'diepm/vim-rest-console'
+Plug 'mattn/gist-vim'
 Plug 'mtth/scratch.vim'
+"Plug 'DrawIt'
 " ==============================================================
 
 " for Vundle
@@ -606,11 +611,14 @@ let g:csv_highlight_column = 'y'
 " -------------------------------------------------------------
 " Plug 'scrooloose/syntastic'
 " https://github.com/scrooloose/syntastic
+" https://github.com/scrooloose/syntastic/tree/master/syntax_checkers
 " -------------------------------------------------------------
 "let g:syntastic_html_tidy_blocklevel_tags=['x-card', 'x-part', 'ck-card', 'ck-part']
 "let g:syntastic_css_checkers = ['csslint']
 "let g:syntastic_csslint_options = '--warnings=none --errors=box-model'
 let g:syntastic_javascript_checkers = ['jshint']
+let g:syntastic_typescript_checkers = ['tslint']
+let g:syntastic_json_checkers = ['jsonlint']
 let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_python_flake8_args = '--ignore="E401,E501"'
 let g:syntastic_lisp_checkers = ['clisp']
@@ -704,6 +712,7 @@ endif
 " -------------------------------------------------------------
 " Plug 'tpope/vim-sleuth'
 " https://github.com/tpope/vim-sleuth
+" automatically adjusts 'shiftwidth' and 'expandtab' heuristically based on the current file, or, in the case the current file is new, blank, or otherwise insufficient, by looking at other files of the same type in the current and parent directories
 " -------------------------------------------------------------
 
 " -------------------------------------------------------------
@@ -806,13 +815,41 @@ endfunction
 " ==============================================================
 
 " -------------------------------------------------------------
-" Plug 'godlygeek/tabular'
-" https://github.com/godlygeek/tabular
-" * :Tabularize /, - left align, left align
-" * :Tabularize /,/r0  - right align, right align
-" * :Tabularize /,/r1c1l0  - right align, left align
+" Plug 'junegunn/vim-easy-align'
+" https://github.com/junegunn/vim-easy-align
+" * :EasyAlign[!] [N-th] /REGEXP/ [OPTIONS]
 " -------------------------------------------------------------
-map <leader>tab :Tabularize / = <cr>
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter><Space>   :'<,'>EasyAlign\<cr>
+vmap <Enter>2<Space>  :'<,'>EasyAlign2\<cr>
+vmap <Enter>-<Space>  :'<,'>EasyAlign-\<cr>
+vmap <Enter>-2<Space> :'<,'>EasyAlign-2\<cr>
+vmap <Enter>*<Space>  :'<,'>EasyAlign*\<cr>
+vmap <Enter>,         :'<,'>EasyAlign,<cr>
+vmap <Enter>*,        :'<,'>EasyAlign*,<cr>
+vmap <Enter>;         :'<,'>EasyAlign;<cr>
+vmap <Enter>*;        :'<,'>EasyAlign*;<cr>
+vmap <Enter>|         :'<,'>EasyAlign|<cr>
+vmap <Enter>*|        :'<,'>EasyAlign*|<cr>
+vmap <Enter>/         :'<,'>EasyAlign/<cr>
+vmap <Enter>*/        :'<,'>EasyAlign*/<cr>
+vmap <Enter>-         :'<,'>EasyAlign-<cr>
+vmap <Enter>*-        :'<,'>EasyAlign*-<cr>
+vmap <Enter>=         :'<,'>EasyAlign=<cr>
+vmap <Enter>*=        :'<,'>EasyAlign*=<cr>
+vmap <Enter><Right>=  :'<,'>EasyAlign=<l1<cr>
+vmap <Enter>:         :'<,'>EasyAlign:<cr>
+vmap <Enter><Right>:  :'<,'>EasyAlign:<l1<cr>
+vmap <Enter>r         :'<,'>EasyAlign
+
+"" -------------------------------------------------------------
+"" Plug 'godlygeek/tabular'
+"" https://github.com/godlygeek/tabular
+"" * :Tabularize /, - left align, left align
+"" * :Tabularize /,/r0  - right align, right align
+"" * :Tabularize /,/r1c1l0  - right align, left align
+"" -------------------------------------------------------------
+"map <leader>tab :Tabularize / = <cr>
 
 " -------------------------------------------------------------
 " Plug 'scrooloose/nerdcommenter'
@@ -1294,13 +1331,10 @@ nnoremap <leader>td :TernDef<cr>
 nnoremap <leader>tr :TernRefs<cr>
 
 "" -------------------------------------------------------------
-"" Plug 'Quramy/vison' " :VisonSetup
+"" Plug 'Quramy/vison'
 "" https://github.com/Quramy/vison
 "" -------------------------------------------------------------
- "au BufRead,BufNewFile package.json, bower.json, jshintrc.json,
-       "\ grunt-cssmin-task.json, grunt-watch-task.json, grunt-clean-task.json,
-       "\ grunt-task.json, grunt-jshint-task.json,
-       "\ chrome-manifest.json Vison
+"au BufRead,BufNewFile package.json,bower.json,jshintrc.json,grunt-cssmin-task.json,grunt-watch-task.json,grunt-clean-task.json,grunt-task.json,grunt-jshint-task.json,chrome-manifest.json Vison
 
 " -------------------------------------------------------------
 " Plug 'rizzatti/dash.vim'
@@ -1373,7 +1407,7 @@ let g:gitgutter_realtime = 0
 "let g:gitgutter_eager = 0
 
 " -------------------------------------------------------------
-" Plug 'fugitive.vim'
+" Plug 'tpope/vim-fugitive'
 " :h fugitive
 " https://github.com/tpope/vim-fugitive
 " * :Gcd [directory] - :cd relative to the repository.
@@ -1388,16 +1422,26 @@ nmap <leader>gl :Gvsplit! log --stat --name-status<cr>
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
 " -------------------------------------------------------------
-" Plug 'vcscommand.vim'
-" :h vcscommand
-" http://www.vim.org/scripts/script.php?script_id=90
-" * :VCSVimDiff
-" * :VCSStat
-" * :VCSLog
+" Plug 'int3/vim-extradite'
+" https://github.com/int3/vim-extradite
+" * :Extradite
+" * dh / dv/ dt - diff
+" * q - close
+" * <cr> / oh / ov/ ot - edits the revision in a fugitive-buffer
 " -------------------------------------------------------------
-let VCSCommandSVKExec='disabled no such executable'
-"nmap <leader>cd :VCSVimDiff<cr>
-"nmap <leader>cl :VCSLog<cr>
+nmap <leader>gh :Extradite!<cr>
+
+"" -------------------------------------------------------------
+"" Plug 'vcscommand.vim'
+"" :h vcscommand
+"" http://www.vim.org/scripts/script.php?script_id=90
+"" * :VCSVimDiff
+"" * :VCSStat
+"" * :VCSLog
+"" -------------------------------------------------------------
+"let VCSCommandSVKExec='disabled no such executable'
+""nmap <leader>cd :VCSVimDiff<cr>
+""nmap <leader>cl :VCSLog<cr>
 
 " ==============================================================
 
@@ -1408,13 +1452,56 @@ let VCSCommandSVKExec='disabled no such executable'
 " -------------------------------------------------------------
 nmap <silent> <leader>tl <Plug>TaskList
 
-"" -------------------------------------------------------------
-"" Plug 'DrawIt'
-"" http://www.vim.org/scripts/script.php?script_id=40
-"" :h DrawIt
-"" * <leader>di - start drawit
-"" * <leader>ds - stop drawit
-"" -------------------------------------------------------------
+" -------------------------------------------------------------
+" Plug 'junegunn/vim-github-dashboard'
+" * :GHD - Dashboard
+" * :GHD USER
+" * :GHA - Activity
+" * :GHA USER
+" * :GHA USER/REPO
+" * CTRL-N / CTRL-P - navigate back and forth through the links.
+" * Enter - on a link to open it in the browser.
+" * R - refresh the window.
+" * q - close the window.
+" -------------------------------------------------------------
+let g:github_dashboard = { 'username': $GITHUB_USER, 'password': $VIM_GITHUB_DASHBOARD_TOKEN }
+let g:github_dashboard['position'] = 'top'
+
+" -------------------------------------------------------------
+" Plug 'diepm/vim-rest-console'
+" https://github.com/diepm/vim-rest-console
+" * :ft=rest
+" * :tabe NewVrc.rest
+" -------------------------------------------------------------
+let g:vrc_trigger = '<C-k>'
+"let g:vrc_set_default_mapping = 0
+"let g:vrc_include_response_header = 0
+"let g:vrc_auto_format_response_enabled = 0
+"let s:vrc_auto_format_response_patterns = {
+"\   'json': 'python -m json.tool',
+"\   'xml': 'xmllint --format -',
+"\}
+
+" -------------------------------------------------------------
+" Plug 'mattn/gist-vim'
+" https://github.com/mattn/gist-vim
+" * :Gist hash - get gist
+" * :Gist -l (user) - list your/user's gists
+" * :Gist -ls - list starred gists
+" * :Gist - default
+" * :Gist -p - private
+" * :Gist -P - public
+" * :Gist -a - anonymously
+" * :Gist -e - edit (update with :w)
+" * :Gist -d - delete
+" -------------------------------------------------------------
+let g:gist_clip_command = 'pbcopy'
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+let g:gist_post_private = 1
+"let g:gist_post_anonymous = 1
+nmap <leader> :Gist
+nmap <leader> :Gist -l
 
 " -------------------------------------------------------------
 " Plug 'mtth/scratch.vim'
@@ -1425,4 +1512,10 @@ nnoremap <leader><tab> :Scratch<cr>
 let g:scratch_autohide = 1
 let g:scratch_filetype = 'mkd'
 
-
+"" -------------------------------------------------------------
+"" Plug 'DrawIt'
+"" http://www.vim.org/scripts/script.php?script_id=40
+"" :h DrawIt
+"" * <leader>di - start drawit
+"" * <leader>ds - stop drawit
+"" -------------------------------------------------------------
