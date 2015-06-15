@@ -1,14 +1,14 @@
 
 # YVim
 
-Out-of-the-box ~/.vim directory for MacVim
+Out-of-the-box `~/.vim` directory for MacVim (corresponding [~/.atom](https://github.com/dexteryy/dot-atom))
 
 ![YVim screenhhost](https://raw.github.com/dexteryy/YVim/master/screenshot.png)
 
 ## Prepare
 
 * MacVim with ruby/python/lua (`brew install macvim --with-lua  --with-luajit && brew linkapps macvim`)
->* [YCM's build environment](https://github.com/Valloric/YouCompleteMe#mac-os-x-super-quick-installation) (XCode, CMake, Go, etc.)
+<!-- * [YCM's build environment](https://github.com/Valloric/YouCompleteMe#mac-os-x-super-quick-installation) (XCode, CMake, Go, etc.) -->
 
 ## Install
 

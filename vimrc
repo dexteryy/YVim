@@ -69,6 +69,7 @@ Plug 'chrisbra/csv.vim'
 " ==============================================================
 Plug 'scrooloose/syntastic'
 Plug 'Shutnik/jshint2.vim'
+"Plug 'facebook/vim-flow'
 Plug 'thinca/vim-quickrun'
 Plug 'suan/vim-instant-markdown' " npm -g install instant-markdown-d
 Plug 'mattn/emmet-vim'
@@ -616,7 +617,7 @@ let g:csv_highlight_column = 'y'
 "let g:syntastic_html_tidy_blocklevel_tags=['x-card', 'x-part', 'ck-card', 'ck-part']
 "let g:syntastic_css_checkers = ['csslint']
 "let g:syntastic_csslint_options = '--warnings=none --errors=box-model'
-let g:syntastic_javascript_checkers = ['jshint']
+let g:syntastic_javascript_checkers = ['jshint'] " ['eslint', 'jscs', 'flow']
 let g:syntastic_typescript_checkers = ['tslint']
 let g:syntastic_json_checkers = ['jsonlint']
 let g:syntastic_python_checkers = ['flake8']
