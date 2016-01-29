@@ -205,7 +205,10 @@ set diffopt+=iwhite,vertical " 忽略缩进的差异
 "set cursorbind
 "set gdefault
 "set lazyredraw
-set macmeta
+
+if MySys() == 'mac'
+  set macmeta
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Interface
@@ -230,7 +233,7 @@ endif
 if has("gui_running") || has("gui_macvim")
   colorscheme yymolokai
   let g:colors_name="yymolokai"
-  set transparency=7
+  set transparency=0
 else
   colorscheme molokai
   let g:colors_name="molokai"
@@ -436,6 +439,8 @@ endif
 
 nnoremap / /\v
 vnoremap / /\v
+
+noremap <leader>mv :marks<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
@@ -821,27 +826,27 @@ endfunction
 " * :EasyAlign[!] [N-th] /REGEXP/ [OPTIONS]
 " -------------------------------------------------------------
 " Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
-vmap <Enter><Space>   :'<,'>EasyAlign\<cr>
-vmap <Enter>2<Space>  :'<,'>EasyAlign2\<cr>
-vmap <Enter>-<Space>  :'<,'>EasyAlign-\<cr>
-vmap <Enter>-2<Space> :'<,'>EasyAlign-2\<cr>
-vmap <Enter>*<Space>  :'<,'>EasyAlign*\<cr>
-vmap <Enter>,         :'<,'>EasyAlign,<cr>
-vmap <Enter>*,        :'<,'>EasyAlign*,<cr>
-vmap <Enter>;         :'<,'>EasyAlign;<cr>
-vmap <Enter>*;        :'<,'>EasyAlign*;<cr>
-vmap <Enter>|         :'<,'>EasyAlign|<cr>
-vmap <Enter>*|        :'<,'>EasyAlign*|<cr>
-vmap <Enter>/         :'<,'>EasyAlign/<cr>
-vmap <Enter>*/        :'<,'>EasyAlign*/<cr>
-vmap <Enter>-         :'<,'>EasyAlign-<cr>
-vmap <Enter>*-        :'<,'>EasyAlign*-<cr>
-vmap <Enter>=         :'<,'>EasyAlign=<cr>
-vmap <Enter>*=        :'<,'>EasyAlign*=<cr>
-vmap <Enter><Right>=  :'<,'>EasyAlign=<l1<cr>
-vmap <Enter>:         :'<,'>EasyAlign:<cr>
-vmap <Enter><Right>:  :'<,'>EasyAlign:<l1<cr>
-vmap <Enter>r         :'<,'>EasyAlign
+"vmap <Enter><Space>   :'<,'>EasyAlign\<cr>
+"vmap <Enter>2<Space>  :'<,'>EasyAlign2\<cr>
+"vmap <Enter>-<Space>  :'<,'>EasyAlign-\<cr>
+"vmap <Enter>-2<Space> :'<,'>EasyAlign-2\<cr>
+"vmap <Enter>*<Space>  :'<,'>EasyAlign*\<cr>
+"vmap <Enter>,         :'<,'>EasyAlign,<cr>
+"vmap <Enter>*,        :'<,'>EasyAlign*,<cr>
+"vmap <Enter>;         :'<,'>EasyAlign;<cr>
+"vmap <Enter>*;        :'<,'>EasyAlign*;<cr>
+"vmap <Enter>|         :'<,'>EasyAlign|<cr>
+"vmap <Enter>*|        :'<,'>EasyAlign*|<cr>
+"vmap <Enter>/         :'<,'>EasyAlign/<cr>
+"vmap <Enter>*/        :'<,'>EasyAlign*/<cr>
+"vmap <Enter>-         :'<,'>EasyAlign-<cr>
+"vmap <Enter>*-        :'<,'>EasyAlign*-<cr>
+"vmap <Enter>=         :'<,'>EasyAlign=<cr>
+"vmap <Enter>*=        :'<,'>EasyAlign*=<cr>
+"vmap <Enter><Right>=  :'<,'>EasyAlign=<l1<cr>
+"vmap <Enter>:         :'<,'>EasyAlign:<cr>
+"vmap <Enter><Right>:  :'<,'>EasyAlign:<l1<cr>
+"vmap <Enter>r         :'<,'>EasyAlign
 
 "" -------------------------------------------------------------
 "" Plug 'godlygeek/tabular'
@@ -1501,8 +1506,8 @@ let g:gist_detect_filetype = 1
 let g:gist_open_browser_after_post = 1
 let g:gist_post_private = 1
 "let g:gist_post_anonymous = 1
-nmap <leader> :Gist
-nmap <leader> :Gist -l
+"nmap <leader> :Gist
+"nmap <leader> :Gist -l
 
 " -------------------------------------------------------------
 " Plug 'mtth/scratch.vim'

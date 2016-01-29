@@ -54,7 +54,7 @@ Vi-style:
 * `,/`                                      -  Ag / Ack
 * `,d` + `f|g`                              -  Dash
 * `;` + `f|s|w|W|b|B|j|k`                   -  EasyMotion
-* `.m` + `m|a|t|h`                          -  ShowMarks7
+* `.m` + `v|m|a|t|h`                        -  :marks + ShowMarks7
 * `.n` + `Space|c|m|s|u`                    -  NERDCommenter + NERDTree
 * `.s` + `s|c|o|d|`                         -  session
 * `.g` + `s|l|h|v|d|b|r|s|p|s`              -  fugitive + extradite + gitgutter

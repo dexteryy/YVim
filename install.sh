@@ -8,7 +8,7 @@ elif [ -f ~/.vimrc ]; then
     echo "Error: ~/.vimrc exists"
     exit 0
 else
-    ln -s $(PWD)/vimrc ~/.vimrc
+    ln -s ~/.vim/vimrc ~/.vimrc
     echo "Create ~/.vimrc"
 fi
 
@@ -18,7 +18,7 @@ elif [ -f ~/.gvimrc ]; then
     echo "Error: ~/.gvimrc exists"
     exit 0
 else
-    ln -s $(PWD)/gvimrc ~/.gvimrc
+    ln -s ~/.vim/gvimrc ~/.gvimrc
     echo "Create ~/.gvimrc"
 fi
 
