@@ -24,7 +24,7 @@ if has("gui_macvim")
   macm Edit.Find.Use\ Selection\ for\ Find        key= <nop>
   "macm Edit.Font.Bigger                          key= <D-=> action=fontSizeUp:
   "macm Edit.Font.Smaller                         key= <D--> action=fontSizeDown:
-  macm Edit.Special\ Characters\.\.\.             key= <D-C-Space> action=orderFrontCharacterPalette:
+  "macm Edit.Special\ Characters\.\.\.             key= <D-C-Space> action=orderFrontCharacterPalette:
 
   macm Tools.Spelling.To\ Next\ error<Tab>]s      key= <nop>
   macm Tools.Spelling.Suggest\ Corrections<Tab>z= key= <nop>

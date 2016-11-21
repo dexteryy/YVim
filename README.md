@@ -13,7 +13,7 @@ Out-of-the-box `~/.vim` directory for MacVim (corresponding [~/.atom](https://gi
 ## Install
 
 * `git clone https://github.com/dexteryy/YVim.git ~/.vim`
-* `cd ~/.vim && ./install.sh`
+* `cd ~/.vim && ./install.sh` (this step may report errors, just ignore them and press `Enter`)
 
 ## Features and keybindings
 
