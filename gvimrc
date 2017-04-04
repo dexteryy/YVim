@@ -26,7 +26,7 @@ if has("gui_macvim")
   "macm Edit.Font.Smaller                         key= <D--> action=fontSizeDown:
   "macm Edit.Special\ Characters\.\.\.             key= <D-C-Space> action=orderFrontCharacterPalette:
 
-  macm Tools.Spelling.To\ Next\ error<Tab>]s      key= <nop>
+  "macm Tools.Spelling.To\ Next\ error<Tab>]s      key= <nop>
   macm Tools.Spelling.Suggest\ Corrections<Tab>z= key= <nop>
   macm Tools.Make<Tab>:make                       key= <nop>
   macm Tools.List\ Errors<Tab>:cl                 key= <nop>
